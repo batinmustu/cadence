@@ -7,6 +7,7 @@ import {
   fillableSlots,
   type MonthRef,
   monthGrid,
+  moveToDate,
 } from "../../core/calendar";
 import type { Idea } from "../../core/ideas";
 import { upcomingSlots } from "../../core/series";
@@ -26,6 +27,7 @@ interface PostRow {
   status: CalendarPostInput["status"];
   scheduled_at: string | null;
   published_at: string | null;
+  platform_name: string | null;
 }
 
 const DAY_MS = 86_400_000;
@@ -48,8 +50,10 @@ export function useCalendar(month: MonthRef) {
       const to = new Date(Date.parse(`${last}T00:00:00Z`) + 2 * DAY_MS);
       {
         const rows = await platform.database.select<PostRow>(
-          `SELECT p.id, p.idea_id, i.title, p.status, p.scheduled_at, p.published_at
+          `SELECT p.id, p.idea_id, i.title, p.status, p.scheduled_at, p.published_at, pl.name AS platform_name
            FROM posts p JOIN ideas i ON i.id = p.idea_id
+           LEFT JOIN content_types c ON c.id = p.content_type_id
+           LEFT JOIN platforms pl ON pl.id = c.platform_id
           WHERE p.deleted_at IS NULL AND i.deleted_at IS NULL AND p.status != 'draft'
             AND COALESCE(p.published_at, p.scheduled_at) >= ?
             AND COALESCE(p.published_at, p.scheduled_at) < ?`,
@@ -81,6 +85,7 @@ export function useCalendar(month: MonthRef) {
             status: r.status,
             scheduledAt: r.scheduled_at,
             publishedAt: r.published_at,
+            platformName: r.platform_name,
           })),
         );
         setSlots(nextSlots);
@@ -121,9 +126,53 @@ export function useCalendar(month: MonthRef) {
         post = await posts.create({ ideaId, contentTypeId });
       }
       await posts.update(post.id, { status: "scheduled", scheduledAt });
+      notifySeriesChanged();
       await load(() => false);
     },
     [ideas, load],
+  );
+
+  /** Moves a scheduled post to another day, keeping its time of day. */
+  const movePost = useCallback(
+    async (postId: string, date: string) => {
+      const posts = createPostsRepository(platform.database);
+      const post = await posts.get(postId);
+      if (post?.status !== "scheduled" || !post.scheduledAt) return;
+      const at = moveToDate(post.scheduledAt, date);
+      if (!at) return;
+      await posts.update(postId, { scheduledAt: at });
+      notifySeriesChanged();
+      await load(() => false);
+    },
+    [load],
+  );
+
+  /** Back to draft: the idea stays, the date goes. */
+  const unschedulePost = useCallback(
+    async (postId: string) => {
+      await createPostsRepository(platform.database).update(postId, { status: "draft" });
+      notifySeriesChanged();
+      await load(() => false);
+    },
+    [load],
+  );
+
+  /** Creates a new idea and schedules it in one step. */
+  const createAndSchedule = useCallback(
+    async (title: string, scheduledAt: string) => {
+      const idea = await createIdeasRepository(platform.database).create({ title });
+      const posts = createPostsRepository(platform.database);
+      const ct = await platform.database.select<{ id: string }>(
+        "SELECT c.id FROM content_types c JOIN platforms p ON p.id = c.platform_id ORDER BY p.sort_order, c.sort_order LIMIT 1",
+      );
+      const contentTypeId = ct[0]?.id;
+      if (!contentTypeId) return;
+      const post = await posts.create({ ideaId: idea.id, contentTypeId });
+      await posts.update(post.id, { status: "scheduled", scheduledAt });
+      notifySeriesChanged();
+      await load(() => false);
+    },
+    [load],
   );
 
   const emptySlots = useMemo(
@@ -160,5 +209,17 @@ export function useCalendar(month: MonthRef) {
     [load],
   );
 
-  return { grid, weekStart, items, loaded, ideas, scheduleIdea, emptySlots, fillSlots };
+  return {
+    grid,
+    weekStart,
+    items,
+    loaded,
+    ideas,
+    scheduleIdea,
+    movePost,
+    unschedulePost,
+    createAndSchedule,
+    emptySlots,
+    fillSlots,
+  };
 }

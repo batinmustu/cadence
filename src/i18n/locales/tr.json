@@ -187,7 +187,18 @@
     "fillNote": "Atlamak istediklerinin işaretini kaldır. Onaylamadan hiçbir şey oluşturulmaz.",
     "createDrafts_one": "{{count}} taslak oluştur",
     "createDrafts_other": "{{count}} taslak oluştur",
-    "creating": "Taslaklar oluşturuluyor…"
+    "creating": "Taslaklar oluşturuluyor…",
+    "openDay": "{{date}} gününü aç",
+    "day": {
+      "description": "Bu güne planlananların tümü ve fikir ekleme yolu.",
+      "empty": "Bu güne planlanmış bir şey yok.",
+      "moveTo": "{{title}} şuraya taşı",
+      "move": "Taşı",
+      "unschedule": "Planı kaldır",
+      "add": "Fikir ekle",
+      "newIdea": "Ya da yeni bir fikir yaz",
+      "createAndSchedule": "Oluştur ve planla"
+    }
   },
   "reminders": {
     "title": "Planlama zamanı: {{name}}",

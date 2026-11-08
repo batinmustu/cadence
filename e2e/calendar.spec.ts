@@ -72,3 +72,49 @@ test("general settings: week start moves Sunday to the first column", async ({ p
   const first = await days.first().getAttribute("data-date");
   expect(new Date(`${first}T00:00:00Z`).getUTCDay()).toBe(0);
 });
+
+test("schedule an idea from a day, move it by drag and by dialog, then unschedule it", async ({
+  page,
+}) => {
+  await page.goto("/ideas");
+  const box = page.getByRole("textbox", { name: "New idea" });
+  await box.fill("Dated idea");
+  await box.press("Enter");
+  await page.getByRole("link", { name: "Calendar", exact: true }).click();
+
+  const days = page.getByTestId("calendar-day");
+  const first = days.nth(10);
+  const firstDate = (await first.getAttribute("data-date")) ?? "";
+  // (b) click a day, pick an existing idea.
+  await first.getByRole("button", { name: `Open ${firstDate}` }).click();
+  await page.getByRole("dialog").getByLabel("Choose an idea").click();
+  await page.getByRole("option", { name: "Dated idea" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Schedule" }).click();
+  await expect(first.getByRole("link", { name: /Dated idea/ })).toBeVisible();
+
+  // Drag the chip to another day.
+  const second = days.nth(12);
+  await first.getByRole("link", { name: /Dated idea/ }).dragTo(second);
+  await expect(second.getByRole("link", { name: /Dated idea/ })).toBeVisible();
+  await expect(first.getByRole("link", { name: /Dated idea/ })).toHaveCount(0);
+
+  // Keyboard-friendly alternative: move with the date field in the day dialog.
+  const secondDate = (await second.getAttribute("data-date")) ?? "";
+  const third = days.nth(14);
+  const thirdDate = (await third.getAttribute("data-date")) ?? "";
+  await second.getByRole("button", { name: `Open ${secondDate}` }).click();
+  await page
+    .getByRole("dialog")
+    .getByLabel(/Move Dated idea to/)
+    .fill(thirdDate);
+  await page.getByRole("dialog").getByRole("button", { name: "Move", exact: true }).click();
+  await expect(third.getByRole("link", { name: /Dated idea/ })).toBeVisible();
+
+  // Unschedule: back in the unscheduled list.
+  await third.getByRole("button", { name: `Open ${thirdDate}` }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Unschedule" }).click();
+  await expect(
+    page.getByTestId("calendar-day").getByRole("link", { name: /Dated idea/ }),
+  ).toHaveCount(0);
+  await expect(page.getByRole("complementary").getByText("Dated idea")).toBeVisible();
+});

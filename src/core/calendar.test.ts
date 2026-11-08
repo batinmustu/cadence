@@ -5,7 +5,9 @@ import {
   fillableSlots,
   groupByDate,
   monthGrid,
+  moveToDate,
   shiftMonth,
+  splitOverflow,
 } from "./calendar";
 
 describe("monthGrid", () => {
@@ -122,5 +124,18 @@ describe("fillableSlots", () => {
     expect(
       fillableSlots(items, "2029-12-30", "2030-02-09", new Date("2030-01-15T00:00:00Z")),
     ).toHaveLength(1);
+  });
+});
+
+describe("moveToDate / splitOverflow", () => {
+  it("keeps the local time of day when moving to another date", () => {
+    const at = new Date(2026, 10, 8, 14, 30).toISOString();
+    const moved = moveToDate(at, "2026-11-20");
+    expect(moved).toBe(new Date(2026, 10, 20, 14, 30).toISOString());
+    expect(moveToDate(at, "2026-02-31")).toBeNull();
+  });
+  it("splits overflow", () => {
+    expect(splitOverflow([1, 2, 3, 4, 5], 3)).toEqual({ shown: [1, 2, 3], hidden: 2 });
+    expect(splitOverflow([1], 3)).toEqual({ shown: [1], hidden: 0 });
   });
 });

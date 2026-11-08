@@ -1,3 +1,4 @@
+import { fromLocalParts, toLocalParts } from "./schedule";
 import { localDate } from "./series";
 
 const DAY_MS = 86_400_000;
@@ -52,6 +53,9 @@ export interface CalendarItem {
   label: string;
   ideaId: string | null;
   seriesId: string | null;
+  /** Set for posts, so they can be moved or unscheduled. */
+  postId?: string | null;
+  platform?: string | null;
 }
 
 export interface CalendarPostInput {
@@ -61,6 +65,7 @@ export interface CalendarPostInput {
   status: "draft" | "scheduled" | "published";
   scheduledAt: string | null;
   publishedAt: string | null;
+  platformName?: string | null;
 }
 
 export interface CalendarSlotInput {
@@ -93,6 +98,8 @@ export function buildCalendarItems(
       label: p.title,
       ideaId: p.ideaId,
       seriesId: null,
+      postId: p.id,
+      platform: p.platformName ?? null,
     });
   }
   for (const s of slots) {
@@ -122,4 +129,14 @@ export function fillableSlots(items: CalendarItem[], first: string, last: string
     .filter((i) => i.kind === "empty" && i.seriesId && i.date >= first && i.date <= last)
     .filter((i) => Date.parse(i.at) > now.getTime())
     .sort((a, b) => a.at.localeCompare(b.at));
+}
+
+/** Same local time of day on another local date; null if the date is invalid. */
+export function moveToDate(iso: string, date: string): string | null {
+  return fromLocalParts(date, toLocalParts(iso).time);
+}
+
+/** First `max` entries are shown on the cell, the rest go to the day popover. */
+export function splitOverflow<T>(list: T[], max: number): { shown: T[]; hidden: number } {
+  return { shown: list.slice(0, max), hidden: Math.max(0, list.length - max) };
 }

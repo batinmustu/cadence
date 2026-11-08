@@ -5,10 +5,17 @@ import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button, Input, Select } from "../../components";
 import { ICON_STROKE, iconSize } from "../../components/iconSize";
-import { type CalendarItem, groupByDate, type MonthRef, shiftMonth } from "../../core/calendar";
+import {
+  type CalendarItem,
+  groupByDate,
+  type MonthRef,
+  shiftMonth,
+  splitOverflow,
+} from "../../core/calendar";
 import { fromLocalParts } from "../../core/schedule";
 import { WEEKDAY_KEYS } from "../../core/weekdays";
 import { useAiAvailable } from "../settings/aiConfig";
+import { DayDialog } from "./DayDialog";
 import { useCalendar } from "./useCalendar";
 
 const MAX_CHIPS = 3;
@@ -39,9 +46,20 @@ function Chip({ item }: { item: CalendarItem }) {
         {label}
       </Link>
     );
+  const planned = item.kind === "planned" && item.postId;
   return (
-    <Link to="/ideas/$id" params={{ id: item.ideaId ?? "" }} className={className}>
+    <Link
+      to="/ideas/$id"
+      params={{ id: item.ideaId ?? "" }}
+      className={className}
+      draggable={Boolean(planned)}
+      onDragStart={(e) => {
+        if (planned) e.dataTransfer.setData("text/plain", `post:${item.postId}`);
+      }}
+      title={item.platform ? `${label} · ${item.platform}` : label}
+    >
       {label}
+      {item.platform ? <span className="ml-1 text-text-3">· {item.platform}</span> : null}
     </Link>
   );
 }
@@ -50,7 +68,19 @@ export function CalendarScreen() {
   const aiAvailable = useAiAvailable();
   const { t, i18n } = useTranslation();
   const [month, setMonth] = useState(todayRef);
-  const { grid, weekStart, items, ideas, scheduleIdea, emptySlots, fillSlots } = useCalendar(month);
+  const {
+    grid,
+    weekStart,
+    items,
+    ideas,
+    scheduleIdea,
+    movePost,
+    unschedulePost,
+    createAndSchedule,
+    emptySlots,
+    fillSlots,
+  } = useCalendar(month);
+  const [openDay, setOpenDay] = useState<string | null>(null);
   const [filling, setFilling] = useState<{ skipped: string[] } | null>(null);
   const [fillState, setFillState] = useState<{ running: boolean; error: string | null }>({
     running: false,
@@ -115,24 +145,32 @@ export function CalendarScreen() {
                 onDrop={(e) => {
                   e.preventDefault();
                   const id = e.dataTransfer.getData("text/plain");
-                  if (id) setDialog({ ideaId: id, date: day.date });
+                  if (id.startsWith("post:")) void movePost(id.slice(5), day.date);
+                  else if (id) setDialog({ ideaId: id, date: day.date });
                 }}
               >
-                <span
-                  className={`mb-1 inline-flex h-6 min-w-6 items-center justify-center rounded-full text-xs ${
+                <button
+                  type="button"
+                  aria-label={t("calendar.openDay", { date: day.date })}
+                  onClick={() => setOpenDay(day.date)}
+                  className={`motion-colors mb-1 inline-flex h-6 min-w-6 items-center justify-center rounded-full text-xs hover:bg-surface-2 ${
                     day.date === today ? "bg-surface-2 font-semibold" : "text-text-3"
                   }`}
                 >
                   {day.day}
-                </span>
+                </button>
                 <div className="flex flex-col gap-1">
-                  {list.slice(0, MAX_CHIPS).map((i) => (
+                  {splitOverflow(list, MAX_CHIPS).shown.map((i) => (
                     <Chip key={i.key} item={i} />
                   ))}
-                  {list.length > MAX_CHIPS ? (
-                    <span className="px-2 text-xs text-text-3">
-                      {t("calendar.more", { count: list.length - MAX_CHIPS })}
-                    </span>
+                  {splitOverflow(list, MAX_CHIPS).hidden > 0 ? (
+                    <button
+                      type="button"
+                      className="px-2 text-left text-xs text-text-3 hover:text-text"
+                      onClick={() => setOpenDay(day.date)}
+                    >
+                      {t("calendar.more", { count: splitOverflow(list, MAX_CHIPS).hidden })}
+                    </button>
                   ) : null}
                 </div>
               </fieldset>
@@ -262,6 +300,18 @@ export function CalendarScreen() {
             </form>
           </DialogContent>
         </Dialog>
+      ) : null}
+      {openDay ? (
+        <DayDialog
+          date={openDay}
+          items={byDate.get(openDay) ?? []}
+          ideas={ideas}
+          onSchedule={scheduleIdea}
+          onCreate={createAndSchedule}
+          onMove={movePost}
+          onUnschedule={unschedulePost}
+          onClose={() => setOpenDay(null)}
+        />
       ) : null}
       {dialog && dialogIdea ? (
         <Dialog open onOpenChange={(open) => !open && setDialog(null)}>
