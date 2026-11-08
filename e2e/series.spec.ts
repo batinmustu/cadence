@@ -20,3 +20,23 @@ test("create a series, see it in the sidebar, assign a captured idea", async ({ 
   await expect(page.getByTestId("group-today").getByText("Plan the Sunday post")).toBeVisible();
   await page.screenshot({ path: "test-results/series.png" });
 });
+
+test("AI draft fills an empty slot and opens the editor", async ({ page }) => {
+  await page.goto("/settings/ai");
+  await page.getByLabel("API key").fill("sk-test");
+  await page.getByRole("button", { name: "Save key" }).click();
+  await expect(page.getByRole("button", { name: "Remove key" })).toBeVisible();
+
+  const nav = page.getByRole("complementary");
+  await nav.getByRole("button", { name: "New series" }).click();
+  const dialog = page.getByRole("dialog", { name: "New series" });
+  await dialog.getByLabel("Name").fill("Draft series");
+  await dialog.getByRole("button", { name: "Sun" }).click();
+  await dialog.getByRole("button", { name: "Create series" }).click();
+  await nav.getByRole("link", { name: /Draft series/ }).click();
+
+  await page.getByRole("button", { name: "AI draft" }).first().click();
+  await expect(page).toHaveURL(/\/ideas\/.+/);
+  await expect(page.getByRole("textbox", { name: "Title" })).toHaveValue("Mock AI response.");
+  await expect(page.getByText("#AI draft")).toBeVisible();
+});

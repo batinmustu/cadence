@@ -1,4 +1,5 @@
-import { Plus } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { Plus, Sparkles } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Chip, Input, Select, Textarea, ToggleChip } from "../../components";
@@ -24,6 +25,9 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
   const s = useSeries(seriesId);
   const [assigning, setAssigning] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
+  const [drafting, setDrafting] = useState<string | null>(null);
+  const [draftError, setDraftError] = useState<string | null>(null);
+  const navigate = useNavigate();
   const { series } = s;
 
   if (!series) {
@@ -58,6 +62,19 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
     </ul>
   );
 
+  const draftWithAi = async (slot: Slot) => {
+    setDraftError(null);
+    setDrafting(slot.at);
+    try {
+      const ideaId = await s.aiDraft(slot);
+      await navigate({ to: "/ideas/$id", params: { id: ideaId } });
+    } catch (e) {
+      setDraftError(typeof e === "string" ? e : "unknown");
+    } finally {
+      setDrafting(null);
+    }
+  };
+
   const slotCard = (slot: Slot) => {
     const idea = slot.filled ? ideaOf(slot.postId) : undefined;
     return (
@@ -86,6 +103,10 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
               onClick={() => setAssigning(assigning === slot.at ? null : slot.at)}
             >
               {t("series.screen.assign")}
+            </Button>
+            <Button disabled={drafting !== null} onClick={() => void draftWithAi(slot)}>
+              <Sparkles size={14} strokeWidth={1.7} />
+              {drafting === slot.at ? t("series.screen.drafting") : t("series.screen.aiDraft")}
             </Button>
             {assigning === slot.at ? (
               s.groups.unscheduled.length === 0 ? (
@@ -137,6 +158,11 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
         <h2 className="mb-2 mt-8 text-xs font-medium uppercase text-text-3">
           {t("series.screen.upcoming")}
         </h2>
+        {draftError ? (
+          <p role="alert" className="mb-2 text-[13px] text-text-2">
+            {t(`assistant.error.${draftError}`, { defaultValue: t("assistant.error.unknown") })}
+          </p>
+        ) : null}
         {s.slots.length === 0 ? (
           <p className="text-text-3">{t("series.screen.noSlots")}</p>
         ) : (

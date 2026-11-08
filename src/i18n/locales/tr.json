@@ -67,7 +67,10 @@
       "settings": "Seri ayarları",
       "template": "Şablon",
       "templateHint": "Yapay zekâ taslakları için kullanılır",
-      "remind": "Boş slottan önce hatırlat"
+      "remind": "Boş slottan önce hatırlat",
+      "aiDraft": "YZ taslağı",
+      "drafting": "Taslak hazırlanıyor…",
+      "aiDraftTag": "YZ taslağı"
     }
   },
   "ideas": {
@@ -226,7 +229,9 @@
       "timeout": "Sağlayıcı zamanında yanıt vermedi.",
       "provider": "Sağlayıcı bir hata döndürdü.",
       "config": "Yapay zekâ ayarları eksik.",
-      "unknown": "Bir şeyler ters gitti."
+      "unknown": "Bir şeyler ters gitti.",
+      "notConnected": "Önce Ayarlar'dan bir yapay zekâ sağlayıcısı bağlayın.",
+      "empty": "Asistan boş yanıt verdi. Tekrar deneyin."
     }
   }
 }
