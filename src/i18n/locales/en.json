@@ -159,5 +159,9 @@
     "time": "Time",
     "cancel": "Cancel",
     "schedule": "Schedule"
+  },
+  "reminders": {
+    "title": "Time to plan: {{name}}",
+    "body": "An empty {{name}} slot is coming up on {{when}}."
   }
 }
