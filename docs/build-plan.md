@@ -342,7 +342,7 @@ cadence/
 - `Secrets` — `setKey(provider, key)`, `hasKey(provider)`, `clearKey(provider)`.
   There is deliberately no `getKey`.
 - `AI` — `complete(request)` returning a stream of text chunks; `testConnection(provider)`.
-- `Window` — `platform: 'macos' | 'windows' | 'linux' | 'web'`, `toggleSidebarShortcut`, drag regions.
+- `Window` — `platform: 'macos' | 'windows' | 'linux' | 'web'`, drag regions, `isFullscreen`/`onFullscreenChange`.
 - `Notifications` — `schedule`, `cancel`.
 - `Clipboard` — `writeText`.
 

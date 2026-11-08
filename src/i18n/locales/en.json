@@ -6,7 +6,6 @@
   "nav": {
     "sidebar": "Sidebar",
     "main": "Main",
-    "hideSidebar": "Hide sidebar",
     "search": "Search",
     "ideas": "Ideas",
     "idea": "Idea",
@@ -16,7 +15,6 @@
     "newSeries": "New series",
     "aiNotConnected": "AI not connected",
     "settings": "Settings",
-    "showSidebar": "Show sidebar",
     "aiConnected": "AI connected · {{model}}"
   },
   "weekday": {

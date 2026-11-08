@@ -6,7 +6,6 @@
   "nav": {
     "sidebar": "Kenar çubuğu",
     "main": "Ana menü",
-    "hideSidebar": "Kenar çubuğunu gizle",
     "search": "Ara",
     "ideas": "Fikirler",
     "idea": "Fikir",
@@ -16,7 +15,6 @@
     "newSeries": "Yeni seri",
     "aiNotConnected": "Yapay zekâ bağlı değil",
     "settings": "Ayarlar",
-    "showSidebar": "Kenar çubuğunu göster",
     "aiConnected": "AI bağlı · {{model}}"
   },
   "weekday": {

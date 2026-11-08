@@ -35,7 +35,10 @@ export type WindowPlatform = "macos" | "windows" | "linux" | "web";
 
 export interface AppWindow {
   platform: WindowPlatform;
-  toggleSidebarShortcut: string;
+  /** True while the window is in full screen (macOS hides the traffic lights then). */
+  isFullscreen(): Promise<boolean>;
+  /** Fires when the window enters or leaves full screen. Returns an unsubscribe function. */
+  onFullscreenChange(listener: (fullscreen: boolean) => void): () => void;
   /** Fires when the global quick-capture shortcut is pressed. No-op in the browser. */
   onQuickCapture(listener: () => void): () => void;
   /** Re-binds the global quick-capture shortcut. Rejects when it cannot be registered. No-op in the browser. */
