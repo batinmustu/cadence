@@ -138,5 +138,17 @@
     "remove": "{{name}} etiketini kaldır",
     "filter": "Etikete göre filtrele",
     "allTags": "Tüm etiketler"
+  },
+  "calendar": {
+    "prev": "Önceki ay",
+    "next": "Sonraki ay",
+    "today": "Bugün",
+    "emptySlot": "{{name}} · boş",
+    "more": "+{{count}} daha",
+    "legend": {
+      "planned": "Planlandı",
+      "empty": "Boş seri yeri",
+      "published": "Yayınlandı"
+    }
   }
 }

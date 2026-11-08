@@ -138,5 +138,17 @@
     "remove": "Remove tag {{name}}",
     "filter": "Filter by tag",
     "allTags": "All tags"
+  },
+  "calendar": {
+    "prev": "Previous month",
+    "next": "Next month",
+    "today": "Today",
+    "emptySlot": "{{name}} · empty",
+    "more": "+{{count}} more",
+    "legend": {
+      "planned": "Planned",
+      "empty": "Empty series slot",
+      "published": "Published"
+    }
   }
 }
