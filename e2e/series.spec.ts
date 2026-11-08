@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { closeSettings, openSettings } from "./helpers";
 
 test("create a series, see it in the sidebar, assign a captured idea", async ({ page }) => {
   await page.goto("/ideas");
@@ -23,10 +24,12 @@ test("create a series, see it in the sidebar, assign a captured idea", async ({ 
 });
 
 test("AI draft fills an empty slot and opens the editor", async ({ page }) => {
-  await page.goto("/settings/ai");
+  await page.goto("/ideas");
+  await openSettings(page, "AI");
   await page.getByLabel("API key").fill("sk-test");
   await page.getByRole("button", { name: "Save key" }).click();
   await expect(page.getByRole("button", { name: "Remove key" })).toBeVisible();
+  await closeSettings(page);
 
   const nav = page.getByRole("complementary");
   await nav.getByRole("button", { name: "New series" }).click();

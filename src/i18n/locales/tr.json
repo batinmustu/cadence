@@ -176,6 +176,7 @@
   },
   "settings": {
     "sections": "Ayar bölümleri",
+    "close": "Ayarları kapat",
     "comingSoon": "Yakında.",
     "nav": {
       "general": "Genel",
