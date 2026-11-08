@@ -2,6 +2,7 @@ import type { TFunction } from "i18next";
 import { ArrowDown, ArrowUp, Check, Copy, Plus, Scissors, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button, Input, Textarea, Toggle } from "../../components";
+import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import { countChars } from "../../core/charCount";
 import type { FieldDef, FieldSchema, FieldValues, OutlineItem } from "../../core/fieldSchema";
 import { splitIntoParts } from "../../core/parts";
@@ -113,7 +114,9 @@ function Field({
               pressed={done[item] === true}
               onPressedChange={(p) => onChange({ ...done, [item]: p })}
             >
-              {done[item] === true ? <Check size={12} strokeWidth={2} aria-hidden /> : null}
+              {done[item] === true ? (
+                <Check size={iconSize.tiny} strokeWidth={2} aria-hidden />
+              ) : null}
               {item}
             </Toggle>
           ))}
@@ -191,7 +194,7 @@ function Parts({
                   disabled={!over}
                   onClick={() => split(i)}
                 >
-                  <Scissors size={14} strokeWidth={1.7} />
+                  <Scissors size={iconSize.inline} strokeWidth={ICON_STROKE} />
                 </Button>
               ) : null}
               <Button
@@ -200,7 +203,7 @@ function Parts({
                 disabled={part === ""}
                 onClick={() => void platform.clipboard.writeText(part)}
               >
-                <Copy size={14} strokeWidth={1.7} />
+                <Copy size={iconSize.inline} strokeWidth={ICON_STROKE} />
               </Button>
               <Button
                 variant="icon"
@@ -208,7 +211,7 @@ function Parts({
                 disabled={i === 0}
                 onClick={() => move(i, -1)}
               >
-                <ArrowUp size={14} strokeWidth={1.7} />
+                <ArrowUp size={iconSize.inline} strokeWidth={ICON_STROKE} />
               </Button>
               <Button
                 variant="icon"
@@ -216,7 +219,7 @@ function Parts({
                 disabled={i === list.length - 1}
                 onClick={() => move(i, 1)}
               >
-                <ArrowDown size={14} strokeWidth={1.7} />
+                <ArrowDown size={iconSize.inline} strokeWidth={ICON_STROKE} />
               </Button>
               <Button
                 variant="icon"
@@ -224,7 +227,7 @@ function Parts({
                 disabled={list.length === 1}
                 onClick={() => onChange(list.filter((_, j) => j !== i))}
               >
-                <X size={14} strokeWidth={1.7} />
+                <X size={iconSize.inline} strokeWidth={ICON_STROKE} />
               </Button>
             </div>
           </div>
@@ -232,7 +235,7 @@ function Parts({
       })}
       <div>
         <Button disabled={atMax} onClick={() => onChange([...list, ""])}>
-          <Plus size={14} strokeWidth={1.7} />
+          <Plus size={iconSize.inline} strokeWidth={ICON_STROKE} />
           {t("editor.addPart")}
         </Button>
       </div>
@@ -285,13 +288,13 @@ function Outline({
             aria-label={t("editor.removeRow", { n: i + 1 })}
             onClick={() => onChange(items.filter((_, j) => j !== i))}
           >
-            <X size={14} strokeWidth={1.7} />
+            <X size={iconSize.inline} strokeWidth={ICON_STROKE} />
           </Button>
         </div>
       ))}
       <div>
         <Button onClick={() => onChange([...items, { text: "" }])}>
-          <Plus size={14} strokeWidth={1.7} />
+          <Plus size={iconSize.inline} strokeWidth={ICON_STROKE} />
           {t("editor.addRow")}
         </Button>
       </div>

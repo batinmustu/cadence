@@ -2,6 +2,7 @@ import { ArrowDown, ArrowUp, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Input } from "../../components";
+import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import { moveId } from "../../core/platforms";
 import {
   type ContentTypeRow,
@@ -92,7 +93,7 @@ export function PlatformsSettings() {
                     .then(reload)
                 }
               >
-                <ArrowUp size={14} strokeWidth={1.7} />
+                <ArrowUp size={iconSize.inline} strokeWidth={ICON_STROKE} />
               </Button>
               <Button
                 variant="icon"
@@ -109,7 +110,7 @@ export function PlatformsSettings() {
                     .then(reload)
                 }
               >
-                <ArrowDown size={14} strokeWidth={1.7} />
+                <ArrowDown size={iconSize.inline} strokeWidth={ICON_STROKE} />
               </Button>
               <Button
                 variant="icon"
@@ -120,9 +121,9 @@ export function PlatformsSettings() {
                 onClick={() => void repo.setHidden(p.id, !p.hidden).then(reload)}
               >
                 {p.hidden ? (
-                  <EyeOff size={14} strokeWidth={1.7} />
+                  <EyeOff size={iconSize.inline} strokeWidth={ICON_STROKE} />
                 ) : (
-                  <Eye size={14} strokeWidth={1.7} />
+                  <Eye size={iconSize.inline} strokeWidth={ICON_STROKE} />
                 )}
               </Button>
               {p.isPreset ? null : (
@@ -136,7 +137,7 @@ export function PlatformsSettings() {
                     })
                   }
                 >
-                  <Trash2 size={14} strokeWidth={1.7} />
+                  <Trash2 size={iconSize.inline} strokeWidth={ICON_STROKE} />
                 </Button>
               )}
             </li>
@@ -161,7 +162,7 @@ export function PlatformsSettings() {
             onChange={(e) => setNewName(e.target.value)}
           />
           <Button type="submit" disabled={!newName.trim()}>
-            <Plus size={14} strokeWidth={1.7} />
+            <Plus size={iconSize.inline} strokeWidth={ICON_STROKE} />
             {t("settings.commands.add")}
           </Button>
         </form>
@@ -193,7 +194,7 @@ export function PlatformsSettings() {
                       })
                     }
                   >
-                    <Trash2 size={14} strokeWidth={1.7} />
+                    <Trash2 size={iconSize.inline} strokeWidth={ICON_STROKE} />
                   </Button>
                 )}
               </li>
@@ -201,7 +202,7 @@ export function PlatformsSettings() {
           </ul>
           {editing === null ? (
             <Button className="self-start" onClick={() => setEditing("new")}>
-              <Plus size={14} strokeWidth={1.7} />
+              <Plus size={iconSize.inline} strokeWidth={ICON_STROKE} />
               {t("settings.platforms.addType")}
             </Button>
           ) : (

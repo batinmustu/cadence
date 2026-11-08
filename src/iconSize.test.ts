@@ -1,0 +1,18 @@
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import path from "node:path";
+import { describe, expect, it } from "vitest";
+
+function files(dir: string): string[] {
+  return readdirSync(dir).flatMap((n) => {
+    const p = path.join(dir, n);
+    return statSync(p).isDirectory() ? files(p) : p.endsWith(".tsx") ? [p] : [];
+  });
+}
+
+describe("icon sizes", () => {
+  it("come from components/iconSize, not literals", () => {
+    const root = path.resolve(import.meta.dirname);
+    const bad = files(root).filter((f) => /\bsize=\{\d+\}/.test(readFileSync(f, "utf8")));
+    expect(bad).toEqual([]);
+  });
+});

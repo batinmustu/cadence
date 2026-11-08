@@ -2,6 +2,7 @@ import { Sparkles, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Input } from "../../components";
+import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import type { ApplyMode } from "../../core/assist";
 import { type AssistantInput, useAssistant } from "./useAssistant";
 
@@ -19,7 +20,7 @@ export function AssistantPanel({ onApply, ...input }: Props) {
     <section aria-label={t("assistant.title")} className="flex w-[300px] shrink-0 flex-col gap-3">
       <header>
         <h2 className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-text-3">
-          <Sparkles size={14} strokeWidth={1.7} />
+          <Sparkles size={iconSize.inline} strokeWidth={ICON_STROKE} />
           {t("assistant.title")}
         </h2>
         {config ? <p className="mt-1 text-xs text-text-3">{config.model}</p> : null}
@@ -48,7 +49,7 @@ export function AssistantPanel({ onApply, ...input }: Props) {
 
       {running ? (
         <Button onClick={cancel}>
-          <X size={14} strokeWidth={1.7} />
+          <X size={iconSize.inline} strokeWidth={ICON_STROKE} />
           {t("assistant.cancel")}
         </Button>
       ) : null}
@@ -72,7 +73,7 @@ export function AssistantPanel({ onApply, ...input }: Props) {
                 aria-label={t("assistant.dismiss")}
                 onClick={() => discard(card.id)}
               >
-                <X size={14} strokeWidth={1.7} />
+                <X size={iconSize.inline} strokeWidth={ICON_STROKE} />
               </Button>
             </div>
           </li>

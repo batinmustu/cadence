@@ -3,6 +3,7 @@ import { ArrowLeft, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Select, TagInput } from "../../components";
+import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import { applyResult } from "../../core/assist";
 import { AssistantPanel } from "../assistant/AssistantPanel";
 import { FieldRenderer } from "./FieldRenderer";
@@ -62,7 +63,7 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
             aria-label={t("editor.back")}
             className="flex size-8 items-center justify-center rounded-chip text-text-3 hover:bg-surface-2"
           >
-            <ArrowLeft size={16} strokeWidth={1.7} />
+            <ArrowLeft size={iconSize.action} strokeWidth={ICON_STROKE} />
           </Link>
           <input
             aria-label={t("editor.title")}
@@ -115,7 +116,7 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
             aria-expanded={picking}
             onClick={() => setPicking((p) => !p)}
           >
-            <Plus size={16} strokeWidth={1.7} />
+            <Plus size={iconSize.action} strokeWidth={ICON_STROKE} />
           </Button>
         </div>
 

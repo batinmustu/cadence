@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../components";
+import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import type { SeriesRhythmLabel } from "../../core/weekdays";
 import { NewSeriesDialog } from "../../features/series/NewSeriesDialog";
 import { useAiStatus } from "../../features/settings/aiConfig";
@@ -51,21 +52,21 @@ export function Sidebar() {
         className="shrink-0 transition-[height] duration-[var(--motion-duration)] ease-[var(--motion-ease)]"
       />
       <Button variant="secondary" className="mb-3 w-full justify-start text-text-3">
-        <Search size={15} strokeWidth={1.7} />
+        <Search size={iconSize.nav} strokeWidth={ICON_STROKE} />
         <span className="flex-1 text-left">{t("nav.search")}</span>
         <kbd className="text-[11px] text-text-4">⌘K</kbd>
       </Button>
       <nav className="flex flex-col gap-0.5" aria-label={t("nav.main")}>
         <Link to="/ideas" className={navItem} activeProps={activeProps}>
-          <Lightbulb size={16} strokeWidth={1.7} />
+          <Lightbulb size={iconSize.nav} strokeWidth={ICON_STROKE} />
           {t("nav.ideas")}
         </Link>
         <Link to="/calendar" className={navItem} activeProps={activeProps}>
-          <CalendarDays size={16} strokeWidth={1.7} />
+          <CalendarDays size={iconSize.nav} strokeWidth={ICON_STROKE} />
           {t("nav.calendar")}
         </Link>
         <Link to="/published" className={navItem} activeProps={activeProps}>
-          <CheckCircle2 size={16} strokeWidth={1.7} />
+          <CheckCircle2 size={iconSize.nav} strokeWidth={ICON_STROKE} />
           {t("nav.published")}
         </Link>
       </nav>
@@ -73,11 +74,11 @@ export function Sidebar() {
         <h2 className="text-xs font-medium text-text-4">{t("nav.series")}</h2>
         <Button
           variant="icon"
-          className="size-6"
+          className="size-7"
           aria-label={t("nav.newSeries")}
           onClick={() => setCreating(true)}
         >
-          <Plus size={14} strokeWidth={1.7} />
+          <Plus size={iconSize.action} strokeWidth={ICON_STROKE} />
         </Button>
       </div>
       <ul className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto">
@@ -89,7 +90,7 @@ export function Sidebar() {
               className={navItem}
               activeProps={activeProps}
             >
-              <Layers size={15} strokeWidth={1.7} />
+              <Layers size={iconSize.nav} strokeWidth={ICON_STROKE} />
               <span className="flex-1 truncate">{s.name}</span>
               <span className="text-xs text-text-4">{rhythmText(s.rhythm)}</span>
             </Link>
@@ -109,7 +110,7 @@ export function Sidebar() {
           )}
         </div>
         <Link to="/settings" className={navItem} activeProps={activeProps}>
-          <Settings size={16} strokeWidth={1.7} />
+          <Settings size={iconSize.nav} strokeWidth={ICON_STROKE} />
           {t("nav.settings")}
         </Link>
       </div>

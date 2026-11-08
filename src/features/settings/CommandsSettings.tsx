@@ -2,6 +2,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Input, Select, Textarea } from "../../components";
+import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import { type AiCommand, type AiCommandInput, validateCommand } from "../../core/commands";
 import { createCommandsRepository } from "../../db/repositories/commands";
 import { platform } from "../../platform";
@@ -72,7 +73,7 @@ export function CommandsSettings() {
       <div className="flex items-center justify-between">
         <h2 className="text-[13px] font-medium">{t("settings.commands.title")}</h2>
         <Button variant="secondary" onClick={() => open(null)}>
-          <Plus size={14} strokeWidth={1.7} />
+          <Plus size={iconSize.inline} strokeWidth={ICON_STROKE} />
           {t("settings.commands.add")}
         </Button>
       </div>
@@ -93,7 +94,7 @@ export function CommandsSettings() {
               aria-label={t("settings.commands.delete", { name: c.name })}
               onClick={() => void remove(c)}
             >
-              <Trash2 size={14} strokeWidth={1.7} />
+              <Trash2 size={iconSize.inline} strokeWidth={ICON_STROKE} />
             </Button>
           </li>
         ))}
