@@ -19,14 +19,14 @@ export function SettingsScreen({ section }: { section: string }) {
               key={s}
               to="/settings/$section"
               params={{ section: s }}
-              className="flex h-8 items-center rounded-row px-2.5 text-[13px] text-text-2 hover:bg-surface-2"
+              className="motion-colors flex h-8 items-center rounded-row px-2.5 text-[13px] text-text-2 hover:bg-surface-2"
               activeProps={{ className: "bg-surface-2 text-text" }}
             >
               {t(`settings.nav.${s}`)}
             </Link>
           ))}
         </nav>
-        <div className="min-w-0 flex-1">
+        <div key={section} className="motion-fade-in min-w-0 flex-1">
           {section === "ai" ? (
             <AiSettings />
           ) : section === "general" ? (

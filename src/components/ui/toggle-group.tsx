@@ -20,7 +20,7 @@ function ToggleGroupItem({
     <ToggleGroupPrimitive.Item
       data-slot="toggle-group-item"
       className={cn(
-        "h-7 cursor-pointer rounded-chip px-3 text-[13px] text-text-3 outline-none focus-visible:ring-2 focus-visible:ring-ring data-[state=on]:bg-muted data-[state=on]:text-foreground",
+        "h-7 cursor-pointer rounded-chip px-3 text-[13px] text-text-3 outline-none focus-visible:ring-2 focus-visible:ring-ring motion-colors data-[state=on]:text-foreground",
         className,
       )}
       {...props}
