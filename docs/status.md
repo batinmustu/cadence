@@ -62,7 +62,7 @@ Last updated: 2026-11-08T22:04Z · Current milestone: UI polish (#84–#103)
 | #98 | feat: delete ideas, series and other records | #118 | 2026-11-08 |
 | #99 | fix(ideas): layout shift in quick capture platform selector | #119 | 2026-11-08 |
 | #100 | feat(ideas): keep the Ideas screen usable with many ideas | #120 | 2026-11-08 |
-| #101 | fix(calendar): rework calendar and allow assigning ideas to dates | #121 | 2026-11-08 |
+| #101 | fix(calendar): rework calendar and allow assigning ideas to dates | #122 | 2026-11-08 |
 
 ## Blocked / needs decision
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
