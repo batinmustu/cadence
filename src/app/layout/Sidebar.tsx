@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "../../components";
 import type { SeriesRhythmLabel } from "../../core/weekdays";
 import { NewSeriesDialog } from "../../features/series/NewSeriesDialog";
+import { useAiStatus } from "../../features/settings/aiConfig";
 import { platform } from "../../platform";
 import { useSeriesList } from "./useSeriesList";
 
@@ -24,6 +25,7 @@ const activeProps = { className: `${navItem} bg-surface-2 text-text` };
 export function Sidebar({ onToggle }: { onToggle: () => void }) {
   const { t } = useTranslation();
   const series = useSeriesList();
+  const ai = useAiStatus();
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const isMac = platform.window.platform === "macos";
@@ -101,8 +103,15 @@ export function Sidebar({ onToggle }: { onToggle: () => void }) {
       </ul>
       <div className="mt-2 flex flex-col gap-0.5 border-t border-divider pt-2">
         <div className="flex h-8 items-center gap-2.5 px-2.5 text-xs text-text-3">
-          <span className="size-1.5 rounded-full bg-text-4" aria-hidden="true" />
-          {t("nav.aiNotConnected")}
+          <span
+            className={`size-1.5 rounded-full ${ai.state === "connected" ? "bg-text" : "bg-text-4"}`}
+            aria-hidden="true"
+          />
+          {ai.state === "connected" ? (
+            <span className="truncate">{t("nav.aiConnected", { model: ai.model })}</span>
+          ) : (
+            t("nav.aiNotConnected")
+          )}
         </div>
         <Link to="/settings" className={navItem} activeProps={activeProps}>
           <Settings size={16} strokeWidth={1.7} />

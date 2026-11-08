@@ -16,7 +16,8 @@
     "newSeries": "New series",
     "aiNotConnected": "AI not connected",
     "settings": "Settings",
-    "showSidebar": "Show sidebar"
+    "showSidebar": "Show sidebar",
+    "aiConnected": "AI connected · {{model}}"
   },
   "weekday": {
     "sun": "Sun",
@@ -163,5 +164,37 @@
   "reminders": {
     "title": "Time to plan: {{name}}",
     "body": "An empty {{name}} slot is coming up on {{when}}."
+  },
+  "settings": {
+    "sections": "Settings sections",
+    "comingSoon": "Coming soon.",
+    "nav": {
+      "general": "General",
+      "platforms": "Platforms",
+      "ai": "AI",
+      "data": "Data"
+    },
+    "ai": {
+      "provider": "AI provider",
+      "providers": {
+        "anthropic": "Anthropic",
+        "openai": "OpenAI",
+        "openrouter": "OpenRouter",
+        "ollama": "Local (Ollama)"
+      },
+      "apiKey": "API key",
+      "saveKey": "Save key",
+      "removeKey": "Remove key",
+      "keySaved": "Key saved — enter a new one to replace it",
+      "keychainNote": "Stored in your system keychain.",
+      "serverUrl": "Server URL",
+      "test": "Test",
+      "testing": "Testing…",
+      "testOk": "Connection works",
+      "testFailed": "Connection failed",
+      "model": "Model",
+      "tone": "Tone of voice",
+      "toneNote": "Sent with every request."
+    }
   }
 }
