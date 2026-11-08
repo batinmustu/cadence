@@ -16,7 +16,7 @@ import type { SeriesRhythmLabel } from "../../core/weekdays";
 import { CommandPalette } from "../../features/search/CommandPalette";
 import { NewSeriesDialog } from "../../features/series/NewSeriesDialog";
 import { useAiStatus } from "../../features/settings/aiConfig";
-import { openSettings } from "../../features/settings/settingsDialog";
+import { openSettings } from "../../features/settings/settingsState";
 import { platform } from "../../platform";
 import { sidebarTopInset } from "./sidebarInset";
 import { useFullscreen } from "./useFullscreen";

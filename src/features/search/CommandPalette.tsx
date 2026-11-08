@@ -7,7 +7,7 @@ import { createIdeasRepository } from "../../db/repositories/ideas";
 import { createSeriesRepository } from "../../db/repositories/series";
 import { createTagsRepository } from "../../db/repositories/tags";
 import { platform } from "../../platform";
-import { openSettings } from "../settings/settingsDialog";
+import { openSettings } from "../settings/settingsState";
 
 interface Entry {
   key: string;

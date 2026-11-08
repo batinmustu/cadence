@@ -19,7 +19,7 @@ import {
   SETTINGS_SECTIONS,
   setSettingsSection,
   useSettingsDialog,
-} from "./settingsDialog";
+} from "./settingsState";
 
 export function SettingsDialog() {
   const { t } = useTranslation();
