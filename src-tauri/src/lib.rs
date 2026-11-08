@@ -1,6 +1,9 @@
 /// Starts the desktop shell. Rust stays a thin layer (see CLAUDE.md).
 pub fn run() {
-    if let Err(error) = tauri::Builder::default().run(tauri::generate_context!()) {
+    if let Err(error) = tauri::Builder::default()
+        .plugin(tauri_plugin_sql::Builder::default().build())
+        .run(tauri::generate_context!())
+    {
         eprintln!("error while running Cadence: {error}");
     }
 }
