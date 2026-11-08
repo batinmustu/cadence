@@ -47,6 +47,26 @@
       "none": "Seri yok",
       "picker": "Seri",
       "error": "Seri oluşturulamadı."
+    },
+    "screen": {
+      "label": "Seri",
+      "notFound": "Bu seri yok.",
+      "planned": "Planlandı",
+      "empty": "Boş",
+      "assign": "Fikir ata",
+      "noIdeas": "Bu seride zamanlanmamış fikir yok.",
+      "pickIdea": "Bir fikir seç",
+      "counts": "{{planned}} planlı · {{published}} yayında",
+      "upcoming": "Yaklaşan slotlar",
+      "noSlots": "Yaklaşan slot yok. Ayarlardan günleri seç.",
+      "ideas": "Bu serideki fikirler",
+      "addIdea": "Fikir ekle",
+      "add": "Ekle",
+      "published": "Yayınlananlar",
+      "settings": "Seri ayarları",
+      "template": "Şablon",
+      "templateHint": "Yapay zekâ taslakları için kullanılır",
+      "remind": "Boş slottan önce hatırlat"
     }
   },
   "ideas": {
