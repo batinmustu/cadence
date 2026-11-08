@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T11:30Z · Current milestone: v0.1 Foundation
+Last updated: 2026-11-08T11:45Z · Current milestone: v0.1 Foundation
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -12,14 +12,16 @@ Last updated: 2026-11-08T11:30Z · Current milestone: v0.1 Foundation
 | #4 | chore: add design tokens, base components and icons | #48 | 2026-11-08 |
 | #5 | chore(i18n): set up English and Turkish | #49 | 2026-11-08 |
 | #6 | feat(db): SQLite setup, migrations and seed | #50 | 2026-11-08 |
+| #7 | feat(core): ideas domain and repository | #51 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #7 feat(core): ideas domain and repository
+- #8 feat(ui): app shell, sidebar and macOS window
 
 ## Notes
+- #7: idea status is derived from post statuses (`scheduled`/`published`); `archived` is manual and never overridden. "This week" = the last 6 days before today.
 - #6: the Tauri SQL plugin pools connections, so `transaction()` there runs statements sequentially (no real BEGIN/COMMIT); migrations/seed are written to be re-runnable. Real SQLite on desktop needs manual testing. `main.tsx` now awaits `prepareDatabase` before first render.
 - #4: Segmented uses buttons with aria-pressed (Biome a11y forbids role=radio on buttons). Gallery at /__components is dev-only, strings not i18n'd.
 - #3: owner should add required checks `Checks (Ubuntu)` and `Build (macOS)`; the macOS build is unverified locally.
