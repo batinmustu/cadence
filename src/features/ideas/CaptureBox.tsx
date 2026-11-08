@@ -1,7 +1,7 @@
 import { ArrowUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Select, TagInput, Toggle } from "../../components";
+import { Select, TagInput, Textarea, Toggle } from "../../components";
 import { normalizeTagName, sameTagName, type Tag } from "../../core/tags";
 import { consumeCaptureFocus, onCaptureFocusRequest } from "./captureFocus";
 import type { PlatformOption, SeriesOption } from "./useIdeas";
@@ -78,10 +78,11 @@ export function CaptureBox({ platforms, tags, series = [], onCapture, autoFocus 
 
   return (
     <div className="rounded-capture bg-surface p-4">
-      <textarea
+      <Textarea
         ref={ref}
         value={text}
-        rows={2}
+        minRows={2}
+        maxRows={12}
         aria-label={t("ideas.capture.label")}
         placeholder={t("ideas.capture.placeholder")}
         onChange={(e) => setText(e.target.value)}
@@ -91,7 +92,7 @@ export function CaptureBox({ platforms, tags, series = [], onCapture, autoFocus 
             void submit();
           }
         }}
-        className="w-full resize-none bg-transparent text-text placeholder:text-text-4 focus:outline-none"
+        className="border-0 bg-transparent px-0 focus:border-0"
       />
       <div className="mt-2">
         <TagInput

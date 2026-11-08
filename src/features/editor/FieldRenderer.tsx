@@ -89,7 +89,7 @@ function Field({
         <div className="flex flex-col items-end gap-1">
           <Textarea
             aria-label={label}
-            className="min-h-32"
+            minRows={5}
             value={text}
             onChange={(e) => onChange(e.target.value)}
           />
@@ -173,7 +173,8 @@ function Parts({
           >
             <Textarea
               aria-label={t("editor.partLabel", { label, n })}
-              className="min-h-16 border-0 bg-transparent px-0"
+              minRows={3}
+              className="border-0 bg-transparent px-0"
               value={part}
               onChange={(e) => set(i, e.target.value)}
             />
