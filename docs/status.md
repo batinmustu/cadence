@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T21:20Z · Current milestone: UI polish (#84–#103)
+Last updated: 2026-11-08T21:26Z · Current milestone: UI polish (#84–#103)
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -60,7 +60,7 @@ Last updated: 2026-11-08T21:20Z · Current milestone: UI polish (#84–#103)
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
 
 ## Next up
-- #95–#103 in order
+- #95 settings in a dialog (in progress), then #96–#103 in order
 
 ## Notes
 - #93: `components/iconSize.ts` (`iconSize.nav` 18, `action` 16, `inline` 14, `tiny` 12; `ICON_STROKE` 1.7) replaces literal icon sizes everywhere; `src/iconSize.test.ts` fails on a literal `size={n}`. Sidebar add-series button is 28×28 with a 16 px icon. Hit the 8-PR limit of a run, so this PR was left as a draft for the next run to finish and merge. Branch is the session branch.
