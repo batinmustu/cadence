@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T11:45Z · Current milestone: v0.1 Foundation
+Last updated: 2026-11-08T12:00Z · Current milestone: v0.1 Foundation
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -13,14 +13,16 @@ Last updated: 2026-11-08T11:45Z · Current milestone: v0.1 Foundation
 | #5 | chore(i18n): set up English and Turkish | #49 | 2026-11-08 |
 | #6 | feat(db): SQLite setup, migrations and seed | #50 | 2026-11-08 |
 | #7 | feat(core): ideas domain and repository | #51 | 2026-11-08 |
+| #8 | feat(ui): app shell, sidebar and macOS window | #52 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #8 feat(ui): app shell, sidebar and macOS window
+- #9 feat(ideas): Ideas screen with quick capture
 
 ## Notes
+- #8: added `@tanstack/react-router`; screens are placeholders. `trafficLightPosition` (x18,y24) and drag regions need manual testing on macOS; Windows/Linux window controls are not built yet. Also fixed a flaky link-ordering bug in the ideas repository (#7). Remote feature branches are not auto-deleted (the proxy forbids ref deletion) — owner may clean up `feat/*` branches.
 - #7: idea status is derived from post statuses (`scheduled`/`published`); `archived` is manual and never overridden. "This week" = the last 6 days before today.
 - #6: the Tauri SQL plugin pools connections, so `transaction()` there runs statements sequentially (no real BEGIN/COMMIT); migrations/seed are written to be re-runnable. Real SQLite on desktop needs manual testing. `main.tsx` now awaits `prepareDatabase` before first render.
 - #4: Segmented uses buttons with aria-pressed (Biome a11y forbids role=radio on buttons). Gallery at /__components is dev-only, strings not i18n'd.
