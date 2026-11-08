@@ -76,8 +76,8 @@ A task is done only when all of these pass. Report results honestly.
 
 ## Workflow
 
-- Scheduled runs hold a run lock (branch `agent-lock`), work through the backlog
-  and merge their own PRs once CI is green (`gh pr merge --squash --delete-branch`).
+- Scheduled runs mark work with a draft PR labelled `agent` (no lock branch), update `docs/status.md`
+  in every PR and merge their own PRs once CI is green (`gh pr merge --squash --delete-branch`).
   The owner reviews everything afterwards. Never use admin bypass or force-push `main`.
 - Never work on issues labelled `owner-task`. After 3 failed CI fixes on a PR, label it `blocked`.
 - Branches: `feat/<issue>-short-name`, `fix/…`, `chore/…`, `ci/…`, `docs/…`.
