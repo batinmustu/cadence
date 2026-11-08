@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Select } from "../../components";
 import { FieldRenderer } from "./FieldRenderer";
+import { PostActions } from "./PostActions";
 import { useEditor } from "./useEditor";
 
 export function EditorScreen({ ideaId }: { ideaId: string }) {
@@ -16,6 +17,7 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
     saveState,
     setTitle,
     setField,
+    updateVariant,
     setArchived,
     addVariant,
   } = useEditor(ideaId);
@@ -35,6 +37,9 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
   }
 
   const active = variants.find((v) => v.id === activeId) ?? variants[0] ?? null;
+  const activeSchema = contentTypes.find((c) => c.id === active?.contentTypeId)?.schema ?? {
+    fields: [],
+  };
   const typeName = (id: string) => {
     const c = contentTypes.find((x) => x.id === id);
     return c ? `${c.platformName} · ${c.name}` : id;
@@ -72,10 +77,6 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
             <option value="archived">{t("ideas.status.archived")}</option>
           </Select>
         </div>
-        {/* Scheduling arrives with issue #17. */}
-        <Button variant="primary" disabled>
-          {t("editor.schedule")}
-        </Button>
       </header>
 
       <div className="mt-6 flex flex-wrap items-center gap-2">
@@ -121,14 +122,20 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
 
       <div className="mt-6">
         {active ? (
-          <FieldRenderer
-            key={active.id}
-            schema={
-              contentTypes.find((c) => c.id === active.contentTypeId)?.schema ?? { fields: [] }
-            }
-            values={active.fields}
-            onChange={(key, value) => setField(active.id, key, value)}
-          />
+          <>
+            <FieldRenderer
+              key={active.id}
+              schema={activeSchema}
+              values={active.fields}
+              onChange={(key, value) => setField(active.id, key, value)}
+            />
+            <PostActions
+              key={`${active.id}:${active.updatedAt}`}
+              post={active}
+              schema={activeSchema}
+              onUpdate={(patch) => updateVariant(active.id, patch)}
+            />
+          </>
         ) : (
           <p className="text-text-3">{t("editor.noVariants")}</p>
         )}

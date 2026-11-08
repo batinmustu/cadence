@@ -1,10 +1,11 @@
 import type { TFunction } from "i18next";
-import { ArrowDown, ArrowUp, Check, Plus, Scissors, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, Copy, Plus, Scissors, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button, Input, Textarea, ToggleChip } from "../../components";
 import { countChars } from "../../core/charCount";
 import type { FieldDef, FieldSchema, FieldValues, OutlineItem } from "../../core/fieldSchema";
 import { splitIntoParts } from "../../core/parts";
+import { platform } from "../../platform";
 
 interface Props {
   schema: FieldSchema;
@@ -192,6 +193,14 @@ function Parts({
                   <Scissors size={14} strokeWidth={1.7} />
                 </Button>
               ) : null}
+              <Button
+                variant="icon"
+                aria-label={t("editor.copyPart", { n })}
+                disabled={part === ""}
+                onClick={() => void platform.clipboard.writeText(part)}
+              >
+                <Copy size={14} strokeWidth={1.7} />
+              </Button>
               <Button
                 variant="icon"
                 aria-label={t("editor.moveUp", { n })}

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type FieldSchema, parseFieldSchema } from "../../core/fieldSchema";
 import { deriveIdeaStatus, type Idea } from "../../core/ideas";
-import type { Post } from "../../core/posts";
+import type { Post, PostPatch } from "../../core/posts";
 import { createIdeasRepository } from "../../db/repositories/ideas";
 import { createPostsRepository } from "../../db/repositories/posts";
 import { platform } from "../../platform";
@@ -137,6 +137,16 @@ export function useEditor(ideaId: string) {
     [ideas, ideaId, variants, reload],
   );
 
+  /** Status changes (schedule, publish) write through the repository, then reload. */
+  const updateVariant = useCallback(
+    async (postId: string, patch: PostPatch) => {
+      await flushFields();
+      await posts.update(postId, patch);
+      await reload();
+    },
+    [posts, flushFields, reload],
+  );
+
   const addVariant = useCallback(
     async (contentTypeId: string) => {
       const post = await posts.create({ ideaId, contentTypeId });
@@ -154,6 +164,7 @@ export function useEditor(ideaId: string) {
     saveState,
     setTitle,
     setField,
+    updateVariant,
     setArchived,
     addVariant,
   };

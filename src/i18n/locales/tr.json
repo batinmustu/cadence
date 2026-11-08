@@ -80,6 +80,20 @@
     "timestamp": "Zaman damgası {{n}}",
     "outlineRow": "{{label}} satır {{n}}",
     "removeRow": "{{n}}. satırı kaldır",
-    "addRow": "Satır"
+    "addRow": "Satır",
+    "copy": "Kopyala",
+    "copied": "Kopyalandı",
+    "reschedule": "Yeniden planla",
+    "markPublished": "Yayınlandı olarak işaretle",
+    "publishedOn": "{{date}} tarihinde yayınlandı",
+    "plannedFor": "{{date}} için planlandı",
+    "date": "Tarih",
+    "time": "Saat",
+    "save": "Kaydet",
+    "cancel": "Vazgeç",
+    "unschedule": "Planı kaldır",
+    "publishedUrl": "Gönderi bağlantısı",
+    "afterNote": "Yayın sonrası not",
+    "copyPart": "{{n}}. bölümü kopyala"
   }
 }
