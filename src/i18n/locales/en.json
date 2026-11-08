@@ -208,5 +208,25 @@
       "save": "Save",
       "cancel": "Cancel"
     }
+  },
+  "assistant": {
+    "title": "Assistant",
+    "notConnected": "Connect an AI provider in Settings to use the assistant.",
+    "cancel": "Cancel",
+    "replace": "Replace",
+    "insertBelow": "Insert below",
+    "use": "Use",
+    "dismiss": "Dismiss",
+    "freeText": "Ask the assistant",
+    "placeholder": "Ask for something…",
+    "error": {
+      "auth": "The provider rejected the API key.",
+      "rate_limit": "Rate limit reached. Try again in a moment.",
+      "network": "Could not reach the provider.",
+      "timeout": "The provider took too long to answer.",
+      "provider": "The provider returned an error.",
+      "config": "The AI settings are incomplete.",
+      "unknown": "Something went wrong."
+    }
   }
 }

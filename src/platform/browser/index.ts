@@ -37,8 +37,14 @@ export function createBrowserPlatform(): Platform {
       },
     },
     ai: {
-      async *complete() {
-        yield "Mock AI response.";
+      async *complete(request) {
+        // Honours the options contract so option cards are testable in the browser.
+        if (request.system.includes('{"options"')) {
+          yield '{"options": ["Mock option one", "Mock option two"]}';
+          return;
+        }
+        yield "Mock AI ";
+        yield "response.";
       },
       async testConnection() {
         return true;
