@@ -38,60 +38,69 @@ rhythm, and uses their own AI API key for writing help.
 ## 2. Run protocol (every run)
 
 Scheduled sessions run hourly and unattended. The agent merges its own PRs;
-the owner reviews everything later.
+the owner reviews everything later. There is no lock branch: an open **draft PR
+labelled `agent`** is the marker that a run is working.
 
-### 2.1 Run lock
+### 2.1 Is another run working?
 
-1. `git fetch origin`. If branch `agent-lock` exists on origin and its latest
-   commit is under 120 minutes old, another run is active: end with
+1. If branch `agent-lock` exists on origin, delete it. It is obsolete.
+2. List open PRs labelled `agent`. If any is not labelled `blocked` and was
+   updated less than 120 minutes ago, another run is active: end with
    "Skipped: another run is in progress."
-2. If older, delete it (`git push origin --delete agent-lock`).
-3. Take the lock: commit adding `.agent-lock` (UTC time) on top of `origin/main`,
-   `git push origin HEAD:refs/heads/agent-lock` (no force). Rejected means another
-   run won: end.
-4. Always delete the lock at the end. Never merge it.
+3. If one is older than 120 minutes and not `blocked`, a previous run was
+   interrupted: take it over (check out its branch, finish the work).
 
 ### 2.2 Work loop
 
-1. Read `CLAUDE.md` and this file. If the foundation is not on `main`, bootstrap (Section 3).
-2. Repeat: fix blocked/failing PRs if a fix is now possible; otherwise take the
-   lowest-numbered eligible issue (open, every `Depends on:` issue closed, not
-   `needs-decision`/`blocked`/`owner-task`), implement, open PR, wait for CI, merge.
+1. Read `CLAUDE.md`, this file and `docs/status.md`. If the foundation is not on `main`, bootstrap (Section 3).
+2. Repeat: take over an interrupted PR or fix a `blocked` PR if a fix is now
+   possible; otherwise take the lowest-numbered eligible issue (open, every
+   `Depends on:` issue closed, not `needs-decision`/`blocked`/`owner-task`).
 3. Stop when no issue is eligible, 8 PRs were merged in the run, or context runs long.
-4. When only `owner-task` issues remain open, comment on the last PR
-   "Backlog complete — only owner tasks remain".
+4. When only `owner-task` issues remain open, write "Backlog complete — only
+   owner tasks remain" in the Notes of `docs/status.md` in the last PR.
 
-### 2.3 Self-merge policy
+### 2.3 Starting, finishing and merging a PR
 
-1. After opening a PR, wait for CI: `gh pr checks <n> --watch` (give up after 30 minutes).
-2. If all checks pass (or no CI exists on `main` yet and all local checks passed),
-   `gh pr merge <n> --squash --delete-branch`.
-3. On failure, fix and push. After 3 failed attempts, label the PR `blocked`,
-   comment what fails, leave it open and move on.
-4. Never use admin bypass, never force-push `main`, never change repository
+1. On starting an issue: create the branch, push an initial commit and
+   immediately open a **draft** PR with label `agent` and `Closes #<issue>`.
+   Push commits as you go so `updatedAt` stays fresh.
+2. Before marking ready, update `docs/status.md` in the same PR.
+3. Run all local checks (CLAUDE.md → Commands), mark the PR ready and wait for
+   CI: `gh pr checks <n> --watch` (give up after 30 minutes).
+4. If all checks pass (or no CI exists on `main` yet and all local checks
+   passed), merge with `gh pr merge <n> --squash --delete-branch`.
+5. On failure, fix and push. After 3 failed attempts, label the PR `blocked`,
+   comment what fails, record it in `docs/status.md` in the next PR and move on.
+6. Never use admin bypass, never force-push `main`, never change repository
    settings or rulesets. Never work on `owner-task` issues.
 
 ### 2.4 Implementing an issue
 
 Branch `feat/<issue>-short-name` (or `fix/`, `chore/`, `ci/`, `docs/`) from `main`;
 plan in the PR description; small Conventional Commits; run the full check suite
-(CLAUDE.md → Commands) without disabling any check; open the PR with the template,
-`Closes #<issue>`, "Needs manual testing" and label `agent`.
+without disabling any check; PR with the template, `Closes #<issue>`,
+"Needs manual testing" and label `agent`.
 
-### 2.5 When something is unclear
+### 2.5 `docs/status.md`
+
+Every merged PR updates it: Done table (issue order), Blocked / needs decision,
+Next up, short Notes.
+
+### 2.6 When something is unclear
 
 Do not guess on product or architecture. Comment on the issue with a concrete
 question and 2–3 options with a recommendation, label it `needs-decision`, move on.
 
-### 2.6 Hard rules
+### 2.7 Hard rules
 
 - Never commit secrets. No network calls except to the user's configured AI provider.
 - Do not change an accepted ADR; propose a new one in its own PR.
 - Do not change repository settings, rulesets or secrets.
 
-### 2.7 Finish
+### 2.8 Finish
 
-Release the lock; end with a short summary: PRs merged, PRs left open and why,
+End with a short summary: PRs merged, PRs left open and why,
 `needs-decision`/`blocked` issues, and what the next run picks up.
 
 ---
@@ -207,7 +216,10 @@ A task is done only when all of these pass. Report results honestly.
 
 ## Workflow
 
-- Never commit to `main`; never merge. Branch → PR → owner reviews.
+- Never commit to `main`. Branch → draft PR (label `agent`, `Closes #n`) → ready → merge when CI is green.
+  Scheduled runs merge their own PRs (`gh pr merge --squash --delete-branch`); the owner reviews afterwards.
+  No lock branch: an open `agent` draft PR updated within 120 minutes means another run is working.
+  Never use admin bypass or force-push `main`. Every PR updates `docs/status.md`.
 - Branches: `feat/<issue>-short-name`, `fix/…`, `chore/…`, `ci/…`, `docs/…`.
 - Conventional Commits for commits and PR titles: `feat(series): show empty slots`.
 - One issue per PR, under ~400 changed lines where possible.
