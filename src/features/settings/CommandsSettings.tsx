@@ -127,7 +127,7 @@ export function CommandsSettings() {
             <Select
               id="cmd-target"
               value={draft.contentTypeId ?? ""}
-              onChange={(e) => setDraft({ ...draft, contentTypeId: e.target.value || null })}
+              onValueChange={(v) => setDraft({ ...draft, contentTypeId: v || null })}
             >
               <option value="">{t("settings.commands.allTypes")}</option>
               {types.map((x) => (

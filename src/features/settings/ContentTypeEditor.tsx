@@ -136,7 +136,7 @@ export function ContentTypeEditor({ initialName, initialSchema, onSave, onCancel
                     className="h-8 w-40"
                     aria-label={t("settings.platforms.countRuleOf", { n: i + 1 })}
                     value={f.countRule ?? "plain"}
-                    onChange={(e) => update(i, { ...f, countRule: e.target.value })}
+                    onValueChange={(v) => update(i, { ...f, countRule: v })}
                   >
                     {COUNT_RULES.map((r) => (
                       <option key={r} value={r}>
@@ -166,7 +166,7 @@ export function ContentTypeEditor({ initialName, initialSchema, onSave, onCancel
           className="w-40"
           aria-label={t("settings.platforms.newFieldKind")}
           value={kind}
-          onChange={(e) => setKind(e.target.value as FieldKind)}
+          onValueChange={(v) => setKind(v as FieldKind)}
         >
           {KINDS.map((k) => (
             <option key={k} value={k}>

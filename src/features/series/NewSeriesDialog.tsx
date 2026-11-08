@@ -94,11 +94,7 @@ export function NewSeriesDialog({ onClose, onCreated }: Props) {
           </div>
           <div className="flex flex-col gap-1 text-xs text-text-3">
             <label htmlFor="sd-platform">{t("series.new.platform")}</label>
-            <Select
-              id="sd-platform"
-              value={platformId}
-              onChange={(e) => setPlatformId(e.target.value)}
-            >
+            <Select id="sd-platform" value={platformId} onValueChange={(v) => setPlatformId(v)}>
               {platforms.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}

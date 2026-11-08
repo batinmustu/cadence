@@ -6,6 +6,7 @@ import { prepareDatabase } from "../../db";
 import "../../i18n";
 import { createSqlJsDatabase } from "../../platform/browser/sqljs";
 import type { Platform, ProviderId } from "../../platform/types";
+import { chooseOption } from "../../test/select";
 import { AiSettings } from "./AiSettings";
 import { loadAiConfig } from "./aiConfig";
 
@@ -51,7 +52,7 @@ describe("AiSettings", () => {
     await userEvent.click(screen.getByRole("button", { name: "Test" }));
     expect(await screen.findByText(/Connection works/)).toBeTruthy();
 
-    await userEvent.selectOptions(screen.getByLabelText("Model"), "claude-opus-5-5");
+    await chooseOption("Model", "claude-opus-5-5");
     await userEvent.type(screen.getByLabelText("Tone of voice"), "  Warm and brief ");
     await userEvent.tab();
 

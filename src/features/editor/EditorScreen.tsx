@@ -78,7 +78,7 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
               aria-label={t("editor.status")}
               className="h-8"
               value={idea.status === "archived" ? "archived" : "active"}
-              onChange={(e) => void setArchived(e.target.value === "archived")}
+              onValueChange={(v) => void setArchived(v === "archived")}
             >
               <option value="active">
                 {t(`ideas.status.${idea.status === "archived" ? "idea" : idea.status}`)}

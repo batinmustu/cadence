@@ -6,6 +6,7 @@ import { prepareDatabase } from "../../db";
 import i18n from "../../i18n";
 import { createSqlJsDatabase } from "../../platform/browser/sqljs";
 import type { Platform, ProviderId } from "../../platform/types";
+import { chooseOption } from "../../test/select";
 import { Onboarding } from "./Onboarding";
 import { isOnboardingDone } from "./onboardingConfig";
 
@@ -64,7 +65,7 @@ describe("Onboarding", () => {
 
   it("switching the language applies at once", async () => {
     render(<Onboarding />);
-    await userEvent.selectOptions(await screen.findByLabelText("Language"), "tr");
+    await chooseOption("Language", "Türkçe");
     await waitFor(() => expect(i18n.language).toBe("tr"));
   });
 });

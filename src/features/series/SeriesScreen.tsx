@@ -116,8 +116,8 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
                   aria-label={t("series.screen.pickIdea")}
                   className="w-56"
                   value=""
-                  onChange={(e) => {
-                    const id = e.target.value;
+                  onValueChange={(v) => {
+                    const id = v;
                     if (!id) return;
                     setAssigning(null);
                     void s.assignIdea(id, slot);
@@ -247,7 +247,7 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
           <Select
             id="ss-frequency"
             value={series.frequency}
-            onChange={(e) => s.edit({ frequency: e.target.value as Frequency })}
+            onValueChange={(v) => s.edit({ frequency: v as Frequency })}
           >
             {FREQUENCIES.map((f) => (
               <option key={f} value={f}>
@@ -260,7 +260,7 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
           <Select
             id="ss-platform"
             value={series.platformId}
-            onChange={(e) => s.edit({ platformId: e.target.value })}
+            onValueChange={(v) => s.edit({ platformId: v })}
           >
             {s.platforms.map((p) => (
               <option key={p.id} value={p.id}>

@@ -174,7 +174,7 @@ export function CalendarScreen() {
             <Select
               aria-label={t("calendar.pickIdea")}
               value={picked}
-              onChange={(e) => setPicked(e.target.value)}
+              onValueChange={(v) => setPicked(v)}
             >
               <option value="">{t("calendar.pickIdea")}</option>
               {ideas.map((i) => (

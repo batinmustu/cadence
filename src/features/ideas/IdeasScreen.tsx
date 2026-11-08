@@ -40,7 +40,7 @@ export function IdeasScreen() {
               aria-label={t("tags.filter")}
               className="h-8 w-40"
               value={tagId}
-              onChange={(e) => setTagId(e.target.value)}
+              onValueChange={(v) => setTagId(v)}
             >
               <option value="">{t("tags.allTags")}</option>
               {tags.map((tag) => (

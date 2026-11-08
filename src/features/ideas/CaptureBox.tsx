@@ -127,7 +127,7 @@ export function CaptureBox({ platforms, tags, series = [], onCapture, autoFocus 
             aria-label={t("series.new.picker")}
             className="h-7 w-36 text-xs"
             value={seriesId}
-            onChange={(e) => setSeriesId(e.target.value)}
+            onValueChange={(v) => setSeriesId(v)}
           >
             <option value="">{t("series.new.none")}</option>
             {series.map((s) => (

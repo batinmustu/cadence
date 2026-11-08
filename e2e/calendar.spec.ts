@@ -18,7 +18,8 @@ test("schedule an idea from the calendar panel", async ({ page }) => {
   await box.fill("Calendar idea");
   await box.press("Enter");
   await page.getByRole("link", { name: "Calendar", exact: true }).click();
-  await page.getByLabel("Choose an idea").selectOption({ label: "Calendar idea" });
+  await page.getByLabel("Choose an idea").click();
+  await page.getByRole("option", { name: "Calendar idea" }).click();
   await page.getByRole("button", { name: "Choose date…" }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Schedule" }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
@@ -58,7 +59,8 @@ test("Fill with AI lists empty slots and creates nothing until confirmed", async
 
 test("general settings: week start moves Sunday to the first column", async ({ page }) => {
   await page.goto("/settings/general");
-  await page.getByLabel("Week starts on").selectOption("sunday");
+  await page.getByLabel("Week starts on").click();
+  await page.getByRole("option", { name: "Sunday" }).click();
   await page.getByRole("complementary").getByRole("link", { name: "Calendar" }).click();
   const days = page.getByTestId("calendar-day");
   await expect(days).toHaveCount(42);

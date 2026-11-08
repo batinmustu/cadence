@@ -140,9 +140,9 @@ export function AiSettings() {
           <Select
             id="ai-model"
             value={config.model}
-            onChange={(e) => {
-              setConfig({ ...config, model: e.target.value });
-              void saveSetting(settingKeys.model(provider), e.target.value);
+            onValueChange={(v) => {
+              setConfig({ ...config, model: v });
+              void saveSetting(settingKeys.model(provider), v);
             }}
           >
             {info.models.map((m) => (
