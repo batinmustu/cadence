@@ -1,3 +1,4 @@
+import { uuidv7 } from "./ids";
 import type { Frequency } from "./weekdays";
 
 /** The parts of a series the slot calculation needs. Weekdays: 0 = Sunday … 6 = Saturday (7 also means Sunday). */
@@ -167,4 +168,84 @@ export function upcomingSlots(
     });
   }
   return slots;
+}
+
+export interface Series extends SeriesRhythm {
+  id: string;
+  name: string;
+  description: string;
+  platformId: string;
+  template: string;
+  remindBeforeHours: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
+export interface NewSeriesInput {
+  name: string;
+  platformId: string;
+  description?: string;
+  weekdays?: number[];
+  time?: string;
+  frequency?: Frequency;
+  /** Defaults to today's date. */
+  anchorDate?: string;
+  template?: string;
+  remindBeforeHours?: number;
+}
+
+export type SeriesPatch = Partial<
+  Pick<
+    Series,
+    | "name"
+    | "description"
+    | "platformId"
+    | "weekdays"
+    | "time"
+    | "frequency"
+    | "anchorDate"
+    | "template"
+    | "remindBeforeHours"
+  >
+>;
+
+/** Weekdays are unique and keep their order (monthly uses the first one); 7 (Sunday) becomes 0. */
+export function normalizeWeekdays(days: number[]): number[] {
+  return [
+    ...new Set(days.filter((d) => Number.isInteger(d) && d >= 0 && d <= 7).map((d) => d % 7)),
+  ];
+}
+
+export function createSeries(input: NewSeriesInput, now: Date = new Date()): Series {
+  const ts = now.toISOString();
+  return {
+    id: uuidv7(now.getTime()),
+    name: input.name.trim(),
+    description: input.description ?? "",
+    platformId: input.platformId,
+    weekdays: normalizeWeekdays(input.weekdays ?? []),
+    time: input.time ?? "09:00",
+    frequency: input.frequency ?? "weekly",
+    anchorDate: input.anchorDate ?? ts.slice(0, 10),
+    template: input.template ?? "",
+    remindBeforeHours: Math.max(0, input.remindBeforeHours ?? 0),
+    createdAt: ts,
+    updatedAt: ts,
+    deletedAt: null,
+  };
+}
+
+export function updateSeries(series: Series, patch: SeriesPatch, now: Date = new Date()): Series {
+  return {
+    ...series,
+    ...patch,
+    name: patch.name === undefined ? series.name : patch.name.trim(),
+    weekdays: patch.weekdays ? normalizeWeekdays(patch.weekdays) : series.weekdays,
+    remindBeforeHours:
+      patch.remindBeforeHours === undefined
+        ? series.remindBeforeHours
+        : Math.max(0, patch.remindBeforeHours),
+    updatedAt: now.toISOString(),
+  };
 }

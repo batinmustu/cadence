@@ -25,14 +25,16 @@ Last updated: 2026-11-08T13:05Z · Current milestone: v0.1 Foundation
 | #17 | feat(editor): schedule, publish and copy | #61 | 2026-11-08 |
 | #18 | feat: tags | #62 | 2026-11-08 |
 | #19 | feat(core): series rhythm and slot calculation | #63 | 2026-11-08 |
+| #20 | feat(db): series repository | #64 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #20 feat(db): series repository
+- #21 feat(series): create series and sidebar list
 
 ## Notes
+- #20: series weekdays are stored as a JSON array of 0=Sunday…6 (see #19 note), in the order given (monthly uses the first). `softDelete` detaches the series' ideas. Series posts are found through `ideas.series_id`.
 - #18: tags are case-insensitive unique ("Launch" = "launch"), stored without `#`. Capture box and editor header have a tag input (Enter or comma adds, Backspace removes last, autocomplete from existing tags). The ideas list filters by one tag via a dropdown shown once any tag exists. Tags cannot be renamed/deleted yet.
 - #19: `upcomingSlots` uses weekdays 0=Sunday…6 (7 also Sunday) to match `weekdays.ts`; build plan Section 6 says 1–7 Mon=1 — the repository (#20) must store/convert accordingly (decision needed from owner if they prefer Mon=1). Monthly = first occurrence in the month of the first listed weekday. Slots before `anchor_date` are not generated. Pure `Intl`, no new dependencies.
 - #17: the header Schedule button moved into a per-variant action bar under the fields (Copy, Schedule/Reschedule, Mark as published). Copy copies the whole variant (text-like fields, checklists skipped); each part also has its own copy button. Clipboard goes through the adapter; real clipboard needs manual testing in the desktop app. Times use the local time zone, stored as UTC ISO.
