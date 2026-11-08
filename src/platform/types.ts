@@ -40,6 +40,10 @@ export interface AppWindow {
   onQuickCapture(listener: () => void): () => void;
   /** Re-binds the global quick-capture shortcut. Rejects when it cannot be registered. No-op in the browser. */
   setQuickCaptureShortcut(accelerator: string): Promise<void>;
+  /** Starts moving the window with the pointer. No-op in the browser. */
+  startDragging(): Promise<void>;
+  /** Maximises or restores the window (title-bar double click). No-op in the browser. */
+  toggleMaximize(): Promise<void>;
 }
 
 export interface ScheduledNotification {

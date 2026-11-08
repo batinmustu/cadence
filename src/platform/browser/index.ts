@@ -55,6 +55,8 @@ export function createBrowserPlatform(): Platform {
       toggleSidebarShortcut: "Ctrl+B",
       onQuickCapture: () => () => {},
       async setQuickCaptureShortcut() {},
+      async startDragging() {},
+      async toggleMaximize() {},
     },
     notifications: { async schedule() {}, async cancel() {} },
     files: {
