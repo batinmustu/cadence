@@ -67,7 +67,10 @@
       "settings": "Series settings",
       "template": "Template",
       "templateHint": "Used by AI drafts",
-      "remind": "Remind me before an empty slot"
+      "remind": "Remind me before an empty slot",
+      "aiDraft": "AI draft",
+      "drafting": "Drafting…",
+      "aiDraftTag": "AI draft"
     }
   },
   "ideas": {
@@ -226,7 +229,9 @@
       "timeout": "The provider took too long to answer.",
       "provider": "The provider returned an error.",
       "config": "The AI settings are incomplete.",
-      "unknown": "Something went wrong."
+      "unknown": "Something went wrong.",
+      "notConnected": "Connect an AI provider in Settings first.",
+      "empty": "The assistant returned nothing. Try again."
     }
   }
 }

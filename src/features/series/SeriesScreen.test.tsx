@@ -7,12 +7,16 @@ import { createIdeasRepository } from "../../db/repositories/ideas";
 import { createSeriesRepository } from "../../db/repositories/series";
 import "../../i18n";
 import { createSqlJsDatabase } from "../../platform/browser/sqljs";
-import type { Database } from "../../platform/types";
+import type { AI, Database, Secrets } from "../../platform/types";
 import { SeriesScreen } from "./SeriesScreen";
 
 // The browser adapter fetches the sql.js wasm over HTTP, which jsdom cannot do;
 // the Node-side loader gives the same in-memory SQLite.
-const mock = vi.hoisted(() => ({ platform: {} as { database: Database } }));
+const mock = vi.hoisted(() => ({
+  platform: {} as { database: Database; secrets: Secrets; ai: AI },
+  navigate: vi.fn(),
+}));
+vi.mock("@tanstack/react-router", () => ({ useNavigate: () => mock.navigate }));
 vi.mock("../../platform", () => mock);
 const { platform } = mock;
 
@@ -20,6 +24,17 @@ afterEach(cleanup);
 beforeAll(async () => {
   platform.database = await createSqlJsDatabase();
   await prepareDatabase(platform.database);
+  platform.secrets = {
+    setKey: async () => {},
+    hasKey: async () => true,
+    clearKey: async () => {},
+  };
+  platform.ai = {
+    async *complete() {
+      yield "Focus sprint\n\nWork in 25 minute blocks.";
+    },
+    testConnection: async () => true,
+  };
 });
 
 async function setup() {
@@ -64,5 +79,22 @@ describe("SeriesScreen", () => {
         "Renamed",
       ),
     );
+  });
+
+  it("creates a tagged, scheduled AI draft in an empty slot and opens it", async () => {
+    const { series } = await setup();
+    render(<SeriesScreen seriesId={series.id} />);
+    await waitFor(() => expect(screen.getAllByTestId("slot-empty").length).toBeGreaterThan(0));
+    await userEvent.click(screen.getAllByRole("button", { name: "AI draft" })[0] as HTMLElement);
+
+    await waitFor(() => expect(mock.navigate).toHaveBeenCalled());
+    const [row] = await platform.database.select<{ title: string; name: string; status: string }>(
+      `SELECT i.title, t.name, p.status FROM ideas i
+       JOIN posts p ON p.idea_id = i.id
+       JOIN idea_tags it ON it.idea_id = i.id JOIN tags t ON t.id = it.tag_id
+       WHERE i.title = 'Focus sprint'`,
+    );
+    expect(row).toEqual({ title: "Focus sprint", name: "AI draft", status: "scheduled" });
+    await waitFor(() => expect(screen.getAllByTestId("slot-filled").length).toBe(1));
   });
 });

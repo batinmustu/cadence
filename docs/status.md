@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T16:00Z · Current milestone: v0.1 Foundation
+Last updated: 2026-11-08T16:30Z · Current milestone: v0.1 Foundation
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -37,14 +37,16 @@ Last updated: 2026-11-08T16:00Z · Current milestone: v0.1 Foundation
 | #29 | feat(core): prompt builder | #73 | 2026-11-08 |
 | #30 | feat(ai): preset commands | #74 | 2026-11-08 |
 | #31 | feat(editor): assistant panel | #75 | 2026-11-08 |
+| #32 | feat(series): AI draft for an empty slot | #76 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #32 feat(series): AI draft for an empty slot
+- #33 feat(calendar): fill empty slots with AI
 
 ## Notes
+- #32: AI draft creates an idea (title = first line of the answer) with a post of the series platform's first content type, scheduled into the slot, and tags the idea "AI draft" (translated at creation time) as the visible marker, then opens the editor. Prompt uses the series template/description and up to 5 recent posts (`core/seriesDraft.ts`). Branch deletion after merge is blocked by the proxy (403), so merged branches like `feat/31-assistant-panel` remain on origin and can be deleted manually.
 - #31: `core/assist.ts` `applyResult` decides where a result card goes: Replace/Insert below target the first long text field, else parts, else short text (parts results are split on blank lines, numbering stripped, limits honoured); Use puts a result into the first short text field (e.g. a title) and falls back to the body. The panel is disabled until a key is stored. Browser mock AI streams "Mock AI response." and honours the options contract. Real streaming and cancel against providers need manual testing.
 - #30: migration `0002` adds `ai_commands.returns_options` (commands that return several options; the assistant panel #31 passes it as `expectsOptions` to `buildPrompt`). Eight presets are seeded once per database (guarded by setting `ai.commandsSeeded`) so a deleted preset does not come back; they are normal rows, editable and deletable. Targets: Split into thread → X/Post; Suggest titles, Expand script, Write description → YouTube/Video (not Short); the rest apply to all types. A command has a single content type (or all), as in the data model. The commands list lives under Settings → AI.
 - #29: `core/prompt.ts` — `buildPrompt({tone, contentTypeName, schema, values, commandPrompt, freeText, expectsOptions})` returns `{system, prompt}`; checklists and empty fields are left out; `parseOptions` reads `{"options": [...]}` (tolerates code fences/extra text) and falls back to the raw text. Snapshot is an inline snapshot of the thread prompt; the preset-command snapshots come with #30.
