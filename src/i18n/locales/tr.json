@@ -16,7 +16,8 @@
     "newSeries": "Yeni seri",
     "aiNotConnected": "Yapay zekâ bağlı değil",
     "settings": "Ayarlar",
-    "showSidebar": "Kenar çubuğunu göster"
+    "showSidebar": "Kenar çubuğunu göster",
+    "aiConnected": "AI bağlı · {{model}}"
   },
   "weekday": {
     "sun": "Paz",
@@ -163,5 +164,37 @@
   "reminders": {
     "title": "Planlama zamanı: {{name}}",
     "body": "{{name}} serisinde {{when}} için boş bir slot var."
+  },
+  "settings": {
+    "sections": "Ayar bölümleri",
+    "comingSoon": "Yakında.",
+    "nav": {
+      "general": "Genel",
+      "platforms": "Platformlar",
+      "ai": "AI",
+      "data": "Veri"
+    },
+    "ai": {
+      "provider": "AI sağlayıcı",
+      "providers": {
+        "anthropic": "Anthropic",
+        "openai": "OpenAI",
+        "openrouter": "OpenRouter",
+        "ollama": "Yerel (Ollama)"
+      },
+      "apiKey": "API anahtarı",
+      "saveKey": "Anahtarı kaydet",
+      "removeKey": "Anahtarı sil",
+      "keySaved": "Anahtar kaydedildi — değiştirmek için yenisini girin",
+      "keychainNote": "Sistem anahtar zincirinde saklanır.",
+      "serverUrl": "Sunucu adresi",
+      "test": "Test et",
+      "testing": "Test ediliyor…",
+      "testOk": "Bağlantı çalışıyor",
+      "testFailed": "Bağlantı başarısız",
+      "model": "Model",
+      "tone": "Yazım tonu",
+      "toneNote": "Her istekle birlikte gönderilir."
+    }
   }
 }

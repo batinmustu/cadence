@@ -8,7 +8,7 @@ test("app shell renders sidebar and routes", async ({ page }) => {
   await expect(page).toHaveURL(/\/calendar$/);
   await expect(page.getByTestId("calendar-day")).toHaveCount(42);
   await page.getByRole("link", { name: "Settings" }).click();
-  await expect(page).toHaveURL(/\/settings$/);
+  await expect(page).toHaveURL(/\/settings\/ai$/);
   await page.screenshot({ path: "test-results/shell.png" });
 });
 

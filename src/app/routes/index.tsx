@@ -10,6 +10,7 @@ import { CalendarScreen } from "../../features/calendar/CalendarScreen";
 import { EditorScreen } from "../../features/editor/EditorScreen";
 import { IdeasScreen } from "../../features/ideas/IdeasScreen";
 import { SeriesScreen } from "../../features/series/SeriesScreen";
+import { SettingsScreen } from "../../features/settings/SettingsScreen";
 import { AppShell } from "../layout/AppShell";
 
 function Screen({ titleKey, detail }: { titleKey: string; detail?: string }) {
@@ -75,14 +76,16 @@ const settingsRoute = createRoute({
 const settingsIndexRoute = createRoute({
   getParentRoute: () => settingsRoute,
   path: "/",
-  component: () => <Screen titleKey="nav.settings" />,
+  beforeLoad: () => {
+    throw redirect({ to: "/settings/$section", params: { section: "ai" } });
+  },
 });
 const settingsSectionRoute = createRoute({
   getParentRoute: () => settingsRoute,
   path: "$section",
   component: function SettingsSection() {
     const { section } = settingsSectionRoute.useParams();
-    return <Screen titleKey="nav.settings" detail={section} />;
+    return <SettingsScreen section={section} />;
   },
 });
 
