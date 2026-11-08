@@ -19,14 +19,16 @@ Last updated: 2026-11-08T12:00Z · Current milestone: v0.1 Foundation
 | #11 | feat: global shortcut to open quick capture | #55 | 2026-11-08 |
 | #12 | feat(core): content field schema and validation | #56 | 2026-11-08 |
 | #13 | feat(core): platform character counting | #57 | 2026-11-08 |
+| #14 | feat(db): posts repository | #58 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #14 feat(db): posts repository
+- #15 feat(editor): editor screen and variant tabs
 
 ## Notes
+- #14: scheduling a post requires `scheduledAt`; moving it back to draft clears the date; publishing stamps `publishedAt`. Every post write re-derives the idea status in the same transaction (archived stays manual).
 - #13: `countChars(text, rule)`; rule `x` = URLs 23, emoji and CJK (Han/Kana/Hangul) 2, everything else 1; unknown rule names fall back to plain graphemes. Not yet wired into validation (UI counters come with #16).
 - #12: value shapes — text/longtext `string`, parts `string[]`, outline `{text, timestamp?}[]`, checklist `{item: done}`. Lengths are counted in code points until #13 adds count rules.
 - #11: adds `tauri-plugin-global-shortcut` (Rust) and `@tauri-apps/api` (event listener in the Tauri adapter). ⌥Space is registered in Rust and emits `quick-capture`; macOS behaviour (shortcut, focus) needs manual testing. If another app owns ⌥Space, registration failure is logged and the app still starts. Not configurable yet.
