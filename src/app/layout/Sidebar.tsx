@@ -115,7 +115,11 @@ export function Sidebar() {
         ))}
       </ul>
       <div className="mt-2 flex flex-col gap-0.5 border-t border-divider pt-2">
-        <div className="flex h-8 items-center gap-2.5 px-2.5 text-xs text-text-3">
+        <button
+          type="button"
+          onClick={() => openSettings("ai")}
+          className="flex h-8 w-full items-center gap-2.5 rounded-row px-2.5 text-left text-xs text-text-3 hover:bg-surface-2"
+        >
           <span
             className={`size-1.5 rounded-full ${ai.state === "connected" ? "bg-text" : "bg-text-4"}`}
             aria-hidden="true"
@@ -125,7 +129,7 @@ export function Sidebar() {
           ) : (
             t("nav.aiNotConnected")
           )}
-        </div>
+        </button>
         <button type="button" className={navItem} onClick={() => openSettings()}>
           <Settings size={iconSize.nav} strokeWidth={ICON_STROKE} />
           {t("nav.settings")}

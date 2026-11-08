@@ -6,11 +6,13 @@ import { Button, Select, TagInput } from "../../components";
 import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import { applyResult } from "../../core/assist";
 import { AssistantPanel } from "../assistant/AssistantPanel";
+import { useAiAvailable } from "../settings/aiConfig";
 import { FieldRenderer } from "./FieldRenderer";
 import { PostActions } from "./PostActions";
 import { useEditor } from "./useEditor";
 
 export function EditorScreen({ ideaId }: { ideaId: string }) {
+  const aiAvailable = useAiAvailable();
   const { t } = useTranslation();
   const {
     idea,
@@ -162,7 +164,7 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
           )}
         </div>
       </section>
-      {active ? (
+      {active && aiAvailable ? (
         <AssistantPanel
           contentTypeId={active.contentTypeId}
           contentTypeName={activeType?.name}

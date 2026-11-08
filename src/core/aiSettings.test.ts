@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   aiStatus,
   defaultModel,
+  isAiAvailable,
   MAX_TONE_LENGTH,
   modelOrDefault,
   normalizeTone,
@@ -34,5 +35,25 @@ describe("aiSettings", () => {
     expect(aiStatus({ ...base, model: "" }).state).toBe("notConnected");
     expect(aiStatus({ ...base, provider: "ollama", hasKey: true }).state).toBe("notConnected");
     expect(aiStatus({ ...base, provider: "ollama", verified: true }).state).toBe("connected");
+  });
+});
+
+describe("isAiAvailable", () => {
+  it("is true only for a connected provider", () => {
+    expect(isAiAvailable({ state: "notConnected" })).toBe(false);
+    expect(
+      isAiAvailable(
+        aiStatus({ provider: "anthropic", model: "m", hasKey: false, verified: false }),
+      ),
+    ).toBe(false);
+    expect(
+      isAiAvailable(aiStatus({ provider: "anthropic", model: "m", hasKey: true, verified: false })),
+    ).toBe(true);
+    expect(
+      isAiAvailable(aiStatus({ provider: "ollama", model: "m", hasKey: false, verified: false })),
+    ).toBe(false);
+    expect(
+      isAiAvailable(aiStatus({ provider: "ollama", model: "m", hasKey: false, verified: true })),
+    ).toBe(true);
   });
 });

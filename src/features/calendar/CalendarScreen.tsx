@@ -8,6 +8,7 @@ import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import { type CalendarItem, groupByDate, type MonthRef, shiftMonth } from "../../core/calendar";
 import { fromLocalParts } from "../../core/schedule";
 import { WEEKDAY_KEYS } from "../../core/weekdays";
+import { useAiAvailable } from "../settings/aiConfig";
 import { useCalendar } from "./useCalendar";
 
 const MAX_CHIPS = 3;
@@ -46,6 +47,7 @@ function Chip({ item }: { item: CalendarItem }) {
 }
 
 export function CalendarScreen() {
+  const aiAvailable = useAiAvailable();
   const { t, i18n } = useTranslation();
   const [month, setMonth] = useState(todayRef);
   const { grid, weekStart, items, ideas, scheduleIdea, emptySlots, fillSlots } = useCalendar(month);
@@ -147,7 +149,7 @@ export function CalendarScreen() {
         aria-label={t("calendar.unscheduled")}
         className="flex w-[250px] shrink-0 flex-col gap-2 border-l border-border-input pl-6"
       >
-        {emptySlots.length > 0 ? (
+        {aiAvailable && emptySlots.length > 0 ? (
           <div className="flex flex-col gap-2 rounded-card border border-dashed border-border-strong p-3">
             <p className="text-text-2">{t("calendar.emptySlots", { count: emptySlots.length })}</p>
             <Button onClick={() => setFilling({ skipped: [] })}>
