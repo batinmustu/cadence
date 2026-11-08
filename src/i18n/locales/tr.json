@@ -31,6 +31,22 @@
     "rhythm": {
       "biweekly": "2h",
       "monthly": "1a"
+    },
+    "new": {
+      "title": "Yeni seri",
+      "name": "Ad",
+      "platform": "Platform",
+      "weekdays": "Günler",
+      "time": "Saat",
+      "frequency": "Sıklık",
+      "weekly": "Haftalık",
+      "biweekly": "2 haftada bir",
+      "monthly": "Aylık",
+      "create": "Seriyi oluştur",
+      "cancel": "Vazgeç",
+      "none": "Seri yok",
+      "picker": "Seri",
+      "error": "Seri oluşturulamadı."
     }
   },
   "ideas": {
