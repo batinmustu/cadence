@@ -29,7 +29,16 @@ Tauri 2, React, TypeScript, Vite, Tailwind CSS, SQLite. Decisions are recorded i
 
 ## Development
 
-Coming with v0.1.
+Requires Node 22+, pnpm and (for the desktop shell) a Rust toolchain.
+
+```bash
+pnpm install
+pnpm dev          # UI in a browser with in-memory browser adapters
+pnpm typecheck
+pnpm tauri dev    # desktop app (local machine only)
+```
+
+Linux needs `libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev` to compile `src-tauri`.
 
 ## Built with Claude Code
 
