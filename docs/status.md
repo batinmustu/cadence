@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T21:30Z · Current milestone: UI polish (#84–#103)
+Last updated: 2026-11-08T21:50Z · Current milestone: UI polish (#84–#103)
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -48,16 +48,18 @@ Last updated: 2026-11-08T21:30Z · Current milestone: UI polish (#84–#103)
 | #84 | chore(ui): adopt shadcn/ui and migrate base components | #104 | 2026-11-08 |
 | #85 | feat(ui): replace native selects with shadcn Select | #105 | 2026-11-08 |
 | #86 | feat(ui): animated tab and segmented control transitions | #106 | 2026-11-08 |
-| #87 | fix(ui): standardise border radius across the app | this PR | 2026-11-08 |
+| #87 | fix(ui): standardise border radius across the app | #107 | 2026-11-08 |
+| #88 | fix(ui): use pointer cursor on all clickable elements | this PR | 2026-11-08 |
 
 ## Blocked / needs decision
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
 
 ## Next up
-- #88 fix(ui): use pointer cursor on all clickable elements
-- then #89–#103 in order
+- #89 feat(ui): auto-resize all textareas to fit content
+- then #90–#103 in order
 
 ## Notes
+- #88: global `@layer base` rule in `globals.css` (pointer for buttons/roles/links/labels, not-allowed when disabled, text cursor for inputs). Button no longer uses `pointer-events-none` when disabled so the cursor shows. `e2e/cursor.spec.ts` checks computed cursors. Branch is the session branch.
 - #87: root cause was `rounded-card` having no definition (square capture box and cards). Scale is `--radius-token-sm/md/lg/xl` (6/8/10/16) in `tokens.css`, wired to Tailwind `rounded-sm…xl` and the aliases chip/row/card/capture in `globals.css`; `--radius` = lg. `src/radiusScale.test.ts` fails on an undefined `rounded-*` class. Capture box uses the 16 px radius, its series select 8 px. No before/after screenshots attached. Branch is the session branch.
 - #86: no new dependency. `--motion-duration` (180 ms, 0 under `prefers-reduced-motion`) and `--motion-ease` live in `tokens.css`; utilities `.motion-fade-in` and `.motion-colors` in `globals.css`. `Segmented` has a sliding indicator (measured from the active item). Editor variant content and settings section content fade in (opacity only, no layout jump); variant buttons and settings links cross-fade colour. The variant buttons are `aria-pressed` buttons, not `role=tab`, so the test checks `aria-checked` on Segmented. Branch is the session branch.
 - #85: adds `@radix-ui/react-select`. `components/ui/select.tsx` keeps the `<option>` children API but renders a Radix Select (use `onValueChange`, not `onChange`; `""` is mapped to a sentinel). `src/noNativeSelect.test.ts` fails if a `<select>` is reintroduced. Test helper `src/test/select.ts` (`chooseOption`) polyfills jsdom pointer APIs. No screenshots attached; `pnpm screenshots` can regenerate them. Branch is the session branch `claude/serene-dijkstra-r524t9` rather than `feat/85-…`.
