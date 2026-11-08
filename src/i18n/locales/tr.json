@@ -218,6 +218,52 @@
       "returnsOptions": "Birden çok seçenek döndürür",
       "save": "Kaydet",
       "cancel": "Vazgeç"
+    },
+    "platforms": {
+      "name": "Platform adı: {{name}}",
+      "types": "İçerik türleri",
+      "typesOf": "{{name}} içerik türleri",
+      "moveUp": "{{name}} yukarı taşı",
+      "moveDown": "{{name}} aşağı taşı",
+      "hide": "{{name}} gizle",
+      "show": "{{name}} göster",
+      "delete": "{{name}} sil",
+      "deleteType": "{{name}} sil",
+      "newName": "Yeni platform",
+      "preset": "Yerleşik öğeler gizlenebilir, silinemez.",
+      "inUse": "Hâlâ gönderiler, seriler, fikirler veya komutlar tarafından kullanıldığı için silinemez.",
+      "edit": "Düzenle",
+      "addType": "İçerik türü ekle",
+      "typeName": "Ad",
+      "fieldLabel": "{{n}}. alan etiketi",
+      "removeField": "{{n}}. alanı kaldır",
+      "max": "Sınır",
+      "maxOf": "{{n}}. alanın sınırı",
+      "maxPerPart": "Parça başına",
+      "maxPerPartOf": "{{n}}. alanın parça sınırı",
+      "maxParts": "Parça sayısı",
+      "maxPartsOf": "{{n}}. alanın parça sayısı",
+      "countRule": "Sayım",
+      "countRuleOf": "{{n}}. alanın sayım kuralı",
+      "items": "Öğeler (virgülle ayır)",
+      "itemsOf": "{{n}}. alanın öğeleri",
+      "newFieldKind": "Yeni alan türü",
+      "addField": "Alan ekle",
+      "kinds": {
+        "text": "Kısa metin",
+        "longtext": "Uzun metin",
+        "parts": "Parçalar",
+        "outline": "Taslak",
+        "checklist": "Kontrol listesi"
+      },
+      "rules": {
+        "plain": "Düz karakter",
+        "x": "X tarzı (bağlantılar 23 sayılır)"
+      },
+      "errors": {
+        "name": "İçerik türüne bir ad ver.",
+        "schema": "Alanlar geçerli değil:"
+      }
     }
   },
   "assistant": {

@@ -4,6 +4,7 @@ import { deriveIdeaStatus, type Idea } from "../../core/ideas";
 import type { Post, PostPatch } from "../../core/posts";
 import type { Tag } from "../../core/tags";
 import { createIdeasRepository } from "../../db/repositories/ideas";
+import { createPlatformsRepository } from "../../db/repositories/platforms";
 import { createPostsRepository } from "../../db/repositories/posts";
 import { createTagsRepository } from "../../db/repositories/tags";
 import { platform } from "../../platform";
@@ -34,6 +35,7 @@ export function useEditor(ideaId: string) {
   const [idea, setIdea] = useState<Idea | null>(null);
   const [variants, setVariants] = useState<Post[]>([]);
   const [contentTypes, setContentTypes] = useState<ContentTypeOption[]>([]);
+  const [hiddenPlatformIds, setHiddenPlatformIds] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -57,6 +59,8 @@ export function useEditor(ideaId: string) {
       ),
       tagsRepo.list(),
     ]);
+    const platformsList = await createPlatformsRepository(platform.database).list();
+    setHiddenPlatformIds(platformsList.filter((x) => x.hidden).map((x) => x.id));
     setTags(allTags);
     setIdea(i && !i.deletedAt ? i : null);
     setVariants(p);
@@ -188,6 +192,7 @@ export function useEditor(ideaId: string) {
     removeTag,
     variants,
     contentTypes,
+    hiddenPlatformIds,
     loaded,
     saveState,
     setTitle,

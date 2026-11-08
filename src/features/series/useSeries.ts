@@ -5,6 +5,7 @@ import type { Series, SeriesPatch, Slot } from "../../core/series";
 import { upcomingSlots } from "../../core/series";
 import { draftPostFor, groupSeriesIdeas, type SeriesIdeaGroups } from "../../core/seriesView";
 import { createIdeasRepository } from "../../db/repositories/ideas";
+import { createPlatformsRepository } from "../../db/repositories/platforms";
 import { createPostsRepository } from "../../db/repositories/posts";
 import { createSeriesRepository } from "../../db/repositories/series";
 import { platform } from "../../platform";
@@ -42,14 +43,17 @@ export function useSeries(seriesId: string) {
       repos.series.get(seriesId),
       repos.series.listIdeas(seriesId),
       repos.series.listPosts(seriesId),
-      platform.database.select<PlatformOption>(
-        "SELECT id, name FROM platforms ORDER BY sort_order, name",
-      ),
+      createPlatformsRepository(platform.database).list(),
     ]);
     setSeries(s && !s.deletedAt ? s : null);
     setIdeas(i);
     setPosts(p);
-    setPlatforms(pl);
+    // Hidden platforms are not offered, except the one this series already uses.
+    setPlatforms(
+      pl
+        .filter((x) => !x.hidden || x.id === s?.platformId)
+        .map((x) => ({ id: x.id, name: x.name })),
+    );
     setLoaded(true);
   }, [repos, seriesId]);
 

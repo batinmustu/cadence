@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button, Input, Segmented, Select, ToggleChip } from "../../components";
 import type { Series } from "../../core/series";
 import { type Frequency, WEEKDAY_KEYS } from "../../core/weekdays";
+import { createPlatformsRepository } from "../../db/repositories/platforms";
 import { createSeriesRepository } from "../../db/repositories/series";
 import { platform } from "../../platform";
 import { notifySeriesChanged } from "./seriesEvents";
@@ -29,8 +30,8 @@ export function NewSeriesDialog({ onClose, onCreated }: Props) {
 
   useEffect(() => {
     nameRef.current?.focus();
-    platform.database
-      .select<PlatformRow>("SELECT id, name FROM platforms ORDER BY sort_order, name")
+    createPlatformsRepository(platform.database)
+      .listVisible()
       .then((rows) => {
         setPlatforms(rows);
         setPlatformId((cur) => cur || (rows[0]?.id ?? ""));

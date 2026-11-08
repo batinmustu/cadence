@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T17:00Z · Current milestone: v0.1 Foundation
+Last updated: 2026-11-08T17:30Z · Current milestone: v0.1 Foundation
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -39,14 +39,16 @@ Last updated: 2026-11-08T17:00Z · Current milestone: v0.1 Foundation
 | #31 | feat(editor): assistant panel | #75 | 2026-11-08 |
 | #32 | feat(series): AI draft for an empty slot | #76 | 2026-11-08 |
 | #33 | feat(calendar): fill empty slots with AI | #77 | 2026-11-08 |
+| #34 | feat(settings): manage platforms and content types | #78 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #34 feat(settings): manage platforms and content types
+- #35 feat(settings): general settings
 
 ## Notes
+- #34: Settings → Platforms. "Hidden" platforms are stored in setting `platforms.hidden` (JSON id list, no migration): hidden ones are not offered in the new-series dialog, the series platform select, the capture box or the editor's add-variant menu (existing data stays visible). Presets can only be hidden; custom platforms/content types can be deleted only when no post, series, idea or command uses them (otherwise a message is shown). Content types are edited through `core/platforms.ts checkSchema`, which round-trips through the #12 validator; field keys are generated from labels, and editing an existing field's label does not change its key. Count rules offered: plain, x.
 - #33: the Fill with AI card appears in the calendar side panel when there are future empty series slots on days shown in the grid; the dialog lists them all ticked, nothing is created until "Create N drafts". Drafts are created one after another via the shared `features/series/aiDraft.ts`; the first failure stops the run and shows the error (drafts already made stay).
 - #32: AI draft creates an idea (title = first line of the answer) with a post of the series platform's first content type, scheduled into the slot, and tags the idea "AI draft" (translated at creation time) as the visible marker, then opens the editor. Prompt uses the series template/description and up to 5 recent posts (`core/seriesDraft.ts`). Branch deletion after merge is blocked by the proxy (403), so merged branches like `feat/31-assistant-panel` remain on origin and can be deleted manually.
 - #31: `core/assist.ts` `applyResult` decides where a result card goes: Replace/Insert below target the first long text field, else parts, else short text (parts results are split on blank lines, numbering stripped, limits honoured); Use puts a result into the first short text field (e.g. a title) and falls back to the body. The panel is disabled until a key is stored. Browser mock AI streams "Mock AI response." and honours the options contract. Real streaming and cancel against providers need manual testing.

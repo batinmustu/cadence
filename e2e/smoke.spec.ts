@@ -21,3 +21,23 @@ test("sidebar collapses and toggles with the shortcut", async ({ page }) => {
   await page.keyboard.press("Control+b");
   await expect(page.getByRole("navigation", { name: "Main" })).toHaveCount(0);
 });
+
+test("settings: add a platform with a content type and use it in the editor", async ({ page }) => {
+  await page.goto("/settings/platforms");
+  await page.getByLabel("New platform").fill("Blog");
+  await page.getByLabel("New platform").press("Enter");
+  await page.getByRole("button", { name: "Add content type" }).click();
+  await page.getByLabel("Name", { exact: true }).fill("Article");
+  await page.getByLabel("Kind of new field").selectOption("longtext");
+  await page.getByRole("button", { name: "Add field" }).click();
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page.getByText("Article", { exact: true })).toBeVisible();
+
+  await page.getByRole("complementary").getByRole("link", { name: "Ideas" }).click();
+  const box = page.getByRole("textbox", { name: "New idea" });
+  await box.fill("Blog idea");
+  await box.press("Enter");
+  await page.getByRole("link", { name: "Blog idea" }).click();
+  await page.getByRole("button", { name: "Add variant" }).click();
+  await expect(page.getByRole("menuitem", { name: "Blog · Article" })).toBeVisible();
+});
