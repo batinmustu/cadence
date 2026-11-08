@@ -405,6 +405,7 @@ name = "cadence"
 version = "0.0.0"
 dependencies = [
  "keyring",
+ "serde",
  "tauri",
  "tauri-build",
  "tauri-plugin-global-shortcut",

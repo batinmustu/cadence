@@ -3,6 +3,7 @@ import { createBrowserPlatform } from "../browser";
 import type { Platform } from "../types";
 import { createTauriDatabase } from "./database";
 import { createTauriNotifications } from "./notifications";
+import { createTauriSecrets } from "./secrets";
 
 // Only this folder may import @tauri-apps/*. Keychain and AI bindings arrive
 // with issues #26 and #27; until then everything except the
@@ -12,6 +13,7 @@ export function createTauriPlatform(): Platform {
     ...createBrowserPlatform(),
     database: createTauriDatabase(),
     notifications: createTauriNotifications(),
+    secrets: createTauriSecrets(),
     window: {
       platform: "macos",
       toggleSidebarShortcut: "Ctrl+Cmd+S",
