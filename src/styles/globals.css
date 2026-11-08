@@ -1,11 +1,25 @@
 @import "tailwindcss";
+@import "@fontsource-variable/inter";
 @import "./tokens.css";
 
 @theme inline {
   --color-bg: var(--bg);
+  --color-sidebar: var(--bg-sidebar);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-input: var(--border-input);
+  --color-border-strong: var(--border-strong);
+  --color-divider: var(--divider);
   --color-text: var(--text);
+  --color-text-2: var(--text-2);
   --color-text-3: var(--text-3);
+  --color-text-4: var(--text-4);
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --radius-chip: 6px;
+  --radius-row: 10px;
+  --radius-capture: 16px;
 }
 
 html,
@@ -19,5 +33,5 @@ body {
   background: var(--bg);
   color: var(--text);
   font-size: 14px;
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-sans);
 }
