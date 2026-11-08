@@ -80,3 +80,17 @@ describe("AiSettings", () => {
     );
   });
 });
+
+describe("CommandsSettings in AI settings", () => {
+  it("lists presets, adds and deletes a command", async () => {
+    render(<AiSettings />);
+    expect(await screen.findByText("Shorten")).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "Add" }));
+    await userEvent.type(screen.getByLabelText("Name"), "Punchier");
+    await userEvent.type(screen.getByLabelText("Prompt"), "Make it punchier");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(await screen.findByText("Punchier")).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "Delete Punchier" }));
+    await waitFor(() => expect(screen.queryByText("Punchier")).toBeNull());
+  });
+});

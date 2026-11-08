@@ -37,7 +37,7 @@ describe("migrations", () => {
   });
 
   it("is tracked and applies each version once", async () => {
-    expect(await runMigrations(db)).toEqual([1]);
+    expect(await runMigrations(db)).toEqual([1, 2]);
     expect(await runMigrations(db)).toEqual([]);
   });
 
@@ -60,7 +60,7 @@ describe("migrations", () => {
   });
 
   it("loads files in version order and splits statements", () => {
-    expect(loadMigrations().map((m) => m.version)).toEqual([1]);
+    expect(loadMigrations().map((m) => m.version)).toEqual([1, 2]);
     expect(splitStatements("-- c\nA;\nB;\n")).toEqual(["A", "B"]);
   });
 

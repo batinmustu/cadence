@@ -195,6 +195,18 @@
       "model": "Model",
       "tone": "Yazım tonu",
       "toneNote": "Her istekle birlikte gönderilir."
+    },
+    "commands": {
+      "title": "Komutlar",
+      "add": "Ekle",
+      "delete": "{{name}} komutunu sil",
+      "name": "Ad",
+      "prompt": "İstem",
+      "target": "Kullanılabileceği yer",
+      "allTypes": "Tüm içerik türleri",
+      "returnsOptions": "Birden çok seçenek döndürür",
+      "save": "Kaydet",
+      "cancel": "Vazgeç"
     }
   }
 }
