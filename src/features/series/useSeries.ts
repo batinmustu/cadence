@@ -1,22 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { applyResult } from "../../core/assist";
-import { parseFieldSchema } from "../../core/fieldSchema";
 import type { Idea } from "../../core/ideas";
 import type { Post } from "../../core/posts";
-import { buildPrompt } from "../../core/prompt";
-import { variantText } from "../../core/schedule";
 import type { Series, SeriesPatch, Slot } from "../../core/series";
 import { upcomingSlots } from "../../core/series";
-import { buildDraftCommand, parseDraft } from "../../core/seriesDraft";
 import { draftPostFor, groupSeriesIdeas, type SeriesIdeaGroups } from "../../core/seriesView";
 import { createIdeasRepository } from "../../db/repositories/ideas";
 import { createPostsRepository } from "../../db/repositories/posts";
 import { createSeriesRepository } from "../../db/repositories/series";
-import { createTagsRepository } from "../../db/repositories/tags";
-import i18n from "../../i18n";
 import { platform } from "../../platform";
-import { errorKind } from "../assistant/useAssistant";
-import { loadAiConfig } from "../settings/aiConfig";
+import { createAiDraft } from "./aiDraft";
 import { notifySeriesChanged } from "./seriesEvents";
 
 const AUTOSAVE_MS = 600;
@@ -135,78 +127,15 @@ export function useSeries(seriesId: string) {
     [repos, series, posts, reload],
   );
 
-  /**
-   * Asks the AI for the next post, creates an idea + post scheduled into the slot
-   * and tags the idea so the draft is clearly marked. Returns the idea id, or
-   * throws an error kind string (see `assistant.error.*`).
-   */
+  /** See `createAiDraft`; reloads the screen afterwards. */
   const aiDraft = useCallback(
     async (slot: Slot): Promise<string> => {
       if (!series) throw "unknown";
-      const config = await loadAiConfig();
-      if (!config.hasKey && !config.verified) throw "notConnected";
-      const [ct] = await platform.database.select<{
-        id: string;
-        name: string;
-        field_schema: string;
-      }>(
-        "SELECT id, name, field_schema FROM content_types WHERE platform_id = ? ORDER BY sort_order LIMIT 1",
-        [series.platformId],
-      );
-      if (!ct) throw "unknown";
-      const parsed = parseFieldSchema(ct.field_schema);
-      const schema = parsed.ok ? parsed.value : { fields: [] };
-      const recent = [...posts]
-        .filter((p) => p.status !== "draft")
-        .sort((a, b) => (b.scheduledAt ?? b.createdAt).localeCompare(a.scheduledAt ?? a.createdAt))
-        .map((p) => variantText(schema, p.fields));
-      const built = buildPrompt({
-        tone: config.tone,
-        contentTypeName: ct.name,
-        schema,
-        commandPrompt: buildDraftCommand({
-          seriesName: series.name,
-          seriesDescription: series.description,
-          template: series.template,
-          recent,
-        }),
-      });
-      let text = "";
-      try {
-        for await (const chunk of platform.ai.complete({
-          provider: config.provider,
-          model: config.model,
-          system: built.system,
-          prompt: built.prompt,
-          ...(config.provider === "ollama" ? { baseUrl: config.ollamaUrl } : {}),
-        })) {
-          text += chunk;
-        }
-      } catch (e) {
-        throw errorKind(e);
-      }
-      const draft = parseDraft(text);
-      if (!draft) throw "empty";
-      const idea = await repos.ideas.create({
-        title: draft.title,
-        seriesId: series.id,
-        platformIds: [series.platformId],
-      });
-      const patch = applyResult(schema, {}, "replace", draft.body);
-      const post = await repos.posts.create({
-        ideaId: idea.id,
-        contentTypeId: ct.id,
-        ...(patch ? { fields: { [patch.key]: patch.value } } : {}),
-      });
-      await repos.posts.update(post.id, { status: "scheduled", scheduledAt: slot.at });
-      const tag = await createTagsRepository(platform.database).findOrCreate(
-        i18n.t("series.screen.aiDraftTag"),
-      );
-      if (tag) await repos.ideas.update(idea.id, { tagIds: [tag.id] });
+      const ideaId = await createAiDraft(series, slot.at);
       await reload();
-      return idea.id;
+      return ideaId;
     },
-    [repos, series, posts, reload],
+    [series, reload],
   );
 
   const platformName = platforms.find((p) => p.id === series?.platformId)?.name ?? "";

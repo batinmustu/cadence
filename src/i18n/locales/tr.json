@@ -162,7 +162,15 @@
     "date": "Tarih",
     "time": "Saat",
     "cancel": "Vazgeç",
-    "schedule": "Planla"
+    "schedule": "Planla",
+    "emptySlots_one": "Görünümde {{count}} boş seri aralığı",
+    "emptySlots_other": "Görünümde {{count}} boş seri aralığı",
+    "fillWithAi": "YZ ile doldur",
+    "fillTitle": "Boş aralıkları YZ ile doldur",
+    "fillNote": "Atlamak istediklerinin işaretini kaldır. Onaylamadan hiçbir şey oluşturulmaz.",
+    "createDrafts_one": "{{count}} taslak oluştur",
+    "createDrafts_other": "{{count}} taslak oluştur",
+    "creating": "Taslaklar oluşturuluyor…"
   },
   "reminders": {
     "title": "Planlama zamanı: {{name}}",

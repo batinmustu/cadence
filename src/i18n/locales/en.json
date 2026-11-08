@@ -162,7 +162,15 @@
     "date": "Date",
     "time": "Time",
     "cancel": "Cancel",
-    "schedule": "Schedule"
+    "schedule": "Schedule",
+    "emptySlots_one": "{{count}} empty series slot in view",
+    "emptySlots_other": "{{count}} empty series slots in view",
+    "fillWithAi": "Fill with AI",
+    "fillTitle": "Fill empty slots with AI",
+    "fillNote": "Untick the slots you want to skip. Nothing is created until you confirm.",
+    "createDrafts_one": "Create {{count}} draft",
+    "createDrafts_other": "Create {{count}} drafts",
+    "creating": "Creating drafts…"
   },
   "reminders": {
     "title": "Time to plan: {{name}}",

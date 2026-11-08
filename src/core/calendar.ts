@@ -115,3 +115,11 @@ export function groupByDate(items: CalendarItem[]): Map<string, CalendarItem[]> 
   for (const i of items) map.set(i.date, [...(map.get(i.date) ?? []), i]);
   return map;
 }
+
+/** Empty series slots that are still ahead and fall on a day shown in the grid. */
+export function fillableSlots(items: CalendarItem[], first: string, last: string, now: Date) {
+  return items
+    .filter((i) => i.kind === "empty" && i.seriesId && i.date >= first && i.date <= last)
+    .filter((i) => Date.parse(i.at) > now.getTime())
+    .sort((a, b) => a.at.localeCompare(b.at));
+}

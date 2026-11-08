@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { buildCalendarItems, groupByDate, monthGrid, shiftMonth } from "./calendar";
+import {
+  buildCalendarItems,
+  type CalendarItem,
+  fillableSlots,
+  groupByDate,
+  monthGrid,
+  shiftMonth,
+} from "./calendar";
 
 describe("monthGrid", () => {
   it("has 42 Monday-first days covering the month", () => {
@@ -78,5 +85,36 @@ describe("buildCalendarItems", () => {
   it("groups by date", () => {
     const items = buildCalendarItems([post({ id: "a" }), post({ id: "b" })], [], now, "UTC");
     expect(groupByDate(items).get("2026-11-12")).toHaveLength(2);
+  });
+});
+
+describe("fillableSlots", () => {
+  const item = (
+    key: string,
+    kind: CalendarItem["kind"],
+    at: string,
+    date: string,
+  ): CalendarItem => ({
+    key,
+    kind,
+    date,
+    at,
+    label: key,
+    ideaId: null,
+    seriesId: "s1",
+  });
+  it("keeps future empty slots inside the grid, sorted", () => {
+    const items = [
+      item("late", "empty", "2030-01-20T09:00:00Z", "2030-01-20"),
+      item("past", "empty", "2020-01-05T09:00:00Z", "2020-01-05"),
+      item("planned", "planned", "2030-01-10T09:00:00Z", "2030-01-10"),
+      item("outside", "empty", "2030-03-01T09:00:00Z", "2030-03-01"),
+      item("early", "empty", "2030-01-08T09:00:00Z", "2030-01-08"),
+    ];
+    const got = fillableSlots(items, "2029-12-30", "2030-02-09", new Date("2025-01-01T00:00:00Z"));
+    expect(got.map((i) => i.key)).toEqual(["early", "late"]);
+    expect(
+      fillableSlots(items, "2029-12-30", "2030-02-09", new Date("2030-01-15T00:00:00Z")),
+    ).toHaveLength(1);
   });
 });

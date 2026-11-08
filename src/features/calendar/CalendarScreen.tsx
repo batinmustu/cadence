@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Input, Select } from "../../components";
@@ -46,12 +46,24 @@ function Chip({ item }: { item: CalendarItem }) {
 export function CalendarScreen() {
   const { t, i18n } = useTranslation();
   const [month, setMonth] = useState(todayRef);
-  const { grid, items, ideas, scheduleIdea } = useCalendar(month);
+  const { grid, items, ideas, scheduleIdea, emptySlots, fillSlots } = useCalendar(month);
+  const [filling, setFilling] = useState<{ skipped: string[] } | null>(null);
+  const [fillState, setFillState] = useState<{ running: boolean; error: string | null }>({
+    running: false,
+    error: null,
+  });
   const [picked, setPicked] = useState<string>("");
   const [dialog, setDialog] = useState<{ ideaId: string; date: string } | null>(null);
   const [time, setTime] = useState(DEFAULT_TIME);
   const byDate = groupByDate(items);
   const today = todayDate();
+  const slotFmt = new Intl.DateTimeFormat(i18n.language, {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
   const title = new Intl.DateTimeFormat(i18n.language, { month: "long", year: "numeric" }).format(
     new Date(month.year, month.month, 1),
   );
@@ -129,6 +141,15 @@ export function CalendarScreen() {
         aria-label={t("calendar.unscheduled")}
         className="flex w-[250px] shrink-0 flex-col gap-2 border-l border-border-input pl-6"
       >
+        {emptySlots.length > 0 ? (
+          <div className="flex flex-col gap-2 rounded-card border border-dashed border-border-strong p-3">
+            <p className="text-text-2">{t("calendar.emptySlots", { count: emptySlots.length })}</p>
+            <Button onClick={() => setFilling({ skipped: [] })}>
+              <Sparkles size={14} strokeWidth={1.7} />
+              {t("calendar.fillWithAi")}
+            </Button>
+          </div>
+        ) : null}
         <h2 className="text-xs font-medium uppercase text-text-3">{t("calendar.unscheduled")}</h2>
         {ideas.length === 0 ? <p className="text-text-3">{t("calendar.noIdeas")}</p> : null}
         <ul className="m-0 flex list-none flex-col gap-1 p-0">
@@ -166,6 +187,83 @@ export function CalendarScreen() {
           </div>
         ) : null}
       </aside>
+      {filling ? (
+        <div
+          role="dialog"
+          aria-label={t("calendar.fillTitle")}
+          className="fixed inset-0 z-10 flex items-center justify-center bg-black/40"
+        >
+          <form
+            className="flex max-h-[80vh] w-96 flex-col gap-3 rounded-row border border-border-strong bg-surface p-4"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const chosen = emptySlots
+                .filter((i) => !filling.skipped.includes(i.key))
+                .map((i) => ({ seriesId: i.seriesId ?? "", at: i.at }));
+              if (chosen.length === 0) return;
+              setFillState({ running: true, error: null });
+              const result = await fillSlots(chosen);
+              setFillState({ running: false, error: result.error });
+              if (!result.error) setFilling(null);
+            }}
+          >
+            <h2 className="text-base font-semibold">{t("calendar.fillTitle")}</h2>
+            <p className="text-xs text-text-3">{t("calendar.fillNote")}</p>
+            <ul className="m-0 flex min-h-0 list-none flex-col gap-1 overflow-auto p-0">
+              {emptySlots.map((i) => (
+                <li key={i.key}>
+                  <label className="flex items-center gap-2 text-[13px]">
+                    <input
+                      type="checkbox"
+                      checked={!filling.skipped.includes(i.key)}
+                      disabled={fillState.running}
+                      onChange={(e) =>
+                        setFilling({
+                          skipped: e.target.checked
+                            ? filling.skipped.filter((k) => k !== i.key)
+                            : [...filling.skipped, i.key],
+                        })
+                      }
+                    />
+                    <span className="min-w-0 flex-1 truncate">{i.label}</span>
+                    <span className="text-xs text-text-3">{slotFmt.format(new Date(i.at))}</span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+            {fillState.error ? (
+              <p role="alert" className="text-[13px] text-text-2">
+                {t(`assistant.error.${fillState.error}`, {
+                  defaultValue: t("assistant.error.unknown"),
+                })}
+              </p>
+            ) : null}
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                disabled={fillState.running}
+                onClick={() => {
+                  setFilling(null);
+                  setFillState({ running: false, error: null });
+                }}
+              >
+                {t("calendar.cancel")}
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={fillState.running || filling.skipped.length >= emptySlots.length}
+              >
+                {fillState.running
+                  ? t("calendar.creating")
+                  : t("calendar.createDrafts", {
+                      count: emptySlots.length - filling.skipped.length,
+                    })}
+              </Button>
+            </div>
+          </form>
+        </div>
+      ) : null}
       {dialog && dialogIdea ? (
         <div
           role="dialog"
