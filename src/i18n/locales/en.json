@@ -93,6 +93,7 @@
     "cancel": "Cancel",
     "unschedule": "Unschedule",
     "publishedUrl": "Post URL",
-    "afterNote": "Note after publishing"
+    "afterNote": "Note after publishing",
+    "copyPart": "Copy part {{n}}"
   }
 }

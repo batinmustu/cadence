@@ -93,6 +93,7 @@
     "cancel": "Vazgeç",
     "unschedule": "Planı kaldır",
     "publishedUrl": "Gönderi bağlantısı",
-    "afterNote": "Yayın sonrası not"
+    "afterNote": "Yayın sonrası not",
+    "copyPart": "{{n}}. bölümü kopyala"
   }
 }

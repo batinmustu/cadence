@@ -5,6 +5,7 @@ import { useState } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import type { FieldSchema } from "../../core/fieldSchema";
 import "../../i18n";
+import { platform } from "../../platform";
 import { FieldRenderer } from "./FieldRenderer";
 
 afterEach(cleanup);
@@ -69,6 +70,18 @@ describe("FieldRenderer", () => {
     );
     expect(state().t).toEqual(["Hello you.", "Second one."]);
     for (const p of screen.getAllByTestId("part")) expect(p.dataset.over).toBe("false");
+  });
+
+  it("copies a single part through the clipboard adapter", async () => {
+    const copied: string[] = [];
+    platform.clipboard.writeText = async (t) => {
+      copied.push(t);
+    };
+    render(
+      <Harness schema={{ fields: [{ key: "t", kind: "parts" }] }} initial={{ t: ["a", "b"] }} />,
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Copy part 2" }));
+    expect(copied).toEqual(["b"]);
   });
 
   it("edits outline rows with timestamps", async () => {
