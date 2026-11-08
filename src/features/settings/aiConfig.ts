@@ -4,6 +4,7 @@ import {
   type AiStatus,
   aiStatus,
   DEFAULT_OLLAMA_URL,
+  isAiAvailable,
   modelOrDefault,
   parseProvider,
 } from "../../core/aiSettings";
@@ -75,4 +76,9 @@ export function useAiStatus(): AiStatus {
     };
   }, []);
   return status;
+}
+
+/** False until a provider is connected; updates as soon as a key is saved or removed. */
+export function useAiAvailable(): boolean {
+  return isAiAvailable(useAiStatus());
 }

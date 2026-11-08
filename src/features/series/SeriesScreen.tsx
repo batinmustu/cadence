@@ -7,6 +7,7 @@ import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import type { Idea } from "../../core/ideas";
 import type { Slot } from "../../core/series";
 import { type Frequency, WEEKDAY_KEYS } from "../../core/weekdays";
+import { useAiAvailable } from "../settings/aiConfig";
 import { useSeries } from "./useSeries";
 
 function Field({ id, label, children }: { id: string; label: string; children: ReactNode }) {
@@ -22,6 +23,7 @@ const FREQUENCIES: Frequency[] = ["weekly", "biweekly", "monthly"];
 const REMIND_HOURS = 24;
 
 export function SeriesScreen({ seriesId }: { seriesId: string }) {
+  const aiAvailable = useAiAvailable();
   const { t, i18n } = useTranslation();
   const s = useSeries(seriesId);
   const [assigning, setAssigning] = useState<string | null>(null);
@@ -105,10 +107,12 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
             >
               {t("series.screen.assign")}
             </Button>
-            <Button disabled={drafting !== null} onClick={() => void draftWithAi(slot)}>
-              <Sparkles size={iconSize.inline} strokeWidth={ICON_STROKE} />
-              {drafting === slot.at ? t("series.screen.drafting") : t("series.screen.aiDraft")}
-            </Button>
+            {aiAvailable ? (
+              <Button disabled={drafting !== null} onClick={() => void draftWithAi(slot)}>
+                <Sparkles size={iconSize.inline} strokeWidth={ICON_STROKE} />
+                {drafting === slot.at ? t("series.screen.drafting") : t("series.screen.aiDraft")}
+              </Button>
+            ) : null}
             {assigning === slot.at ? (
               s.groups.unscheduled.length === 0 ? (
                 <span className="text-xs text-text-3">{t("series.screen.noIdeas")}</span>

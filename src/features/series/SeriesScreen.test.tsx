@@ -21,13 +21,17 @@ vi.mock("@tanstack/react-router", () => ({ useNavigate: () => mock.navigate }));
 vi.mock("../../platform", () => mock);
 const { platform } = mock;
 
-afterEach(cleanup);
+let keyStored = true;
+afterEach(() => {
+  cleanup();
+  keyStored = true;
+});
 beforeAll(async () => {
   platform.database = await createSqlJsDatabase();
   await prepareDatabase(platform.database);
   platform.secrets = {
     setKey: async () => {},
-    hasKey: async () => true,
+    hasKey: async () => keyStored,
     clearKey: async () => {},
   };
   platform.ai = {
@@ -66,6 +70,19 @@ describe("SeriesScreen", () => {
 
     await waitFor(() => expect(screen.getAllByTestId("slot-filled").length).toBe(1));
     expect(screen.getAllByText("Tip about focus").length).toBeGreaterThan(0);
+  });
+
+  it("shows AI draft only when AI is connected", async () => {
+    const { series } = await setup();
+    render(<SeriesScreen seriesId={series.id} />);
+    await waitFor(() =>
+      expect(screen.getAllByRole("button", { name: "AI draft" }).length).toBeGreaterThan(0),
+    );
+    cleanup();
+    keyStored = false;
+    render(<SeriesScreen seriesId={series.id} />);
+    await waitFor(() => expect(screen.getAllByTestId("slot-empty").length).toBeGreaterThan(0));
+    expect(screen.queryByRole("button", { name: "AI draft" })).toBeNull();
   });
 
   it("autosaves settings on leave", async () => {

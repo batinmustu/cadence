@@ -45,6 +45,29 @@ test("schedule a variant and mark it as published", async ({ page }) => {
   await expect(page.getByText(/^Published \d{4}-/)).toBeVisible();
 });
 
+test("assistant panel is hidden until AI is connected, then appears without reload", async ({
+  page,
+}) => {
+  await page.goto("/ideas");
+  const box = page.getByRole("textbox", { name: "New idea" });
+  await box.fill("Needs AI");
+  await box.press("Enter");
+  await page.getByRole("link", { name: "Needs AI" }).click();
+  await page.getByRole("button", { name: "Add variant" }).click();
+  await page.getByRole("menuitem", { name: "X · Thread" }).click();
+  await expect(page.getByRole("region", { name: "Assistant" })).toHaveCount(0);
+  await page
+    .getByRole("complementary")
+    .getByRole("button", { name: /AI not connected/ })
+    .click();
+  await expect(page.getByRole("dialog").getByLabel("API key")).toBeVisible();
+  await page.getByLabel("API key").fill("sk-test");
+  await page.getByRole("button", { name: "Save key" }).click();
+  await expect(page.getByRole("button", { name: "Remove key" })).toBeVisible();
+  await closeSettings(page);
+  await expect(page.getByRole("region", { name: "Assistant" })).toBeVisible();
+});
+
 test("assistant panel: run a command and use the result", async ({ page }) => {
   // Connect a (mock) provider first; the key is write-only.
   await page.goto("/ideas");

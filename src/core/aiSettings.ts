@@ -64,3 +64,8 @@ export function aiStatus(input: {
   if (!ready || !input.model) return { state: "notConnected" };
   return { state: "connected", provider: input.provider, model: input.model };
 }
+
+/** AI features are offered only once a provider is connected. */
+export function isAiAvailable(status: AiStatus): boolean {
+  return status.state === "connected";
+}
