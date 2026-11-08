@@ -208,5 +208,25 @@
       "save": "Kaydet",
       "cancel": "Vazgeç"
     }
+  },
+  "assistant": {
+    "title": "Asistan",
+    "notConnected": "Asistanı kullanmak için Ayarlar'dan bir yapay zekâ sağlayıcısı bağlayın.",
+    "cancel": "İptal",
+    "replace": "Değiştir",
+    "insertBelow": "Altına ekle",
+    "use": "Kullan",
+    "dismiss": "Kapat",
+    "freeText": "Asistana sor",
+    "placeholder": "Bir şey iste…",
+    "error": {
+      "auth": "Sağlayıcı API anahtarını reddetti.",
+      "rate_limit": "İstek sınırına ulaşıldı. Birazdan tekrar deneyin.",
+      "network": "Sağlayıcıya ulaşılamadı.",
+      "timeout": "Sağlayıcı zamanında yanıt vermedi.",
+      "provider": "Sağlayıcı bir hata döndürdü.",
+      "config": "Yapay zekâ ayarları eksik.",
+      "unknown": "Bir şeyler ters gitti."
+    }
   }
 }

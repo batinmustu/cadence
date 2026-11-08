@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T15:35Z · Current milestone: v0.1 Foundation
+Last updated: 2026-11-08T16:00Z · Current milestone: v0.1 Foundation
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -36,14 +36,16 @@ Last updated: 2026-11-08T15:35Z · Current milestone: v0.1 Foundation
 | #28 | feat(settings): AI settings screen | #72 | 2026-11-08 |
 | #29 | feat(core): prompt builder | #73 | 2026-11-08 |
 | #30 | feat(ai): preset commands | #74 | 2026-11-08 |
+| #31 | feat(editor): assistant panel | #75 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #31 feat(editor): assistant panel
+- #32 feat(series): AI draft for an empty slot
 
 ## Notes
+- #31: `core/assist.ts` `applyResult` decides where a result card goes: Replace/Insert below target the first long text field, else parts, else short text (parts results are split on blank lines, numbering stripped, limits honoured); Use puts a result into the first short text field (e.g. a title) and falls back to the body. The panel is disabled until a key is stored. Browser mock AI streams "Mock AI response." and honours the options contract. Real streaming and cancel against providers need manual testing.
 - #30: migration `0002` adds `ai_commands.returns_options` (commands that return several options; the assistant panel #31 passes it as `expectsOptions` to `buildPrompt`). Eight presets are seeded once per database (guarded by setting `ai.commandsSeeded`) so a deleted preset does not come back; they are normal rows, editable and deletable. Targets: Split into thread → X/Post; Suggest titles, Expand script, Write description → YouTube/Video (not Short); the rest apply to all types. A command has a single content type (or all), as in the data model. The commands list lives under Settings → AI.
 - #29: `core/prompt.ts` — `buildPrompt({tone, contentTypeName, schema, values, commandPrompt, freeText, expectsOptions})` returns `{system, prompt}`; checklists and empty fields are left out; `parseOptions` reads `{"options": [...]}` (tolerates code fences/extra text) and falls back to the raw text. Snapshot is an inline snapshot of the thread prompt; the preset-command snapshots come with #30.
 - #28: `/settings` redirects to `/settings/ai`; the other sections (General, Platforms, Data) are "Coming soon" placeholders until #34–#36. Settings keys: `ai.provider`, `ai.model.<provider>`, `ai.tone`, `ai.ollama.baseUrl`, `ai.verified.<provider>`. The API key is write-only (field cleared after save, Remove key to clear). The sidebar shows "AI connected · model" once a key is stored (Ollama: once a connection test succeeded); it does not re-ping the provider. OpenRouter/Ollama take a free-text model name. Real keychain and provider tests need manual testing on macOS.

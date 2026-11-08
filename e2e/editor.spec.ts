@@ -43,3 +43,26 @@ test("schedule a variant and mark it as published", async ({ page }) => {
   await page.getByRole("button", { name: "Mark as published" }).last().click();
   await expect(page.getByText(/^Published \d{4}-/)).toBeVisible();
 });
+
+test("assistant panel: run a command and use the result", async ({ page }) => {
+  // Connect a (mock) provider first; the key is write-only.
+  await page.goto("/settings/ai");
+  await page.getByLabel("API key").fill("sk-test");
+  await page.getByRole("button", { name: "Save key" }).click();
+  await expect(page.getByRole("button", { name: "Remove key" })).toBeVisible();
+  await page.getByRole("complementary").getByRole("link", { name: "Ideas" }).click();
+
+  const box = page.getByRole("textbox", { name: "New idea" });
+  await box.fill("Assist me");
+  await box.press("Enter");
+  await page.getByRole("link", { name: "Assist me" }).click();
+  await page.getByRole("button", { name: "Add variant" }).click();
+  await page.getByRole("menuitem", { name: "X · Post" }).click();
+
+  const panel = page.getByRole("region", { name: "Assistant" });
+  await panel.getByRole("button", { name: "Shorten" }).click();
+  await expect(panel.getByText("Mock AI response.")).toBeVisible();
+  await panel.getByRole("button", { name: "Replace" }).click();
+  await expect(page.getByRole("textbox", { name: "text part 1" })).toHaveValue("Mock AI response.");
+  await page.screenshot({ path: "test-results/assistant.png" });
+});
