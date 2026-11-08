@@ -37,96 +37,62 @@ rhythm, and uses their own AI API key for writing help.
 
 ## 2. Run protocol (every run)
 
-You run on a schedule at night with **no human available**. The owner reviews
-and merges pull requests during the day. Follow these steps in order and stop
-when a step says stop.
+Scheduled sessions run hourly and unattended. The agent merges its own PRs;
+the owner reviews everything later.
 
-### 2.1 Start
+### 2.1 Run lock
 
-1. `git fetch --all --prune` and check out an up-to-date `main`.
-2. Read `CLAUDE.md` and this file (`docs/build-plan.md` once bootstrapped).
-3. Check whether `gh` works: `gh auth status`. If it does not, use the
-   fallback tracker in 2.6.
+1. `git fetch origin`. If branch `agent-lock` exists on origin and its latest
+   commit is under 120 minutes old, another run is active: end with
+   "Skipped: another run is in progress."
+2. If older, delete it (`git push origin --delete agent-lock`).
+3. Take the lock: commit adding `.agent-lock` (UTC time) on top of `origin/main`,
+   `git push origin HEAD:refs/heads/agent-lock` (no force). Rejected means another
+   run won: end.
+4. Always delete the lock at the end. Never merge it.
 
-### 2.2 Bootstrap check
+### 2.2 Work loop
 
-If `CLAUDE.md` is **not** on `main`:
-- If an open PR titled `docs: project foundation` exists, do nothing else.
-  Stop with a summary: "Waiting for the foundation PR to be merged."
-- Otherwise run **Section 3 (Bootstrap)** and stop.
+1. Read `CLAUDE.md` and this file. If the foundation is not on `main`, bootstrap (Section 3).
+2. Repeat: fix blocked/failing PRs if a fix is now possible; otherwise take the
+   lowest-numbered eligible issue (open, every `Depends on:` issue closed, not
+   `needs-decision`/`blocked`/`owner-task`), implement, open PR, wait for CI, merge.
+3. Stop when no issue is eligible, 8 PRs were merged in the run, or context runs long.
+4. When only `owner-task` issues remain open, comment on the last PR
+   "Backlog complete — only owner tasks remain".
 
-### 2.3 Fix before you build
+### 2.3 Self-merge policy
 
-Look at your own open PRs (`gh pr list --author @me --state open`).
+1. After opening a PR, wait for CI: `gh pr checks <n> --watch` (give up after 30 minutes).
+2. If all checks pass (or no CI exists on `main` yet and all local checks passed),
+   `gh pr merge <n> --squash --delete-branch`.
+3. On failure, fix and push. After 3 failed attempts, label the PR `blocked`,
+   comment what fails, leave it open and move on.
+4. Never use admin bypass, never force-push `main`, never change repository
+   settings or rulesets. Never work on `owner-task` issues.
 
-For each, in order of PR number:
-- If CI is failing, fix it.
-- If there are unresolved review comments from the owner, address every one,
-  reply to each comment saying what you changed, and push.
+### 2.4 Implementing an issue
 
-If you changed any PR in this step, stop. One PR of rework per run is enough.
+Branch `feat/<issue>-short-name` (or `fix/`, `chore/`, `ci/`, `docs/`) from `main`;
+plan in the PR description; small Conventional Commits; run the full check suite
+(CLAUDE.md → Commands) without disabling any check; open the PR with the template,
+`Closes #<issue>`, "Needs manual testing" and label `agent`.
 
-### 2.4 Pick the next issue
+### 2.5 When something is unclear
 
-- **Limit:** if 3 or more of your PRs are open and waiting for review, do not
-  start new work. Stop with a summary.
-- Candidate issues: open, in the **lowest open milestone**, without the labels
-  `needs-decision`, `blocked` or `owner-task`, and without an open PR linked
-  to them.
-- An issue is eligible only if every issue listed in its `Depends on:` line is
-  **closed** (its PR merged into `main`). Never build on top of an unmerged
-  branch.
-- Take the eligible issue with the lowest number. If none is eligible, stop
-  with a summary explaining what is blocking.
+Do not guess on product or architecture. Comment on the issue with a concrete
+question and 2–3 options with a recommendation, label it `needs-decision`, move on.
 
-### 2.5 Implement
+### 2.6 Hard rules
 
-1. Assign yourself / comment on the issue: "Started in nightly run YYYY-MM-DD."
-2. Create a branch from `main`: `feat/<issue>-short-name`, `fix/…`, `chore/…`, `ci/…`, `docs/…`.
-3. Write a short plan **into the PR description** (there is no one to approve it).
-4. Implement in small Conventional Commits.
-5. Run the full check suite (see CLAUDE.md → Commands). All must pass.
-   Never disable, skip or weaken a check or test to make it pass.
-6. Push and open the PR with `gh pr create` using the PR template:
-   `Closes #<issue>`, the plan, what changed, how it was tested,
-   **Needs manual testing** (anything you could not verify in the cloud,
-   especially UI and macOS behaviour), screenshots if you could produce them.
-7. Add the label `agent` to the PR.
-8. If there is time left and the PR limit allows, you may pick **one more**
-   issue that does not depend on the one you just opened. Otherwise stop.
+- Never commit secrets. No network calls except to the user's configured AI provider.
+- Do not change an accepted ADR; propose a new one in its own PR.
+- Do not change repository settings, rulesets or secrets.
 
-### 2.6 When `gh` is not available
+### 2.7 Finish
 
-Use `docs/build-plan.md` Section 10 as the tracker. Do the same work, push the
-branch, and record it in the final summary with the branch name so the owner
-can open the PR. Do not edit the backlog checkboxes on `main` directly.
-
-### 2.7 When something is unclear
-
-Do not guess on product or architecture questions. Comment on the issue with a
-concrete question and 2–3 options with your recommendation, add the label
-`needs-decision`, and move on to the next eligible issue.
-
-Small implementation details (naming, internal structure) are yours to decide;
-note them in the PR description.
-
-### 2.8 Hard rules
-
-- Never push to `main`, never merge, never force-push to a branch with an open
-  review, never delete branches you did not create.
-- Never change repository settings, rulesets, secrets or labels other than
-  `agent`, `needs-decision`, `blocked`, `owner-task`.
-- Never commit secrets. Never add network calls other than to the user's
-  configured AI provider.
-- Do not change an accepted ADR. Propose a new ADR in its own PR instead.
-- Issues labelled `owner-task` require the owner (accounts, certificates,
-  secrets). Prepare everything around them but do not attempt them.
-
-### 2.9 Finish
-
-End every run with a summary (as the final message, and as a comment on any PR
-or issue you touched): what you did, what is waiting for the owner, and what
-the next run will pick up.
+Release the lock; end with a short summary: PRs merged, PRs left open and why,
+`needs-decision`/`blocked` issues, and what the next run picks up.
 
 ---
 
