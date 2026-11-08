@@ -15,7 +15,8 @@
     "series": "Seriler",
     "newSeries": "Yeni seri",
     "aiNotConnected": "Yapay zekâ bağlı değil",
-    "settings": "Ayarlar"
+    "settings": "Ayarlar",
+    "showSidebar": "Kenar çubuğunu göster"
   },
   "weekday": {
     "sun": "Paz",

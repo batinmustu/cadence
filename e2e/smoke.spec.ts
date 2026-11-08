@@ -11,3 +11,13 @@ test("app shell renders sidebar and routes", async ({ page }) => {
   await expect(page).toHaveURL(/\/settings$/);
   await page.screenshot({ path: "test-results/shell.png" });
 });
+
+test("sidebar collapses and toggles with the shortcut", async ({ page }) => {
+  await page.goto("/ideas");
+  await page.getByRole("button", { name: "Hide sidebar" }).click();
+  await expect(page.getByRole("navigation", { name: "Main" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Show sidebar" }).click();
+  await expect(page.getByRole("navigation", { name: "Main" })).toBeVisible();
+  await page.keyboard.press("Control+b");
+  await expect(page.getByRole("navigation", { name: "Main" })).toHaveCount(0);
+});

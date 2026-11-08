@@ -15,7 +15,8 @@
     "series": "Series",
     "newSeries": "New series",
     "aiNotConnected": "AI not connected",
-    "settings": "Settings"
+    "settings": "Settings",
+    "showSidebar": "Show sidebar"
   },
   "weekday": {
     "sun": "Sun",
