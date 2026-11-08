@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T22:15Z · Current milestone: UI polish (#84–#103)
+Last updated: 2026-11-08T22:40Z · Current milestone: UI polish (#84–#103)
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -50,16 +50,18 @@ Last updated: 2026-11-08T22:15Z · Current milestone: UI polish (#84–#103)
 | #86 | feat(ui): animated tab and segmented control transitions | #106 | 2026-11-08 |
 | #87 | fix(ui): standardise border radius across the app | #107 | 2026-11-08 |
 | #88 | fix(ui): use pointer cursor on all clickable elements | #108 | 2026-11-08 |
-| #89 | feat(ui): auto-resize all textareas to fit content | this PR | 2026-11-08 |
+| #89 | feat(ui): auto-resize all textareas to fit content | #109 | 2026-11-08 |
+| #90 | fix(ui): use one standard content width in the main area | this PR | 2026-11-08 |
 
 ## Blocked / needs decision
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
 
 ## Next up
-- #90 fix(ui): use one standard content width in the main area
-- then #91–#103 in order
+- #91 fix(ui): make the window draggable from the top area
+- then #92–#103 in order
 
 ## Notes
+- #90: `PageContainer` (app/layout) wraps the router outlet in `AppShell` and uses token `--content-width` (64rem); there is no wide variant, so every screen (editor with assistant panel included) has the same width. Removed the per-screen `max-w-*`. `e2e/layout.spec.ts` compares Ideas, Calendar and Settings (Series/Published need data/are not built yet, but share the same shell wrapper). Inner settings forms keep their own narrow field widths. Branch is the session branch.
 - #89: `components/ui/textarea.tsx` auto-sizes in JS (layout effect after every render + ResizeObserver on width), with `minRows` (default 2) and `maxRows`. CSS `field-sizing: content` was not used because WebKit support is not guaranteed and it has no row limits. The capture box now uses the shared Textarea. Real WebKit typing/paste behaviour needs a look on macOS. Branch is the session branch.
 - #88: global `@layer base` rule in `globals.css` (pointer for buttons/roles/links/labels, not-allowed when disabled, text cursor for inputs). Button no longer uses `pointer-events-none` when disabled so the cursor shows. `e2e/cursor.spec.ts` checks computed cursors. Branch is the session branch.
 - #87: root cause was `rounded-card` having no definition (square capture box and cards). Scale is `--radius-token-sm/md/lg/xl` (6/8/10/16) in `tokens.css`, wired to Tailwind `rounded-sm…xl` and the aliases chip/row/card/capture in `globals.css`; `--radius` = lg. `src/radiusScale.test.ts` fails on an undefined `rounded-*` class. Capture box uses the 16 px radius, its series select 8 px. No before/after screenshots attached. Branch is the session branch.

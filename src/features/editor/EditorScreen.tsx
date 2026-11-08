@@ -33,7 +33,7 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
   if (!loaded) return null;
   if (!idea) {
     return (
-      <section className="mx-auto w-full max-w-3xl">
+      <section>
         <Link to="/ideas" className="text-text-3">
           {t("editor.back")}
         </Link>
@@ -54,7 +54,7 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
   const activeType = contentTypes.find((c) => c.id === active?.contentTypeId);
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl gap-8">
+    <div className="flex gap-8">
       <section className="min-w-0 flex-1">
         <header className="flex items-center gap-3">
           <Link

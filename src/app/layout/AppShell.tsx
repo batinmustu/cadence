@@ -6,6 +6,7 @@ import { Button } from "../../components";
 import { requestCaptureFocus } from "../../features/ideas/captureFocus";
 import { Onboarding } from "../../features/onboarding/Onboarding";
 import { platform } from "../../platform";
+import { PageContainer } from "./PageContainer";
 import { Sidebar } from "./Sidebar";
 import { useSidebarCollapsed } from "./useSidebarCollapsed";
 
@@ -48,7 +49,9 @@ export function AppShell() {
           ) : null}
         </div>
         <main className="min-h-0 flex-1 overflow-y-auto px-8 pb-8">
-          <Outlet />
+          <PageContainer>
+            <Outlet />
+          </PageContainer>
         </main>
       </div>
       {import.meta.env.VITE_SKIP_ONBOARDING ? null : <Onboarding />}
