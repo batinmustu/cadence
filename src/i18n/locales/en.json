@@ -421,5 +421,11 @@
       "title": "Delete tag #{{name}}?",
       "body": "The tag will be removed from every idea."
     }
+  },
+  "published": {
+    "empty": "Nothing published yet. When you mark a post as published in the editor, it shows up here.",
+    "copy": "Copy {{title}}",
+    "unpublish": "Mark {{title}} as not published",
+    "delete": "Delete {{title}}"
   }
 }
