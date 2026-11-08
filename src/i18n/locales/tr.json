@@ -70,7 +70,16 @@
     "schedule": "Planla",
     "addVariant": "Varyant ekle",
     "noVariants": "Henüz varyant yok. + ile ekle.",
-    "fieldsSoon": "Bu varyantın alanları burada görünecek.",
-    "notFound": "Bu fikir bulunamadı."
+    "notFound": "Bu fikir bulunamadı.",
+    "partLabel": "{{label}} bölüm {{n}}",
+    "splitPart": "{{n}}. bölümü cümle sınırlarında böl",
+    "moveUp": "{{n}}. bölümü yukarı taşı",
+    "moveDown": "{{n}}. bölümü aşağı taşı",
+    "removePart": "{{n}}. bölümü kaldır",
+    "addPart": "Bölüm",
+    "timestamp": "Zaman damgası {{n}}",
+    "outlineRow": "{{label}} satır {{n}}",
+    "removeRow": "{{n}}. satırı kaldır",
+    "addRow": "Satır"
   }
 }

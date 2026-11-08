@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type FieldSchema, parseFieldSchema } from "../../core/fieldSchema";
 import { deriveIdeaStatus, type Idea } from "../../core/ideas";
 import type { Post } from "../../core/posts";
 import { createIdeasRepository } from "../../db/repositories/ideas";
@@ -10,11 +11,18 @@ export interface ContentTypeOption {
   platformId: string;
   platformName: string;
   name: string;
+  schema: FieldSchema;
 }
 
 export type SaveState = "saved" | "saving";
 
 const AUTOSAVE_MS = 600;
+
+/** A broken schema renders as an empty form rather than breaking the editor. */
+function toSchema(json: string): FieldSchema {
+  const parsed = parseFieldSchema(json);
+  return parsed.ok ? parsed.value : { fields: [] };
+}
 
 export function useEditor(ideaId: string) {
   const ideas = useMemo(() => createIdeasRepository(platform.database), []);
@@ -26,6 +34,9 @@ export function useEditor(ideaId: string) {
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingTitle = useRef<string | null>(null);
+  const pendingFields = useRef<Map<string, Record<string, unknown>>>(new Map());
+  const latestFields = useRef<Map<string, Record<string, unknown>>>(new Map());
+  const fieldTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const reload = useCallback(async () => {
     const [i, p, ct] = await Promise.all([
@@ -36,18 +47,21 @@ export function useEditor(ideaId: string) {
         platform_id: string;
         platform_name: string;
         name: string;
+        field_schema: string;
       }>(
-        "SELECT c.id, c.platform_id, p.name AS platform_name, c.name FROM content_types c JOIN platforms p ON p.id = c.platform_id ORDER BY p.sort_order, c.sort_order",
+        "SELECT c.id, c.platform_id, p.name AS platform_name, c.name, c.field_schema FROM content_types c JOIN platforms p ON p.id = c.platform_id ORDER BY p.sort_order, c.sort_order",
       ),
     ]);
     setIdea(i && !i.deletedAt ? i : null);
     setVariants(p);
+    for (const v of p) latestFields.current.set(v.id, v.fields);
     setContentTypes(
       ct.map((c) => ({
         id: c.id,
         platformId: c.platform_id,
         platformName: c.platform_name,
         name: c.name,
+        schema: toSchema(c.field_schema),
       })),
     );
     setLoaded(true);
@@ -67,8 +81,38 @@ export function useEditor(ideaId: string) {
     setSaveState("saved");
   }, [ideas, ideaId]);
 
-  // Leaving the screen must not lose a title typed in the last 600 ms.
-  useEffect(() => () => void flush(), [flush]);
+  const flushFields = useCallback(async () => {
+    if (fieldTimer.current) clearTimeout(fieldTimer.current);
+    fieldTimer.current = null;
+    const pending = [...pendingFields.current];
+    pendingFields.current.clear();
+    for (const [id, fields] of pending) await posts.update(id, { fields });
+    if (pending.length > 0) setSaveState("saved");
+  }, [posts]);
+
+  // Leaving the screen must not lose text typed in the last 600 ms.
+  useEffect(
+    () => () => {
+      void flush();
+      void flushFields();
+    },
+    [flush, flushFields],
+  );
+
+  const setField = useCallback(
+    (postId: string, key: string, value: unknown) => {
+      // The ref holds the latest fields so fast typing never builds on stale state.
+      const current = latestFields.current.get(postId) ?? {};
+      const next = { ...current, [key]: value };
+      latestFields.current.set(postId, next);
+      pendingFields.current.set(postId, next);
+      setVariants((prev) => prev.map((v) => (v.id === postId ? { ...v, fields: next } : v)));
+      setSaveState("saving");
+      if (fieldTimer.current) clearTimeout(fieldTimer.current);
+      fieldTimer.current = setTimeout(() => void flushFields(), AUTOSAVE_MS);
+    },
+    [flushFields],
+  );
 
   const setTitle = useCallback(
     (title: string) => {
@@ -102,5 +146,15 @@ export function useEditor(ideaId: string) {
     [posts, ideaId, reload],
   );
 
-  return { idea, variants, contentTypes, loaded, saveState, setTitle, setArchived, addVariant };
+  return {
+    idea,
+    variants,
+    contentTypes,
+    loaded,
+    saveState,
+    setTitle,
+    setField,
+    setArchived,
+    addVariant,
+  };
 }

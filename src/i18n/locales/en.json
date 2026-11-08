@@ -70,7 +70,16 @@
     "schedule": "Schedule",
     "addVariant": "Add variant",
     "noVariants": "No variants yet. Add one with +.",
-    "fieldsSoon": "Fields for this variant appear here.",
-    "notFound": "This idea does not exist."
+    "notFound": "This idea does not exist.",
+    "partLabel": "{{label}} part {{n}}",
+    "splitPart": "Split part {{n}} at sentence boundaries",
+    "moveUp": "Move part {{n}} up",
+    "moveDown": "Move part {{n}} down",
+    "removePart": "Remove part {{n}}",
+    "addPart": "Part",
+    "timestamp": "Timestamp {{n}}",
+    "outlineRow": "{{label}} row {{n}}",
+    "removeRow": "Remove row {{n}}",
+    "addRow": "Row"
   }
 }
