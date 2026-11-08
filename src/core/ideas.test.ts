@@ -75,3 +75,13 @@ describe("grouping and filtering", () => {
     expect(filterIdeasByStatus([a, b], [])).toHaveLength(2);
   });
 });
+
+describe("statusesForFilter", () => {
+  it("maps UI filters to statuses", async () => {
+    const { statusesForFilter } = await import("./ideas");
+    expect(statusesForFilter("all")).toEqual([]);
+    expect(statusesForFilter("draft")).toEqual(["idea", "draft"]);
+    expect(statusesForFilter("planned")).toEqual(["planned"]);
+    expect(statusesForFilter("published")).toEqual(["published"]);
+  });
+});

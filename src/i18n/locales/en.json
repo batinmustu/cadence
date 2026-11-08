@@ -31,5 +31,33 @@
       "biweekly": "2w",
       "monthly": "1m"
     }
+  },
+  "ideas": {
+    "filter": {
+      "label": "Filter by status",
+      "all": "All",
+      "draft": "Draft",
+      "planned": "Planned",
+      "published": "Published"
+    },
+    "capture": {
+      "label": "New idea",
+      "placeholder": "What's on your mind?",
+      "save": "Save idea"
+    },
+    "empty": "No ideas yet. Write the first one above.",
+    "group": {
+      "today": "Today",
+      "thisWeek": "This week",
+      "earlier": "Earlier"
+    },
+    "status": {
+      "idea": "Idea",
+      "draft": "Draft",
+      "planned": "Planned",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "publishedMark": "Published ✓"
   }
 }

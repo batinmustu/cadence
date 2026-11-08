@@ -31,5 +31,33 @@
       "biweekly": "2h",
       "monthly": "1a"
     }
+  },
+  "ideas": {
+    "filter": {
+      "label": "Duruma göre filtrele",
+      "all": "Tümü",
+      "draft": "Taslak",
+      "planned": "Planlanan",
+      "published": "Yayınlanan"
+    },
+    "capture": {
+      "label": "Yeni fikir",
+      "placeholder": "Aklında ne var?",
+      "save": "Fikri kaydet"
+    },
+    "empty": "Henüz fikir yok. İlkini yukarıya yaz.",
+    "group": {
+      "today": "Bugün",
+      "thisWeek": "Bu hafta",
+      "earlier": "Daha önce"
+    },
+    "status": {
+      "idea": "Fikir",
+      "draft": "Taslak",
+      "planned": "Planlandı",
+      "published": "Yayınlandı",
+      "archived": "Arşivlendi"
+    },
+    "publishedMark": "Yayınlandı ✓"
   }
 }
