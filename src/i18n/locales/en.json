@@ -187,7 +187,18 @@
     "fillNote": "Untick the slots you want to skip. Nothing is created until you confirm.",
     "createDrafts_one": "Create {{count}} draft",
     "createDrafts_other": "Create {{count}} drafts",
-    "creating": "Creating drafts…"
+    "creating": "Creating drafts…",
+    "openDay": "Open {{date}}",
+    "day": {
+      "description": "Everything planned on this day, and a way to add an idea.",
+      "empty": "Nothing planned on this day.",
+      "moveTo": "Move {{title}} to",
+      "move": "Move",
+      "unschedule": "Unschedule",
+      "add": "Add an idea",
+      "newIdea": "Or write a new idea",
+      "createAndSchedule": "Create and schedule"
+    }
   },
   "reminders": {
     "title": "Time to plan: {{name}}",

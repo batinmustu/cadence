@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T21:58Z · Current milestone: UI polish (#84–#103)
+Last updated: 2026-11-08T22:04Z · Current milestone: UI polish (#84–#103)
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -62,14 +62,16 @@ Last updated: 2026-11-08T21:58Z · Current milestone: UI polish (#84–#103)
 | #98 | feat: delete ideas, series and other records | #118 | 2026-11-08 |
 | #99 | fix(ideas): layout shift in quick capture platform selector | #119 | 2026-11-08 |
 | #100 | feat(ideas): keep the Ideas screen usable with many ideas | #120 | 2026-11-08 |
+| #101 | fix(calendar): rework calendar and allow assigning ideas to dates | #121 | 2026-11-08 |
 
 ## Blocked / needs decision
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
 
 ## Next up
-- #101–#103 in order
+- #102–#103 in order
 
 ## Notes
+- #101: found and fixed — (1) Tauri's window `dragDropEnabled` (default true) swallows HTML5 drag-and-drop in the web view, which is the likely reason drag-to-schedule "did not work" on desktop; set to `false` (file import uses a picker, so nothing else needs it) — **needs manual testing on macOS**; (2) scheduled posts could not be moved or unscheduled; (3) no way to add an idea from a day; (4) "+N more" was plain text with no way to see the rest; (5) chips showed no platform. Now: clicking a day number (or "+N more") opens `DayDialog` (all items of the day, move-to-date, unschedule, pick an existing idea or create a new one, with time) which is also the keyboard alternative; planned chips are draggable onto another day (keeps time of day); `moveToDate`/`splitOverflow` are in `core/calendar.ts` with tests. Week view not done. Other screens re-read data when opened; the calendar signals `notifySeriesChanged` so an open Ideas list refreshes.
 - #100: filtering, sorting, counts, URL (de)serialisation and group limiting are pure functions in `core/ideas.ts` (`queryIdeas`, `countIdeasByStatus`, `parseIdeaSearch`, `serializeIdeaSearch`, `limitGroups`); the `/ideas` route has `validateSearch`, so filters (status, platform, series, tag, text, sort) live in the URL. UI: filter bar, status counts in the segmented control, collapsible date groups, "Show more" in pages of 100. **Deviations:** no virtualisation (pagination instead, so no new dependency) and the repository still loads all ideas and filters in memory — `LIMIT/OFFSET` was not done; group-by-series/status (optional) not done. 2,000-idea check is a unit test asserting query+group+count < 250 ms, not a browser render measurement (the browser DB is in-memory, so seeding thousands via UI is impractical).
 - #99: capture footer is one wrapping row: platform toggles (no-shrink, nowrap) on the left, series select (fixed 9rem) + submit grouped right with `ml-auto`. Toggle border width never changed (only colour), so the shift came from the stretching `flex-1` group. `e2e/ideas.spec.ts` compares bounding boxes before/after toggling and focusing. No new dependency.
 - #98: shared `components/ConfirmDialog` (AlertDialog, Cancel first). Ideas: trash button on the row (hover/focus), Delete / ⌘⌫ on the focused row link, and a button in the editor header. Variants: trash button next to the variant tabs. Series: "Delete series" in the settings panel with an "also delete N ideas" checkbox (default: keep, unlinked). Tags: new Settings → Tags section. `ideas.softDelete` now also soft-deletes the idea's posts (so calendar/reminders/slots never show orphans); `series.softDelete(id, {deleteIdeas})`; `tags.remove` hard-deletes (tags table has no `deleted_at`; no migration). **Not done:** "Undo" toast (no toast component exists yet) and the sidebar context menu for series (no context-menu dependency; delete is on the series screen). Export deliberately still includes soft-deleted rows so a backup restores everything. No new dependency.
