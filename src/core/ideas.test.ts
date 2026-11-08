@@ -1,10 +1,17 @@
 import { describe, expect, it } from "vitest";
 import {
+  countIdeasByStatus,
   createIdea,
+  DEFAULT_IDEA_QUERY,
   dateGroupOf,
   deriveIdeaStatus,
   filterIdeasByStatus,
   groupIdeasByDate,
+  hasActiveFilters,
+  limitGroups,
+  parseIdeaSearch,
+  queryIdeas,
+  serializeIdeaSearch,
   updateIdea,
 } from "./ideas";
 
@@ -83,5 +90,79 @@ describe("statusesForFilter", () => {
     expect(statusesForFilter("draft")).toEqual(["idea", "draft"]);
     expect(statusesForFilter("planned")).toEqual(["planned"]);
     expect(statusesForFilter("published")).toEqual(["published"]);
+  });
+});
+
+describe("idea queries", () => {
+  const mk = (title: string, day: number, over: Partial<ReturnType<typeof createIdea>> = {}) => ({
+    ...createIdea({ title }, daysAgo(day)),
+    ...over,
+  });
+  const a = mk("Alpha post", 3, { platformIds: ["x"], tagIds: ["t1"], status: "draft" });
+  const b = mk("Beta video", 2, { platformIds: ["yt"], seriesId: "s1", status: "planned" });
+  const c = mk("Gamma", 1, { note: "about alpha", status: "published" });
+  const d = mk("Old", 9, { status: "archived" });
+  const all = [a, b, c, d];
+
+  it("combines filters and hides archived by default", () => {
+    expect(queryIdeas(all, DEFAULT_IDEA_QUERY).map((i) => i.title)).toEqual([
+      "Gamma",
+      "Beta video",
+      "Alpha post",
+    ]);
+    expect(queryIdeas(all, { ...DEFAULT_IDEA_QUERY, platformId: "x" })).toEqual([a]);
+    expect(queryIdeas(all, { ...DEFAULT_IDEA_QUERY, seriesId: "s1" })).toEqual([b]);
+    expect(queryIdeas(all, { ...DEFAULT_IDEA_QUERY, tagId: "t1", status: "draft" })).toEqual([a]);
+    expect(queryIdeas(all, { ...DEFAULT_IDEA_QUERY, text: "ALPHA" })).toEqual([c, a]);
+    expect(queryIdeas(all, { ...DEFAULT_IDEA_QUERY, text: "alpha", platformId: "x" })).toEqual([a]);
+  });
+
+  it("sorts newest, oldest and by planned date (unplanned last)", () => {
+    const q = DEFAULT_IDEA_QUERY;
+    expect(queryIdeas(all, { ...q, sort: "oldest" }).map((i) => i.title)).toEqual([
+      "Alpha post",
+      "Beta video",
+      "Gamma",
+    ]);
+    const planned = { [a.id]: "2026-12-01T00:00:00Z", [c.id]: "2026-11-20T00:00:00Z" };
+    expect(queryIdeas(all, { ...q, sort: "planned" }, planned).map((i) => i.title)).toEqual([
+      "Gamma",
+      "Alpha post",
+      "Beta video",
+    ]);
+  });
+
+  it("counts statuses with the other filters applied", () => {
+    expect(countIdeasByStatus(all, DEFAULT_IDEA_QUERY)).toEqual({
+      all: 3,
+      draft: 1,
+      planned: 1,
+      published: 1,
+    });
+    expect(countIdeasByStatus(all, { ...DEFAULT_IDEA_QUERY, text: "alpha" }).all).toBe(2);
+  });
+
+  it("round-trips URL search params and ignores junk", () => {
+    const q = { ...DEFAULT_IDEA_QUERY, status: "planned" as const, tagId: "t1", text: "hi" };
+    expect(parseIdeaSearch(serializeIdeaSearch(q))).toEqual(q);
+    expect(serializeIdeaSearch(DEFAULT_IDEA_QUERY)).toEqual({});
+    expect(parseIdeaSearch({ status: "nope", sort: 3, q: 5 })).toEqual(DEFAULT_IDEA_QUERY);
+    expect(hasActiveFilters(DEFAULT_IDEA_QUERY)).toBe(false);
+    expect(hasActiveFilters(q)).toBe(true);
+  });
+
+  it("limits across groups and stays fast for 2,000 ideas", () => {
+    const many = Array.from({ length: 2000 }, (_, n) =>
+      mk(`Idea ${n}`, n % 60, { platformIds: n % 2 ? ["x"] : [], tagIds: n % 3 ? ["t1"] : [] }),
+    );
+    const t0 = performance.now();
+    const found = queryIdeas(many, { ...DEFAULT_IDEA_QUERY, platformId: "x", text: "idea 1" });
+    const groups = groupIdeasByDate(found, now, true);
+    countIdeasByStatus(many, DEFAULT_IDEA_QUERY);
+    const ms = performance.now() - t0;
+    expect(ms).toBeLessThan(250);
+    const limited = limitGroups(groupIdeasByDate(many, now), 100);
+    expect(limited.reduce((n, g) => n + g.ideas.length, 0)).toBe(100);
+    expect(groups.length).toBeGreaterThan(0);
   });
 });
