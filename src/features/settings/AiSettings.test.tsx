@@ -66,13 +66,13 @@ describe("AiSettings", () => {
 
   it("disables Test until a key exists for key-based providers", async () => {
     render(<AiSettings />);
-    await userEvent.click(await screen.findByRole("button", { name: "OpenAI" }));
+    await userEvent.click(await screen.findByRole("radio", { name: "OpenAI" }));
     await waitFor(() =>
       expect((screen.getByRole("button", { name: "Test" }) as HTMLButtonElement).disabled).toBe(
         true,
       ),
     );
-    await userEvent.click(screen.getByRole("button", { name: "Local (Ollama)" }));
+    await userEvent.click(screen.getByRole("radio", { name: "Local (Ollama)" }));
     await waitFor(() =>
       expect((screen.getByRole("button", { name: "Test" }) as HTMLButtonElement).disabled).toBe(
         false,

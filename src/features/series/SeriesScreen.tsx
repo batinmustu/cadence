@@ -2,7 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Plus, Sparkles } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Chip, Input, Select, Textarea, ToggleChip } from "../../components";
+import { Badge, Button, Input, Select, Textarea, Toggle } from "../../components";
 import type { Idea } from "../../core/ideas";
 import type { Slot } from "../../core/series";
 import { type Frequency, WEEKDAY_KEYS } from "../../core/weekdays";
@@ -90,7 +90,7 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
           {slot.filled ? (
             <>
               <span className="min-w-0 flex-1 truncate font-medium">{idea?.title}</span>
-              <Chip>{t("series.screen.planned")}</Chip>
+              <Badge>{t("series.screen.planned")}</Badge>
             </>
           ) : (
             <span className="text-text-3">{t("series.screen.empty")}</span>
@@ -145,14 +145,14 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
         <h1 className="mt-1 text-[22px] font-semibold">{series.name}</h1>
         {series.description ? <p className="mt-1 text-text-3">{series.description}</p> : null}
         <div className="mt-3 flex flex-wrap gap-2">
-          <Chip>{`${rhythm} · ${series.time}`}</Chip>
-          {s.platformName ? <Chip>{s.platformName}</Chip> : null}
-          <Chip>
+          <Badge>{`${rhythm} · ${series.time}`}</Badge>
+          {s.platformName ? <Badge>{s.platformName}</Badge> : null}
+          <Badge>
             {t("series.screen.counts", {
               planned: s.groups.planned.length,
               published: s.groups.published.length,
             })}
-          </Chip>
+          </Badge>
         </div>
 
         <h2 className="mb-2 mt-8 text-xs font-medium uppercase text-text-3">
@@ -219,17 +219,17 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
           <legend className="mb-1 text-xs text-text-3">{t("series.new.weekdays")}</legend>
           <div className="grid grid-cols-7 gap-1">
             {WEEKDAY_KEYS.map((key, d) => (
-              <ToggleChip
+              <Toggle
                 key={key}
                 pressed={series.weekdays.includes(d)}
-                onChange={(on) =>
+                onPressedChange={(on) =>
                   s.edit({
                     weekdays: on ? [...series.weekdays, d] : series.weekdays.filter((x) => x !== d),
                   })
                 }
               >
                 {t(`weekday.${key}`)}
-              </ToggleChip>
+              </Toggle>
             ))}
           </div>
         </fieldset>

@@ -8,9 +8,9 @@ test("capture an idea, see it under Today, filter by status", async ({ page }) =
   const today = page.getByTestId("group-today");
   await expect(today.getByText("Ten tips for calmer planning")).toBeVisible();
 
-  await page.getByRole("button", { name: "Planned" }).click();
+  await page.getByRole("radio", { name: "Planned" }).click();
   await expect(page.getByText("Ten tips for calmer planning")).toHaveCount(0);
-  await page.getByRole("button", { name: "Draft" }).click();
+  await page.getByRole("radio", { name: "Draft" }).click();
   await expect(today.getByText("Ten tips for calmer planning")).toBeVisible();
   await page.screenshot({ path: "test-results/ideas.png" });
 });

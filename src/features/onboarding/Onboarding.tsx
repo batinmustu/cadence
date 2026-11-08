@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button, Input, Segmented, Select } from "../../components";
 import { AI_PROVIDERS, type AiProviderId, PROVIDER_INFO } from "../../core/aiSettings";
 import { platform } from "../../platform";
@@ -65,12 +66,13 @@ export function Onboarding() {
 
   return (
     <>
-      <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30">
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={t("onboarding.title")}
-          className="flex w-[28rem] flex-col gap-4 rounded-card bg-bg p-6 shadow-lg"
+      <Dialog open={!creating}>
+        <DialogContent
+          aria-describedby={undefined}
+          className="flex flex-col gap-4 p-6"
+          // Onboarding is left only through Skip or Done, never by a stray click or Escape.
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          onInteractOutside={(e) => e.preventDefault()}
         >
           <p className="text-xs text-text-3">
             {t("onboarding.step", { n: STEPS.indexOf(step) + 1, total: STEPS.length })}
@@ -78,7 +80,7 @@ export function Onboarding() {
 
           {step === "welcome" ? (
             <>
-              <h2 className="text-lg font-semibold">{t("onboarding.welcome.title")}</h2>
+              <DialogTitle className="text-lg">{t("onboarding.welcome.title")}</DialogTitle>
               <p className="text-[13px] text-text-2">{t("onboarding.welcome.body")}</p>
               <div className="flex flex-col gap-1 text-xs text-text-3">
                 <label htmlFor="ob-language">{t("settings.general.language")}</label>
@@ -100,7 +102,7 @@ export function Onboarding() {
 
           {step === "ai" ? (
             <>
-              <h2 className="text-lg font-semibold">{t("onboarding.ai.title")}</h2>
+              <DialogTitle className="text-lg">{t("onboarding.ai.title")}</DialogTitle>
               <p className="text-[13px] text-text-2">{t("onboarding.ai.body")}</p>
               <Segmented
                 label={t("settings.ai.provider")}
@@ -145,7 +147,7 @@ export function Onboarding() {
 
           {step === "series" ? (
             <>
-              <h2 className="text-lg font-semibold">{t("onboarding.series.title")}</h2>
+              <DialogTitle className="text-lg">{t("onboarding.series.title")}</DialogTitle>
               <p className="text-[13px] text-text-2">{t("onboarding.series.body")}</p>
               <div>
                 <Button variant="secondary" onClick={() => setCreating(true)}>
@@ -161,8 +163,8 @@ export function Onboarding() {
               {step === "series" ? t("onboarding.done") : t("onboarding.next")}
             </Button>
           </div>
-        </div>
-      </div>
+        </DialogContent>
+      </Dialog>
       {creating ? (
         <NewSeriesDialog onClose={() => setCreating(false)} onCreated={() => void finish()} />
       ) : null}

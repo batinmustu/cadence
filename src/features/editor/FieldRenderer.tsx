@@ -1,7 +1,7 @@
 import type { TFunction } from "i18next";
 import { ArrowDown, ArrowUp, Check, Copy, Plus, Scissors, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Button, Input, Textarea, ToggleChip } from "../../components";
+import { Button, Input, Textarea, Toggle } from "../../components";
 import { countChars } from "../../core/charCount";
 import type { FieldDef, FieldSchema, FieldValues, OutlineItem } from "../../core/fieldSchema";
 import { splitIntoParts } from "../../core/parts";
@@ -108,14 +108,14 @@ function Field({
       return (
         <div className="flex flex-wrap gap-2">
           {field.items.map((item) => (
-            <ToggleChip
+            <Toggle
               key={item}
               pressed={done[item] === true}
-              onChange={(p) => onChange({ ...done, [item]: p })}
+              onPressedChange={(p) => onChange({ ...done, [item]: p })}
             >
               {done[item] === true ? <Check size={12} strokeWidth={2} aria-hidden /> : null}
               {item}
-            </ToggleChip>
+            </Toggle>
           ))}
         </div>
       );

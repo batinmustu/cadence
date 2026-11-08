@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button, Input, Select } from "../../components";
 import { type CalendarItem, groupByDate, type MonthRef, shiftMonth } from "../../core/calendar";
 import { fromLocalParts } from "../../core/schedule";
@@ -68,6 +69,10 @@ export function CalendarScreen() {
     new Date(month.year, month.month, 1),
   );
 
+  const closeFill = () => {
+    setFilling(null);
+    setFillState({ running: false, error: null });
+  };
   const dialogIdea = ideas.find((i) => i.id === dialog?.ideaId);
   const iso = dialog ? fromLocalParts(dialog.date, time) : null;
 
@@ -188,127 +193,116 @@ export function CalendarScreen() {
         ) : null}
       </aside>
       {filling ? (
-        <div
-          role="dialog"
-          aria-label={t("calendar.fillTitle")}
-          className="fixed inset-0 z-10 flex items-center justify-center bg-black/40"
-        >
-          <form
-            className="flex max-h-[80vh] w-96 flex-col gap-3 rounded-row border border-border-strong bg-surface p-4"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const chosen = emptySlots
-                .filter((i) => !filling.skipped.includes(i.key))
-                .map((i) => ({ seriesId: i.seriesId ?? "", at: i.at }));
-              if (chosen.length === 0) return;
-              setFillState({ running: true, error: null });
-              const result = await fillSlots(chosen);
-              setFillState({ running: false, error: result.error });
-              if (!result.error) setFilling(null);
-            }}
-          >
-            <h2 className="text-base font-semibold">{t("calendar.fillTitle")}</h2>
-            <p className="text-xs text-text-3">{t("calendar.fillNote")}</p>
-            <ul className="m-0 flex min-h-0 list-none flex-col gap-1 overflow-auto p-0">
-              {emptySlots.map((i) => (
-                <li key={i.key}>
-                  <label className="flex items-center gap-2 text-[13px]">
-                    <input
-                      type="checkbox"
-                      checked={!filling.skipped.includes(i.key)}
-                      disabled={fillState.running}
-                      onChange={(e) =>
-                        setFilling({
-                          skipped: e.target.checked
-                            ? filling.skipped.filter((k) => k !== i.key)
-                            : [...filling.skipped, i.key],
-                        })
-                      }
-                    />
-                    <span className="min-w-0 flex-1 truncate">{i.label}</span>
-                    <span className="text-xs text-text-3">{slotFmt.format(new Date(i.at))}</span>
-                  </label>
-                </li>
-              ))}
-            </ul>
-            {fillState.error ? (
-              <p role="alert" className="text-[13px] text-text-2">
-                {t(`assistant.error.${fillState.error}`, {
-                  defaultValue: t("assistant.error.unknown"),
-                })}
-              </p>
-            ) : null}
-            <div className="flex justify-end gap-2">
-              <Button
-                type="button"
-                disabled={fillState.running}
-                onClick={() => {
-                  setFilling(null);
-                  setFillState({ running: false, error: null });
-                }}
-              >
-                {t("calendar.cancel")}
-              </Button>
-              <Button
-                type="submit"
-                variant="primary"
-                disabled={fillState.running || filling.skipped.length >= emptySlots.length}
-              >
-                {fillState.running
-                  ? t("calendar.creating")
-                  : t("calendar.createDrafts", {
-                      count: emptySlots.length - filling.skipped.length,
-                    })}
-              </Button>
-            </div>
-          </form>
-        </div>
+        <Dialog open onOpenChange={(open) => !open && !fillState.running && closeFill()}>
+          <DialogContent aria-describedby={undefined} className="max-h-[80vh]">
+            <form
+              className="flex max-h-[calc(80vh-2.5rem)] flex-col gap-3"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const chosen = emptySlots
+                  .filter((i) => !filling.skipped.includes(i.key))
+                  .map((i) => ({ seriesId: i.seriesId ?? "", at: i.at }));
+                if (chosen.length === 0) return;
+                setFillState({ running: true, error: null });
+                const result = await fillSlots(chosen);
+                setFillState({ running: false, error: result.error });
+                if (!result.error) setFilling(null);
+              }}
+            >
+              <DialogTitle>{t("calendar.fillTitle")}</DialogTitle>
+              <p className="text-xs text-text-3">{t("calendar.fillNote")}</p>
+              <ul className="m-0 flex min-h-0 list-none flex-col gap-1 overflow-auto p-0">
+                {emptySlots.map((i) => (
+                  <li key={i.key}>
+                    <label className="flex items-center gap-2 text-[13px]">
+                      <input
+                        type="checkbox"
+                        checked={!filling.skipped.includes(i.key)}
+                        disabled={fillState.running}
+                        onChange={(e) =>
+                          setFilling({
+                            skipped: e.target.checked
+                              ? filling.skipped.filter((k) => k !== i.key)
+                              : [...filling.skipped, i.key],
+                          })
+                        }
+                      />
+                      <span className="min-w-0 flex-1 truncate">{i.label}</span>
+                      <span className="text-xs text-text-3">{slotFmt.format(new Date(i.at))}</span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+              {fillState.error ? (
+                <p role="alert" className="text-[13px] text-text-2">
+                  {t(`assistant.error.${fillState.error}`, {
+                    defaultValue: t("assistant.error.unknown"),
+                  })}
+                </p>
+              ) : null}
+              <div className="flex justify-end gap-2">
+                <Button type="button" disabled={fillState.running} onClick={closeFill}>
+                  {t("calendar.cancel")}
+                </Button>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  disabled={fillState.running || filling.skipped.length >= emptySlots.length}
+                >
+                  {fillState.running
+                    ? t("calendar.creating")
+                    : t("calendar.createDrafts", {
+                        count: emptySlots.length - filling.skipped.length,
+                      })}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       ) : null}
       {dialog && dialogIdea ? (
-        <div
-          role="dialog"
-          aria-label={t("calendar.scheduleTitle")}
-          className="fixed inset-0 z-10 flex items-center justify-center bg-black/40"
-        >
-          <form
-            className="flex w-80 flex-col gap-3 rounded-row border border-border-strong bg-surface p-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!iso) return;
-              void scheduleIdea(dialog.ideaId, iso);
-              setDialog(null);
-              setPicked("");
-            }}
-          >
-            <h2 className="text-base font-semibold">{dialogIdea.title}</h2>
-            <div className="flex flex-col gap-1 text-xs text-text-3">
-              <label htmlFor="cal-date">{t("calendar.date")}</label>
-              <Input
-                id="cal-date"
-                type="date"
-                value={dialog.date}
-                onChange={(e) => setDialog({ ...dialog, date: e.target.value })}
-              />
-            </div>
-            <div className="flex flex-col gap-1 text-xs text-text-3">
-              <label htmlFor="cal-time">{t("calendar.time")}</label>
-              <Input
-                id="cal-time"
-                type="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-              />
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button type="button" onClick={() => setDialog(null)}>
-                {t("calendar.cancel")}
-              </Button>
-              <Button type="submit" variant="primary" disabled={!iso}>
-                {t("calendar.schedule")}
-              </Button>
-            </div>
-          </form>
-        </div>
+        <Dialog open onOpenChange={(open) => !open && setDialog(null)}>
+          <DialogContent aria-describedby={undefined} className="w-80">
+            <form
+              className="flex flex-col gap-3"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!iso) return;
+                void scheduleIdea(dialog.ideaId, iso);
+                setDialog(null);
+                setPicked("");
+              }}
+            >
+              <DialogTitle>{dialogIdea.title}</DialogTitle>
+              <div className="flex flex-col gap-1 text-xs text-text-3">
+                <label htmlFor="cal-date">{t("calendar.date")}</label>
+                <Input
+                  id="cal-date"
+                  type="date"
+                  value={dialog.date}
+                  onChange={(e) => setDialog({ ...dialog, date: e.target.value })}
+                />
+              </div>
+              <div className="flex flex-col gap-1 text-xs text-text-3">
+                <label htmlFor="cal-time">{t("calendar.time")}</label>
+                <Input
+                  id="cal-time"
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button type="button" onClick={() => setDialog(null)}>
+                  {t("calendar.cancel")}
+                </Button>
+                <Button type="submit" variant="primary" disabled={!iso}>
+                  {t("calendar.schedule")}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       ) : null}
     </div>
   );
