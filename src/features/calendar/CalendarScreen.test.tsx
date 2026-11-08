@@ -8,10 +8,12 @@ import { createPostsRepository } from "../../db/repositories/posts";
 import { createSeriesRepository } from "../../db/repositories/series";
 import "../../i18n";
 import { createSqlJsDatabase } from "../../platform/browser/sqljs";
-import type { Database } from "../../platform/types";
+import type { AI, Database, Secrets } from "../../platform/types";
 import { CalendarScreen } from "./CalendarScreen";
 
-const mock = vi.hoisted(() => ({ platform: {} as { database: Database } }));
+const mock = vi.hoisted(() => ({
+  platform: {} as { database: Database; secrets: Secrets; ai: AI },
+}));
 vi.mock("../../platform", () => mock);
 // Links need a router; plain anchors are enough to check what is rendered.
 vi.mock("@tanstack/react-router", () => ({
@@ -27,6 +29,17 @@ afterEach(cleanup);
 beforeAll(async () => {
   platform.database = await createSqlJsDatabase();
   await prepareDatabase(platform.database);
+  platform.secrets = {
+    setKey: async () => {},
+    hasKey: async () => true,
+    clearKey: async () => {},
+  };
+  platform.ai = {
+    async *complete() {
+      yield "Focus sprint\n\nWork in blocks.";
+    },
+    testConnection: async () => true,
+  };
 });
 
 describe("CalendarScreen", () => {
@@ -79,5 +92,41 @@ describe("CalendarScreen", () => {
       "SELECT p.status FROM posts p JOIN ideas i ON i.id = p.idea_id WHERE i.title = 'Loose idea'",
     );
     expect(row?.status).toBe("scheduled");
+  });
+
+  it("fills chosen empty slots with AI drafts only after confirmation", async () => {
+    const [p] = await platform.database.select<{ id: string }>(
+      "SELECT id FROM platforms ORDER BY sort_order LIMIT 1",
+    );
+    await createSeriesRepository(platform.database).create({
+      name: "Fill series",
+      platformId: p?.id ?? "",
+      weekdays: [0, 1, 2, 3, 4, 5, 6],
+    });
+    const count = async () =>
+      (
+        await platform.database.select<{ n: number }>(
+          "SELECT COUNT(*) AS n FROM ideas WHERE title = 'Focus sprint'",
+        )
+      )[0]?.n;
+
+    render(<CalendarScreen />);
+    await userEvent.click(await screen.findByRole("button", { name: "Fill with AI" }));
+    const dialog = screen.getByRole("dialog", { name: "Fill empty slots with AI" });
+    const boxes = within(dialog).getAllByRole("checkbox") as HTMLInputElement[];
+    expect(boxes.length).toBeGreaterThan(1);
+
+    // Cancelling creates nothing.
+    await userEvent.click(within(dialog).getByRole("button", { name: "Cancel" }));
+    expect(await count()).toBe(0);
+
+    // Untick all but the first, then confirm.
+    await userEvent.click(screen.getByRole("button", { name: "Fill with AI" }));
+    const again = within(screen.getByRole("dialog", { name: "Fill empty slots with AI" }));
+    const list = again.getAllByRole("checkbox");
+    for (const box of list.slice(1)) await userEvent.click(box);
+    await userEvent.click(again.getByRole("button", { name: "Create 1 draft" }));
+    await waitFor(async () => expect(await count()).toBe(1));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
   });
 });

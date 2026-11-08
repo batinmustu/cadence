@@ -4,6 +4,7 @@ import {
   type CalendarItem,
   type CalendarPostInput,
   type CalendarSlotInput,
+  fillableSlots,
   type MonthRef,
   monthGrid,
 } from "../../core/calendar";
@@ -14,6 +15,8 @@ import { createIdeasRepository } from "../../db/repositories/ideas";
 import { createPostsRepository } from "../../db/repositories/posts";
 import { createSeriesRepository } from "../../db/repositories/series";
 import { platform } from "../../platform";
+import { createAiDraft } from "../series/aiDraft";
+import { notifySeriesChanged } from "../series/seriesEvents";
 
 interface PostRow {
   id: string;
@@ -121,5 +124,39 @@ export function useCalendar(month: MonthRef) {
     [ideas, load],
   );
 
-  return { grid, items, loaded, ideas, scheduleIdea };
+  const emptySlots = useMemo(
+    () => fillableSlots(items, first, last, new Date()),
+    [items, first, last],
+  );
+
+  /**
+   * Creates one AI draft per chosen slot, one after another. Stops at the first
+   * failure and reports what was created so far.
+   */
+  const fillSlots = useCallback(
+    async (chosen: { seriesId: string; at: string }[]) => {
+      const seriesRepo = createSeriesRepository(platform.database);
+      let created = 0;
+      let error: string | null = null;
+      for (const slot of chosen) {
+        try {
+          const series = await seriesRepo.get(slot.seriesId);
+          if (!series) throw "unknown";
+          await createAiDraft(series, slot.at);
+          created += 1;
+        } catch (e) {
+          error = typeof e === "string" ? e : "unknown";
+          break;
+        }
+      }
+      if (created > 0) {
+        notifySeriesChanged();
+        await load(() => false);
+      }
+      return { created, error };
+    },
+    [load],
+  );
+
+  return { grid, items, loaded, ideas, scheduleIdea, emptySlots, fillSlots };
 }
