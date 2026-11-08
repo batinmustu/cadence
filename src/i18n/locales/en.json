@@ -182,7 +182,8 @@
       "general": "General",
       "platforms": "Platforms",
       "ai": "AI",
-      "data": "Data"
+      "data": "Data",
+      "tags": "Tags"
     },
     "ai": {
       "provider": "AI provider",
@@ -298,6 +299,10 @@
       "databaseTitle": "Database",
       "databaseHelp": "Cadence keeps a daily backup copy and the last 7 are kept next to the database.",
       "reveal": "Reveal database file"
+    },
+    "tags": {
+      "body": "Deleting a tag removes it from all ideas.",
+      "empty": "No tags yet."
     }
   },
   "assistant": {
@@ -358,6 +363,33 @@
       "ideas": "Ideas",
       "series": "Series",
       "tags": "Tags"
+    }
+  },
+  "delete": {
+    "cancel": "Cancel",
+    "confirm": "Delete",
+    "idea": {
+      "action": "Delete idea {{title}}",
+      "editorAction": "Delete idea",
+      "title": "Delete “{{title}}”?",
+      "body": "The idea and all its platform versions will be removed."
+    },
+    "variant": {
+      "action": "Remove this version",
+      "title": "Remove {{name}}?",
+      "body": "This version of the idea will be removed. The idea itself stays."
+    },
+    "series": {
+      "action": "Delete series",
+      "title": "Delete series “{{name}}”?",
+      "body": "The series and its empty slots will be removed.",
+      "alsoIdeas_one": "Also delete its {{count}} idea",
+      "alsoIdeas_other": "Also delete its {{count}} ideas"
+    },
+    "tag": {
+      "action": "Delete tag {{name}}",
+      "title": "Delete tag #{{name}}?",
+      "body": "The tag will be removed from every idea."
     }
   }
 }

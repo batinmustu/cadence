@@ -25,6 +25,7 @@ export interface IdeasData {
   /** Earliest scheduled date per idea id, ISO string. */
   plannedAt: Record<string, string>;
   ready: boolean;
+  remove(id: string): Promise<void>;
   capture(
     title: string,
     platformIds: string[],
@@ -84,5 +85,13 @@ export function useIdeas(): IdeasData {
     [repo, tagsRepo, reload],
   );
 
-  return { ideas, platforms, tags, series, plannedAt, ready, capture };
+  const remove = useCallback(
+    async (id: string) => {
+      await repo.softDelete(id);
+      await reload();
+    },
+    [repo, reload],
+  );
+
+  return { ideas, platforms, tags, series, plannedAt, ready, capture, remove };
 }

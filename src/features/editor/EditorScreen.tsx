@@ -1,8 +1,8 @@
-import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Plus } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Select, TagInput } from "../../components";
+import { Button, ConfirmDialog, Select, TagInput } from "../../components";
 import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import { applyResult } from "../../core/assist";
 import { AssistantPanel } from "../assistant/AssistantPanel";
@@ -29,7 +29,11 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
     updateVariant,
     setArchived,
     addVariant,
+    removeVariant,
+    deleteIdea,
   } = useEditor(ideaId);
+  const navigate = useNavigate();
+  const [confirm, setConfirm] = useState<"idea" | "variant" | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [picking, setPicking] = useState(false);
 
@@ -89,6 +93,13 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
               <option value="archived">{t("ideas.status.archived")}</option>
             </Select>
           </div>
+          <Button
+            variant="icon"
+            aria-label={t("delete.idea.editorAction")}
+            onClick={() => setConfirm("idea")}
+          >
+            <Trash2 size={iconSize.action} strokeWidth={ICON_STROKE} />
+          </Button>
         </header>
 
         <div className="mt-3 pl-11">
@@ -112,6 +123,15 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
               {typeName(v.contentTypeId)}
             </Button>
           ))}
+          {active ? (
+            <Button
+              variant="icon"
+              aria-label={t("delete.variant.action")}
+              onClick={() => setConfirm("variant")}
+            >
+              <Trash2 size={iconSize.action} strokeWidth={ICON_STROKE} />
+            </Button>
+          ) : null}
           <Button
             variant="icon"
             aria-label={t("editor.addVariant")}
@@ -176,6 +196,28 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
           }}
         />
       ) : null}
+      <ConfirmDialog
+        open={confirm === "idea"}
+        onOpenChange={(o) => !o && setConfirm(null)}
+        title={t("delete.idea.title", { title: idea.title })}
+        description={t("delete.idea.body")}
+        onConfirm={async () => {
+          await deleteIdea();
+          setConfirm(null);
+          void navigate({ to: "/ideas" });
+        }}
+      />
+      <ConfirmDialog
+        open={confirm === "variant"}
+        onOpenChange={(o) => !o && setConfirm(null)}
+        title={t("delete.variant.title", { name: active ? typeName(active.contentTypeId) : "" })}
+        description={t("delete.variant.body")}
+        onConfirm={async () => {
+          if (active) await removeVariant(active.id);
+          setActiveId(null);
+          setConfirm(null);
+        }}
+      />
     </div>
   );
 }

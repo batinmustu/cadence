@@ -1,3 +1,4 @@
+export { ConfirmDialog } from "./ConfirmDialog";
 export { Segmented } from "./Segmented";
 export { TagInput } from "./TagInput";
 export { Badge } from "./ui/badge";

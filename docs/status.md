@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T21:42Z · Current milestone: UI polish (#84–#103)
+Last updated: 2026-11-08T21:48Z · Current milestone: UI polish (#84–#103)
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -59,14 +59,16 @@ Last updated: 2026-11-08T21:42Z · Current milestone: UI polish (#84–#103)
 | #95 | feat(settings): open settings in a dialog instead of a page | #115 | 2026-11-08 |
 | #96 | feat(onboarding): back navigation and per-step skip | #116 | 2026-11-08 |
 | #97 | feat(ai): hide AI features until a provider is configured | #117 | 2026-11-08 |
+| #98 | feat: delete ideas, series and other records | #118 | 2026-11-08 |
 
 ## Blocked / needs decision
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
 
 ## Next up
-- #98–#103 in order
+- #99–#103 in order
 
 ## Notes
+- #98: shared `components/ConfirmDialog` (AlertDialog, Cancel first). Ideas: trash button on the row (hover/focus), Delete / ⌘⌫ on the focused row link, and a button in the editor header. Variants: trash button next to the variant tabs. Series: "Delete series" in the settings panel with an "also delete N ideas" checkbox (default: keep, unlinked). Tags: new Settings → Tags section. `ideas.softDelete` now also soft-deletes the idea's posts (so calendar/reminders/slots never show orphans); `series.softDelete(id, {deleteIdeas})`; `tags.remove` hard-deletes (tags table has no `deleted_at`; no migration). **Not done:** "Undo" toast (no toast component exists yet) and the sidebar context menu for series (no context-menu dependency; delete is on the series screen). Export deliberately still includes soft-deleted rows so a backup restores everything. No new dependency.
 - #97: `isAiAvailable(status)` in `core/aiSettings.ts` (= `aiStatus` is connected: key stored, or Ollama verified) and hook `useAiAvailable()` in `settings/aiConfig.ts`. Hidden when unavailable: editor assistant panel, series "AI draft", calendar "Fill with AI" card (incl. its empty-slot count). The command palette has no AI commands today. The sidebar "AI not connected / connected" row is now a button that opens Settings → AI. Updates live through the existing settings-changed event. No new dependency.
 - #96: step logic is `core/onboardingSteps.ts` (welcome required; ai and series optional). Footer: ghost "Skip setup" left; Back, "Skip this step" and the one primary Next/Done on the right. Enter anywhere except on buttons/selects runs the primary action; focus goes to the step heading (also on open). Entered values survive Back because state lives in the parent. No new dependency.
 - #95: settings are a `SettingsDialog` (always mounted in `AppShell`) driven by a tiny store in `features/settings/settingsDialog.ts` (`openSettings(section?)`, last section remembered, ⌘, / Ctrl+, opens it); `/settings*` routes and `SettingsScreen` are removed. Sections are General, AI, Platforms, Data — Commands are still inside AI (no separate section). e2e uses `e2e/helpers.ts`. Focus trap/return comes from Radix Dialog. No new dependency. ⌘, on macOS needs a check in the desktop app (no native menu item).

@@ -35,6 +35,17 @@ describe("posts repository", () => {
     expect((await posts.get(b.id))?.deletedAt).not.toBeNull();
   });
 
+  it("deleting an idea also hides its scheduled posts", async () => {
+    const idea = await ideas.create({ title: "A" });
+    const p = await posts.create({ ideaId: idea.id, contentTypeId: CT });
+    await posts.update(p.id, { status: "scheduled", scheduledAt: "2026-11-10T09:00:00.000Z" });
+    await ideas.softDelete(idea.id);
+    expect(await posts.listByIdea(idea.id)).toEqual([]);
+    expect(
+      await posts.listScheduled("2026-11-01T00:00:00.000Z", "2026-12-01T00:00:00.000Z"),
+    ).toEqual([]);
+  });
+
   it("updates fields and returns null for missing or deleted posts", async () => {
     const idea = await ideas.create({ title: "A" });
     const p = await posts.create({ ideaId: idea.id, contentTypeId: CT });

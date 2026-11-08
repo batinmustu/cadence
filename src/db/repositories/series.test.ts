@@ -69,6 +69,15 @@ describe("series repository", () => {
     await repo.softDelete(s.id);
     expect((await ideas.get(idea.id))?.seriesId).toBeNull();
   });
+  it("deletes the series' ideas and posts too when asked", async () => {
+    const s = await make();
+    const idea = await ideas.create({ title: "one", seriesId: s.id });
+    const keep = await ideas.create({ title: "other" });
+    const post = await posts.create({ ideaId: idea.id, contentTypeId: CT?.id ?? "" });
+    await repo.softDelete(s.id, { deleteIdeas: true });
+    expect((await ideas.list()).map((i) => i.id)).toEqual([keep.id]);
+    expect((await posts.get(post.id))?.deletedAt).not.toBeNull();
+  });
   it("lists posts of the series, scheduled first", async () => {
     const s = await make();
     const idea = await ideas.create({ title: "one", seriesId: s.id });

@@ -32,8 +32,8 @@ interface SeriesRow {
 export interface SeriesRepository {
   create(input: NewSeriesInput): Promise<Series>;
   update(id: string, patch: SeriesPatch): Promise<Series | null>;
-  /** Soft-deletes the series and detaches its ideas. */
-  softDelete(id: string): Promise<void>;
+  /** Soft-deletes the series; its ideas are detached, or deleted too with `deleteIdeas`. */
+  softDelete(id: string, options?: { deleteIdeas?: boolean }): Promise<void>;
   get(id: string): Promise<Series | null>;
   list(): Promise<Series[]>;
   /** Pass null to remove an idea from its series. */
@@ -145,9 +145,19 @@ export function createSeriesRepository(
       );
       return next;
     },
-    async softDelete(id) {
+    async softDelete(id, options) {
       const ts = clock().toISOString();
       await db.transaction(async (tx) => {
+        if (options?.deleteIdeas) {
+          await tx.execute(
+            "UPDATE posts SET deleted_at = ?, updated_at = ? WHERE deleted_at IS NULL AND idea_id IN (SELECT id FROM ideas WHERE series_id = ?)",
+            [ts, ts, id],
+          );
+          await tx.execute(
+            "UPDATE ideas SET deleted_at = ?, updated_at = ? WHERE series_id = ? AND deleted_at IS NULL",
+            [ts, ts, id],
+          );
+        }
         await tx.execute("UPDATE ideas SET series_id = NULL, updated_at = ? WHERE series_id = ?", [
           ts,
           id,

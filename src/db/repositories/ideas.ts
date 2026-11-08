@@ -139,10 +139,17 @@ export function createIdeasRepository(
 
     async softDelete(id) {
       const ts = clock().toISOString();
-      await db.execute(
-        "UPDATE ideas SET deleted_at = ?, updated_at = ? WHERE id = ? AND deleted_at IS NULL",
-        [ts, ts, id],
-      );
+      // Posts go with their idea so the calendar, reminders and series slots never show orphans.
+      await db.transaction(async (tx) => {
+        await tx.execute(
+          "UPDATE posts SET deleted_at = ?, updated_at = ? WHERE idea_id = ? AND deleted_at IS NULL",
+          [ts, ts, id],
+        );
+        await tx.execute(
+          "UPDATE ideas SET deleted_at = ?, updated_at = ? WHERE id = ? AND deleted_at IS NULL",
+          [ts, ts, id],
+        );
+      });
     },
 
     async get(id) {
