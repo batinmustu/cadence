@@ -6,6 +6,7 @@ import {
   redirect,
 } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { CalendarScreen } from "../../features/calendar/CalendarScreen";
 import { EditorScreen } from "../../features/editor/EditorScreen";
 import { IdeasScreen } from "../../features/ideas/IdeasScreen";
 import { SeriesScreen } from "../../features/series/SeriesScreen";
@@ -59,7 +60,7 @@ const seriesRoute = createRoute({
 const calendarRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "calendar",
-  component: () => <Screen titleKey="nav.calendar" />,
+  component: CalendarScreen,
 });
 const publishedRoute = createRoute({
   getParentRoute: () => rootRoute,
