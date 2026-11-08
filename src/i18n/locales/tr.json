@@ -1,0 +1,3 @@
+{
+  "app": { "name": "Cadence", "platform": "Platform: {{name}}" }
+}
