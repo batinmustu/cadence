@@ -6,6 +6,7 @@ import {
   redirect,
 } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { IdeasScreen } from "../../features/ideas/IdeasScreen";
 import { AppShell } from "../layout/AppShell";
 
 function Screen({ titleKey, detail }: { titleKey: string; detail?: string }) {
@@ -35,7 +36,7 @@ const ideasRoute = createRoute({
 const ideasIndexRoute = createRoute({
   getParentRoute: () => ideasRoute,
   path: "/",
-  component: () => <Screen titleKey="nav.ideas" />,
+  component: IdeasScreen,
 });
 const ideaRoute = createRoute({
   getParentRoute: () => ideasRoute,

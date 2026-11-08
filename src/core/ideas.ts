@@ -117,3 +117,19 @@ export function filterIdeasByStatus(ideas: Idea[], statuses: IdeaStatus[]): Idea
   if (statuses.length === 0) return ideas;
   return ideas.filter((i) => statuses.includes(i.status));
 }
+
+export type IdeaFilterKey = "all" | "draft" | "planned" | "published";
+
+/** The UI filter "draft" also covers bare ideas that have no post yet. */
+export function statusesForFilter(filter: IdeaFilterKey): IdeaStatus[] {
+  switch (filter) {
+    case "draft":
+      return ["idea", "draft"];
+    case "planned":
+      return ["planned"];
+    case "published":
+      return ["published"];
+    default:
+      return [];
+  }
+}
