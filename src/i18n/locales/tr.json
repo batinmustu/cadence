@@ -159,5 +159,9 @@
     "time": "Saat",
     "cancel": "Vazgeç",
     "schedule": "Planla"
+  },
+  "reminders": {
+    "title": "Planlama zamanı: {{name}}",
+    "body": "{{name}} serisinde {{when}} için boş bir slot var."
   }
 }

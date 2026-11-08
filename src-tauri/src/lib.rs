@@ -28,6 +28,7 @@ pub fn run() {
     if let Err(error) = tauri::Builder::default()
         .plugin(tauri_plugin_sql::Builder::default().build())
         .plugin(global_shortcut)
+        .plugin(tauri_plugin_notification::init())
         .setup(move |app| {
             // Another app may own the shortcut; the app must still start.
             if let Err(error) = app.global_shortcut().register(shortcut) {

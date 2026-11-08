@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T14:30Z · Current milestone: v0.1 Foundation
+Last updated: 2026-11-08T14:25Z · Current milestone: v0.1 Foundation
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -30,14 +30,16 @@ Last updated: 2026-11-08T14:30Z · Current milestone: v0.1 Foundation
 | #22 | feat(series): series screen and settings panel | #66 | 2026-11-08 |
 | #23 | feat(calendar): month view | #67 | 2026-11-08 |
 | #24 | feat(calendar): drag ideas to schedule | #68 | 2026-11-08 |
+| #25 | feat: reminders for empty series slots | #69 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #25 feat: reminders for empty series slots
+- #26 feat(rust): keychain secrets commands
 
 ## Notes
+- #25: adds `@tauri-apps/plugin-notification` and `tauri-plugin-notification` (capability `notification:default`). The desktop plugin has no persistent scheduler, so the Tauri adapter uses in-process timers; reminders are re-planned at launch, after any write to posts/ideas/series (1 s debounce) and every 6 h, 14 days ahead. Reminders only fire while the app is running. A reminder already in the past is skipped. Notification permission prompt and delivery on macOS need manual testing.
 - #24: the calendar's right panel lists ideas with status idea/draft. Drag one onto a day (HTML5 drag and drop) or pick it in the select and press "Choose date…": both open a small schedule dialog (date + time, default 09:00). It reuses the idea's draft post or creates one on the idea's first platform. Native drag-and-drop is covered only by the keyboard path in tests; real dragging needs manual testing. The "Fill with AI" card comes with #33.
 - #23: `/calendar` shows 6 Monday-first weeks for the chosen month (prev/next/today). Planned and published posts appear as chips (max 3 per day, then "+N more"); empty series slots (future only) are dashed chips linking to the series; clicking a post opens its idea in the editor. Drafts are not shown. The right-hand panel (unscheduled ideas, Fill with AI) comes with #24/#33. The shell e2e test now checks the grid instead of a "Calendar" heading.
 - #22: `/series/<id>` shows the next 4 slots (120-day horizon, local time zone), unscheduled ideas, published ideas and a settings panel with 600 ms autosave (flushed on leave). "Assign idea" reuses the idea's draft post or creates one with the platform's first content type, then schedules it into the slot. The **AI draft** button is left out until #32. "Remind me" is stored as 24 h (`remind_before_hours`); the lead time is not configurable yet. Series description is shown but not editable.
