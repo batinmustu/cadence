@@ -149,6 +149,15 @@
       "planned": "Planlandı",
       "empty": "Boş seri yeri",
       "published": "Yayınlandı"
-    }
+    },
+    "unscheduled": "Planlanmamış fikirler",
+    "noIdeas": "Planlanmamış fikir yok.",
+    "pickIdea": "Bir fikir seç",
+    "chooseDate": "Tarih seç…",
+    "scheduleTitle": "Fikri planla",
+    "date": "Tarih",
+    "time": "Saat",
+    "cancel": "Vazgeç",
+    "schedule": "Planla"
   }
 }

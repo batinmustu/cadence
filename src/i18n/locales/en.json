@@ -149,6 +149,15 @@
       "planned": "Planned",
       "empty": "Empty series slot",
       "published": "Published"
-    }
+    },
+    "unscheduled": "Unscheduled ideas",
+    "noIdeas": "No unscheduled ideas.",
+    "pickIdea": "Choose an idea",
+    "chooseDate": "Choose date…",
+    "scheduleTitle": "Schedule idea",
+    "date": "Date",
+    "time": "Time",
+    "cancel": "Cancel",
+    "schedule": "Schedule"
   }
 }
