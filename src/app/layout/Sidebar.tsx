@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   CalendarDays,
   CheckCircle2,
@@ -9,9 +9,11 @@ import {
   Search,
   Settings,
 } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../components";
 import type { SeriesRhythmLabel } from "../../core/weekdays";
+import { NewSeriesDialog } from "../../features/series/NewSeriesDialog";
 import { platform } from "../../platform";
 import { useSeriesList } from "./useSeriesList";
 
@@ -22,6 +24,8 @@ const activeProps = { className: `${navItem} bg-surface-2 text-text` };
 export function Sidebar({ onToggle }: { onToggle: () => void }) {
   const { t } = useTranslation();
   const series = useSeriesList();
+  const navigate = useNavigate();
+  const [creating, setCreating] = useState(false);
   const isMac = platform.window.platform === "macos";
 
   const rhythmText = (r: SeriesRhythmLabel): string => {
@@ -70,7 +74,12 @@ export function Sidebar({ onToggle }: { onToggle: () => void }) {
       </nav>
       <div className="mt-5 mb-1 flex items-center justify-between px-2.5">
         <h2 className="text-xs font-medium text-text-4">{t("nav.series")}</h2>
-        <Button variant="icon" className="size-6" aria-label={t("nav.newSeries")} disabled>
+        <Button
+          variant="icon"
+          className="size-6"
+          aria-label={t("nav.newSeries")}
+          onClick={() => setCreating(true)}
+        >
           <Plus size={14} strokeWidth={1.7} />
         </Button>
       </div>
@@ -100,6 +109,12 @@ export function Sidebar({ onToggle }: { onToggle: () => void }) {
           {t("nav.settings")}
         </Link>
       </div>
+      {creating ? (
+        <NewSeriesDialog
+          onClose={() => setCreating(false)}
+          onCreated={(s) => void navigate({ to: "/series/$id", params: { id: s.id } })}
+        />
+      ) : null}
     </aside>
   );
 }

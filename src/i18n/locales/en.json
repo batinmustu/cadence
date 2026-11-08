@@ -31,6 +31,22 @@
     "rhythm": {
       "biweekly": "2w",
       "monthly": "1m"
+    },
+    "new": {
+      "title": "New series",
+      "name": "Name",
+      "platform": "Platform",
+      "weekdays": "Days",
+      "time": "Time",
+      "frequency": "Frequency",
+      "weekly": "Weekly",
+      "biweekly": "Every 2 weeks",
+      "monthly": "Monthly",
+      "create": "Create series",
+      "cancel": "Cancel",
+      "none": "No series",
+      "picker": "Series",
+      "error": "Could not create the series."
     }
   },
   "ideas": {
