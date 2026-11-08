@@ -3,12 +3,22 @@ import { ArrowLeft, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Select } from "../../components";
+import { FieldRenderer } from "./FieldRenderer";
 import { useEditor } from "./useEditor";
 
 export function EditorScreen({ ideaId }: { ideaId: string }) {
   const { t } = useTranslation();
-  const { idea, variants, contentTypes, loaded, saveState, setTitle, setArchived, addVariant } =
-    useEditor(ideaId);
+  const {
+    idea,
+    variants,
+    contentTypes,
+    loaded,
+    saveState,
+    setTitle,
+    setField,
+    setArchived,
+    addVariant,
+  } = useEditor(ideaId);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [picking, setPicking] = useState(false);
 
@@ -111,7 +121,14 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
 
       <div className="mt-6">
         {active ? (
-          <p className="text-text-3">{t("editor.fieldsSoon")}</p>
+          <FieldRenderer
+            key={active.id}
+            schema={
+              contentTypes.find((c) => c.id === active.contentTypeId)?.schema ?? { fields: [] }
+            }
+            values={active.fields}
+            onChange={(key, value) => setField(active.id, key, value)}
+          />
         ) : (
           <p className="text-text-3">{t("editor.noVariants")}</p>
         )}
