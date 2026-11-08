@@ -9,6 +9,12 @@ import {
 } from "./calendar";
 
 describe("monthGrid", () => {
+  it("can start on Sunday", () => {
+    const g = monthGrid({ year: 2026, month: 10 }, "sunday"); // November 2026 starts on a Sunday
+    expect(g[0]?.date).toBe("2026-11-01");
+    expect(g).toHaveLength(42);
+    expect(monthGrid({ year: 2026, month: 11 }, "sunday")[0]?.date).toBe("2026-11-29");
+  });
   it("has 42 Monday-first days covering the month", () => {
     const g = monthGrid({ year: 2026, month: 10 }); // November 2026 starts on a Sunday
     expect(g).toHaveLength(42);

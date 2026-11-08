@@ -27,10 +27,10 @@ const fmt = (ms: number) => {
   return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
 };
 
-/** Six Monday-first weeks (42 days) that cover the month. */
-export function monthGrid(ref: MonthRef): CalendarDay[] {
+/** Six weeks (42 days) that cover the month, starting on Monday or Sunday. */
+export function monthGrid(ref: MonthRef, weekStart: "monday" | "sunday" = "monday"): CalendarDay[] {
   const first = Date.UTC(ref.year, ref.month, 1);
-  const lead = (new Date(first).getUTCDay() + 6) % 7;
+  const lead = (new Date(first).getUTCDay() + (weekStart === "monday" ? 6 : 0)) % 7;
   const out: CalendarDay[] = [];
   for (let i = 0; i < 42; i++) {
     const ms = first + (i - lead) * DAY_MS;

@@ -264,6 +264,18 @@
         "name": "İçerik türüne bir ad ver.",
         "schema": "Alanlar geçerli değil:"
       }
+    },
+    "general": {
+      "language": "Dil",
+      "system": "Sistem",
+      "weekStart": "Hafta şu günle başlar",
+      "monday": "Pazartesi",
+      "sunday": "Pazar",
+      "shortcut": "Hızlı yakalama kısayolu",
+      "pressKeys": "Yeni tuşlara bas…",
+      "reset": "Sıfırla",
+      "shortcutNote": "Her uygulamadan çalışır. En az bir değiştirici tuş gerekir.",
+      "shortcutFailed": "{{shortcut}} kullanılamadı; başka bir uygulama kullanıyor olabilir. Önceki kısayol hâlâ etkin."
     }
   },
   "assistant": {

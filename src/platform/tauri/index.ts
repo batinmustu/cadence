@@ -1,3 +1,4 @@
+import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { createBrowserPlatform } from "../browser";
 import type { Platform } from "../types";
@@ -19,6 +20,9 @@ export function createTauriPlatform(): Platform {
     window: {
       platform: "macos",
       toggleSidebarShortcut: "Ctrl+Cmd+S",
+      async setQuickCaptureShortcut(accelerator) {
+        await invoke("set_capture_shortcut", { accelerator });
+      },
       onQuickCapture(listener) {
         // listen() resolves asynchronously; unsubscribe once it does if we were already torn down.
         let off: (() => void) | null = null;

@@ -54,6 +54,7 @@ export function createBrowserPlatform(): Platform {
       platform: "web",
       toggleSidebarShortcut: "Ctrl+B",
       onQuickCapture: () => () => {},
+      async setQuickCaptureShortcut() {},
     },
     notifications: { async schedule() {}, async cancel() {} },
     clipboard: {
