@@ -1,7 +1,9 @@
-import { Outlet } from "@tanstack/react-router";
+import { Outlet, useNavigate } from "@tanstack/react-router";
 import { PanelLeft, Search } from "lucide-react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../components";
+import { requestCaptureFocus } from "../../features/ideas/captureFocus";
 import { platform } from "../../platform";
 import { Sidebar } from "./Sidebar";
 import { useSidebarCollapsed } from "./useSidebarCollapsed";
@@ -9,6 +11,15 @@ import { useSidebarCollapsed } from "./useSidebarCollapsed";
 export function AppShell() {
   const { t } = useTranslation();
   const [collapsed, toggle] = useSidebarCollapsed();
+  const navigate = useNavigate();
+  useEffect(
+    () =>
+      platform.window.onQuickCapture(() => {
+        requestCaptureFocus();
+        void navigate({ to: "/ideas" });
+      }),
+    [navigate],
+  );
   const isMac = platform.window.platform === "macos";
   return (
     <div className="flex h-full bg-bg text-text">

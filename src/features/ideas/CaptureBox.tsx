@@ -2,6 +2,7 @@ import { ArrowUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ToggleChip } from "../../components";
+import { consumeCaptureFocus, onCaptureFocusRequest } from "./captureFocus";
 import type { PlatformOption } from "./useIdeas";
 
 const PLATFORM_KEY = "cadence.capture.platforms";
@@ -31,6 +32,14 @@ export function CaptureBox({ platforms, onCapture, autoFocus = false }: Props) {
   useEffect(() => {
     if (autoFocus) ref.current?.focus();
   }, [autoFocus]);
+
+  useEffect(() => {
+    const focus = () => {
+      if (consumeCaptureFocus()) ref.current?.focus();
+    };
+    focus();
+    return onCaptureFocusRequest(focus);
+  }, []);
 
   function toggle(id: string, on: boolean) {
     const next = on ? [...selected, id] : selected.filter((s) => s !== id);
