@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./app/App";
 import { ComponentsGallery } from "./app/ComponentsGallery";
+import "./i18n";
 import "./styles/globals.css";
 
 const root = document.getElementById("root");

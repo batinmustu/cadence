@@ -10,12 +10,13 @@ Last updated: 2026-11-08T11:20Z · Current milestone: v0.1 Foundation
 | #2 | chore: add Biome, Vitest, Playwright and pre-commit hooks | #46 | 2026-11-08 |
 | #3 | ci: run checks on pull requests | #47 | 2026-11-08 |
 | #4 | chore: add design tokens, base components and icons | #48 | 2026-11-08 |
+| #5 | chore(i18n): set up English and Turkish | #49 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #5 chore(i18n): set up English and Turkish
+- #6 feat(db): SQLite setup, migrations and seed
 
 ## Notes
 - #4: Segmented uses buttons with aria-pressed (Biome a11y forbids role=radio on buttons). Gallery at /__components is dev-only, strings not i18n'd.
