@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T20:30Z · Current milestone: v0.1 Foundation
+Last updated: 2026-11-08T22:00Z · Current milestone: v0.6 Polish
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -50,10 +50,12 @@ Last updated: 2026-11-08T20:30Z · Current milestone: v0.1 Foundation
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
 
 ## Next up
-- Backlog complete — only owner tasks and #40 (needs-decision) remain
+- v0.6 Polish (#84–#103) added to the backlog from the owner's UX review; start with #84 (shadcn/ui foundation), most UI issues depend on it
+- Independent of #84: #90, #91, #93, #96, #97, #100, #101, #102
+- #103 (full functional audit) runs last; it depends on every other v0.6 issue
 
 ## Notes
-- Backlog complete — only owner tasks remain, plus #40 which waits for the owner's updater key.
+- New milestone v0.6 Polish (#84–#103) added to `docs/build-plan.md` Section 10. The backlog is open again; the earlier "Backlog complete" note no longer applies. #40 still waits for the owner's updater key.
 - #41: `pnpm screenshots` (scripts/screenshots.mjs) starts its own dev server on port 1421 and writes `docs/screenshots/*.png` (ideas, editor, calendar) from browser mode with demo ideas typed into the capture box; no new dependencies. Screenshots are dark theme at 2x. The Install section describes the .dmg from Releases and does not exist until the first release.
 - #38: `.github/workflows/release.yml` runs release-please on every push to main (release PR with CHANGELOG + version bumps in package.json, Cargo.toml, tauri.conf.json); when its PR is merged the same workflow builds a universal macOS app with tauri-action and attaches it to the release (a release created with GITHUB_TOKEN cannot trigger a separate tag workflow). Apple secrets are passed through and ignored when empty; see `docs/releasing.md`. **Owner:** enable "Allow GitHub Actions to create and approve pull requests" in repo Actions settings (I may not change repo settings). The workflow cannot be tested before a release PR is merged; the first run needs a look.
 - #37: first-launch overlay (`features/onboarding`) rendered by the app shell: welcome + language, optional AI provider/key, optional first series (reuses the new-series dialog). Skip or finish stores setting `onboarding.done`. Playwright starts the dev server with `VITE_SKIP_ONBOARDING=1` because the browser DB is in-memory and the overlay would cover every test page. Existing desktop users with data will see it once too (no data check); skip hides it for good. Real keychain key storage needs manual testing on macOS.

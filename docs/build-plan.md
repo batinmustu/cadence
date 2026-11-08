@@ -880,3 +880,81 @@ Depends on: #31, #23
 **#42 `chore: release v1.0.0`** [owner-task]
 Owner only: verify the signed build on a clean Mac, then publish the release.
 Depends on: #39, #40, #41
+
+### Milestone: v0.6 Polish
+
+UX and functional fixes from the owner's first hands-on review. The GitHub
+issue is the source of truth for the full acceptance criteria; the lines
+below are a summary.
+
+**#84 `chore(ui): adopt shadcn/ui and migrate base components`** [ui, enhancement]
+- [ ] shadcn/ui (Radix + Tailwind 4) set up; its CSS variables map to `tokens.css`
+- [ ] All base components and dialogs migrated; new ADR; new dependencies explained
+
+**#85 `feat(ui): replace native selects with shadcn Select`** [ui, enhancement]
+- [ ] No native `<select>` left in `src/` (guarded by a test)
+Depends on: #84
+
+**#86 `feat(ui): animated tab and segmented control transitions`** [ui, enhancement]
+- [ ] Sliding active indicator, content crossfade; respects `prefers-reduced-motion`
+Depends on: #84
+
+**#87 `fix(ui): standardise border radius across the app`** [ui, bug]
+- [ ] One radius scale in tokens; quick capture box gets its radius
+Depends on: #84
+
+**#88 `fix(ui): use pointer cursor on all clickable elements`** [ui, bug]
+- [ ] Global base style + audit; disabled elements not pointer
+Depends on: #84
+
+**#89 `feat(ui): auto-resize all textareas to fit content`** [ui, enhancement]
+- [ ] Shared auto-growing `Textarea` (`minRows`/`maxRows`) used everywhere
+Depends on: #84
+
+**#90 `fix(ui): use one standard content width in the main area`** [ui, bug]
+- [ ] Shared page container with one max width (plus one documented wide variant)
+
+**#91 `fix(ui): make the window draggable from the top area`** [ui, rust, bug]
+- [ ] Full-width top drag strip; controls inside stay clickable; via Window adapter
+
+**#92 `feat(ui): remove sidebar toggle and adapt layout to full screen`** [ui, rust, enhancement]
+- [ ] Sidebar always visible; traffic lights on top when windowed, items move up in full screen
+Depends on: #91
+
+**#93 `fix(ui): enlarge sidebar icons`** [ui, enhancement]
+- [ ] Icon sizes as constants; larger nav/series/add icons and hit areas
+
+**#94 `fix(search): sidebar search does nothing when clicked`** [ui, bug]
+- [ ] ⌘K command palette searching ideas, series, tags and commands; logic in `src/core/search.ts`
+Depends on: #84
+
+**#95 `feat(settings): open settings in a dialog instead of a page`** [ui, enhancement]
+- [ ] Settings dialog with section list; `/settings` routes removed or redirected
+Depends on: #84
+
+**#96 `feat(onboarding): back navigation and per-step skip`** [ui, enhancement]
+- [ ] Back button; "Skip this step" on AI and series steps; pure step state machine
+
+**#97 `feat(ai): hide AI features until a provider is configured`** [ui, ai, enhancement]
+- [ ] AI entry points hidden unless a provider is set and has a key (or needs none)
+
+**#98 `feat: delete ideas, series and other records`** [ui, db, enhancement]
+- [ ] Soft delete for ideas, series, variants and tags with confirmation and undo
+Depends on: #84
+
+**#99 `fix(ideas): layout shift in quick capture platform selector`** [ui, bug]
+- [ ] Stable single-row capture footer; toggling does not move other elements
+Depends on: #84
+
+**#100 `feat(ideas): keep the Ideas screen usable with many ideas`** [ui, core, db, enhancement]
+- [ ] Filters, sort, collapsible groups, virtualised/paginated list; tested with ≥ 2,000 ideas
+
+**#101 `fix(calendar): rework calendar and allow assigning ideas to dates`** [ui, core, bug]
+- [ ] Assign, move and unschedule ideas (drag, day picker, editor); keyboard alternative
+
+**#102 `feat(published): list published content on the Published screen`** [ui, bug]
+- [ ] Replace the placeholder route with a grouped, filterable list of published content
+
+**#103 `fix: audit the whole app for broken features and fix them`** [ui, bug]
+- [ ] `docs/qa-checklist.md` walkthrough; fix failures with regression tests; Playwright smoke tests
+Depends on: #84, #85, #86, #87, #88, #89, #90, #91, #92, #93, #94, #95, #96, #97, #98, #99, #100, #101, #102
