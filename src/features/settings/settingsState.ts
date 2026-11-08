@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 
-export const SETTINGS_SECTIONS = ["general", "ai", "platforms", "data"] as const;
+export const SETTINGS_SECTIONS = ["general", "ai", "platforms", "tags", "data"] as const;
 export type SettingsSection = (typeof SETTINGS_SECTIONS)[number];
 
 type State = { open: boolean; section: SettingsSection };

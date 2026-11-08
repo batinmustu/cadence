@@ -182,7 +182,8 @@
       "general": "Genel",
       "platforms": "Platformlar",
       "ai": "AI",
-      "data": "Veri"
+      "data": "Veri",
+      "tags": "Etiketler"
     },
     "ai": {
       "provider": "AI sağlayıcı",
@@ -298,6 +299,10 @@
       "databaseTitle": "Veritabanı",
       "databaseHelp": "Cadence günlük yedek alır; son 7 yedek veritabanının yanında saklanır.",
       "reveal": "Veritabanı dosyasını göster"
+    },
+    "tags": {
+      "body": "Bir etiketi silmek onu tüm fikirlerden kaldırır.",
+      "empty": "Henüz etiket yok."
     }
   },
   "assistant": {
@@ -358,6 +363,33 @@
       "ideas": "Fikirler",
       "series": "Seriler",
       "tags": "Etiketler"
+    }
+  },
+  "delete": {
+    "cancel": "Vazgeç",
+    "confirm": "Sil",
+    "idea": {
+      "action": "{{title}} fikrini sil",
+      "editorAction": "Fikri sil",
+      "title": "“{{title}}” silinsin mi?",
+      "body": "Fikir ve tüm platform sürümleri kaldırılacak."
+    },
+    "variant": {
+      "action": "Bu sürümü kaldır",
+      "title": "{{name}} kaldırılsın mı?",
+      "body": "Fikrin bu sürümü kaldırılacak. Fikir kalır."
+    },
+    "series": {
+      "action": "Seriyi sil",
+      "title": "“{{name}}” serisi silinsin mi?",
+      "body": "Seri ve boş slotları kaldırılacak.",
+      "alsoIdeas_one": "{{count}} fikrini de sil",
+      "alsoIdeas_other": "{{count}} fikrini de sil"
+    },
+    "tag": {
+      "action": "{{name}} etiketini sil",
+      "title": "#{{name}} etiketi silinsin mi?",
+      "body": "Etiket tüm fikirlerden kaldırılacak."
     }
   }
 }

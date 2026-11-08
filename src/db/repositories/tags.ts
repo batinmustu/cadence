@@ -6,6 +6,8 @@ export interface TagsRepository {
   list(): Promise<Tag[]>;
   /** Returns the existing tag with this name (any case) or creates it. Null for an empty name. */
   findOrCreate(name: string): Promise<Tag | null>;
+  /** Removes the tag from every idea and deletes it. Tags have no deleted_at column. */
+  remove(id: string): Promise<void>;
 }
 
 export function createTagsRepository(
@@ -13,6 +15,12 @@ export function createTagsRepository(
   clock: () => Date = () => new Date(),
 ): TagsRepository {
   return {
+    async remove(id) {
+      await db.transaction(async (tx) => {
+        await tx.execute("DELETE FROM idea_tags WHERE tag_id = ?", [id]);
+        await tx.execute("DELETE FROM tags WHERE id = ?", [id]);
+      });
+    },
     list: () => db.select<Tag>("SELECT id, name FROM tags ORDER BY name COLLATE NOCASE"),
     async findOrCreate(raw) {
       const name = normalizeTagName(raw);

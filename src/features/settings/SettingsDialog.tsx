@@ -20,6 +20,7 @@ import {
   setSettingsSection,
   useSettingsDialog,
 } from "./settingsState";
+import { TagsSettings } from "./TagsSettings";
 
 export function SettingsDialog() {
   const { t } = useTranslation();
@@ -65,6 +66,8 @@ export function SettingsDialog() {
             <GeneralSettings />
           ) : section === "platforms" ? (
             <PlatformsSettings />
+          ) : section === "tags" ? (
+            <TagsSettings />
           ) : (
             <DataSettings />
           )}

@@ -144,7 +144,18 @@ export function useSeries(seriesId: string) {
 
   const platformName = platforms.find((p) => p.id === series?.platformId)?.name ?? "";
 
+  const removeSeries = useCallback(
+    async (deleteIdeas: boolean) => {
+      if (timer.current) clearTimeout(timer.current);
+      pending.current = {};
+      await repos.series.softDelete(seriesId, { deleteIdeas });
+      notifySeriesChanged();
+    },
+    [repos, seriesId],
+  );
+
   return {
+    removeSeries,
     series,
     loaded,
     platforms,

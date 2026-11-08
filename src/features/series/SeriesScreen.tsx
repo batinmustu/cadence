@@ -1,8 +1,8 @@
 import { useNavigate } from "@tanstack/react-router";
-import { Plus, Sparkles } from "lucide-react";
+import { Plus, Sparkles, Trash2 } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Badge, Button, Input, Select, Textarea, Toggle } from "../../components";
+import { Badge, Button, ConfirmDialog, Input, Select, Textarea, Toggle } from "../../components";
 import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import type { Idea } from "../../core/ideas";
 import type { Slot } from "../../core/series";
@@ -30,6 +30,8 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
   const [newTitle, setNewTitle] = useState("");
   const [drafting, setDrafting] = useState<string | null>(null);
   const [draftError, setDraftError] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [alsoIdeas, setAlsoIdeas] = useState(false);
   const navigate = useNavigate();
   const { series } = s;
 
@@ -290,6 +292,39 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
           />
           {t("series.screen.remind")}
         </label>
+        <Button
+          className="mt-2 self-start"
+          onClick={() => {
+            setAlsoIdeas(false);
+            setConfirmDelete(true);
+          }}
+        >
+          <Trash2 size={iconSize.inline} strokeWidth={ICON_STROKE} />
+          {t("delete.series.action")}
+        </Button>
+        <ConfirmDialog
+          open={confirmDelete}
+          onOpenChange={setConfirmDelete}
+          title={t("delete.series.title", { name: series.name })}
+          description={t("delete.series.body")}
+          onConfirm={async () => {
+            await s.removeSeries(alsoIdeas);
+            setConfirmDelete(false);
+            void navigate({ to: "/ideas" });
+          }}
+        >
+          <label className="mt-3 flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={alsoIdeas}
+              onChange={(e) => setAlsoIdeas(e.target.checked)}
+            />
+            {t("delete.series.alsoIdeas", {
+              count:
+                s.groups.unscheduled.length + s.groups.planned.length + s.groups.published.length,
+            })}
+          </label>
+        </ConfirmDialog>
       </aside>
     </div>
   );

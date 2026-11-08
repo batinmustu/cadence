@@ -185,7 +185,21 @@ export function useEditor(ideaId: string) {
     [posts, ideaId, reload],
   );
 
+  const removeVariant = useCallback(
+    async (postId: string) => {
+      await posts.softDelete(postId);
+      await reload();
+    },
+    [posts, reload],
+  );
+
+  const deleteIdea = useCallback(async () => {
+    await ideas.softDelete(ideaId);
+  }, [ideas, ideaId]);
+
   return {
+    removeVariant,
+    deleteIdea,
     idea,
     tags,
     addTag,

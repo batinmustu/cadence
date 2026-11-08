@@ -36,4 +36,11 @@ describe("tags repository", () => {
     const out = await ideas.list({ tagId: tag.id });
     expect(out.map((i) => i.id)).toEqual([tagged.id]);
   });
+  it("removes a tag from every idea", async () => {
+    const tag = await repo.findOrCreate("gone");
+    const idea = await ideas.create({ title: "x", tagIds: [tag?.id ?? ""] });
+    await repo.remove(tag?.id ?? "");
+    expect(await repo.list()).toEqual([]);
+    expect((await ideas.get(idea.id))?.tagIds).toEqual([]);
+  });
 });
