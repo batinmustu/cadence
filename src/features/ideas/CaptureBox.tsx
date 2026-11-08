@@ -112,11 +112,15 @@ export function CaptureBox({ platforms, tags, series = [], onCapture, autoFocus 
           }
         />
       </div>
-      <div className="mt-2 flex items-center gap-2">
-        <div className="flex flex-1 flex-wrap gap-2">
+      <div
+        className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-2"
+        data-testid="capture-footer"
+      >
+        <div className="flex flex-wrap items-center gap-2">
           {platforms.map((p) => (
             <Toggle
               key={p.id}
+              className="shrink-0 whitespace-nowrap"
               pressed={selected.includes(p.id)}
               onPressedChange={(on) => toggle(p.id, on)}
             >
@@ -124,29 +128,31 @@ export function CaptureBox({ platforms, tags, series = [], onCapture, autoFocus 
             </Toggle>
           ))}
         </div>
-        {series.length > 0 ? (
-          <Select
-            aria-label={t("series.new.picker")}
-            className="h-7 w-36 rounded-md text-xs"
-            value={seriesId}
-            onValueChange={(v) => setSeriesId(v)}
+        <div className="ml-auto flex shrink-0 items-center gap-2">
+          {series.length > 0 ? (
+            <Select
+              aria-label={t("series.new.picker")}
+              className="h-7 w-36 shrink-0 rounded-md text-xs"
+              value={seriesId}
+              onValueChange={(v) => setSeriesId(v)}
+            >
+              <option value="">{t("series.new.none")}</option>
+              {series.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </Select>
+          ) : null}
+          <button
+            type="button"
+            aria-label={t("ideas.capture.save")}
+            onClick={() => void submit()}
+            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-text text-bg"
           >
-            <option value="">{t("series.new.none")}</option>
-            {series.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </Select>
-        ) : null}
-        <button
-          type="button"
-          aria-label={t("ideas.capture.save")}
-          onClick={() => void submit()}
-          className="flex size-8 items-center justify-center rounded-full bg-text text-bg"
-        >
-          <ArrowUp size={iconSize.action} />
-        </button>
+            <ArrowUp size={iconSize.action} />
+          </button>
+        </div>
       </div>
     </div>
   );
