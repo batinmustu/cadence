@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T19:00Z · Current milestone: v0.1 Foundation
+Last updated: 2026-11-08T19:40Z · Current milestone: v0.1 Foundation
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -42,14 +42,16 @@ Last updated: 2026-11-08T19:00Z · Current milestone: v0.1 Foundation
 | #34 | feat(settings): manage platforms and content types | #78 | 2026-11-08 |
 | #35 | feat(settings): general settings | #79 | 2026-11-08 |
 | #36 | feat(data): export, import and backup | #80 | 2026-11-08 |
+| #37 | feat: onboarding | #81 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #37 feat: onboarding
+- #38 ci: release workflow
 
 ## Notes
+- #37: first-launch overlay (`features/onboarding`) rendered by the app shell: welcome + language, optional AI provider/key, optional first series (reuses the new-series dialog). Skip or finish stores setting `onboarding.done`. Playwright starts the dev server with `VITE_SKIP_ONBOARDING=1` because the browser DB is in-memory and the overlay would cover every test page. Existing desktop users with data will see it once too (no data check); skip hides it for good. Real keychain key storage needs manual testing on macOS.
 - #36: Settings → Data. Export is a versioned JSON (`format: cadence-export`, `version: 1`, all tables, no API keys; validated by `core/backup.ts`). Import works only when there are no ideas/series/posts/tags; the file is fully validated first (unknown tables/columns, missing fields, dangling references), and if inserting still fails the database is emptied and re-seeded because the desktop SQL plugin has no real transactions. After a successful import the app reloads. Rust `files.rs` adds `save_export` (writes to Downloads, plain file names only), `reveal_database` and `backup_target` (keeps the last 7 `cadence-YYYY-MM-DD.db` in `<app config>/backups`); the copy itself is made by `VACUUM INTO` at startup (`dailyBackup.ts`), at most once a day. No new dependencies. **Needs manual testing on macOS/desktop:** export location, reveal in Finder, the backups folder filling up, importing a file via the system file picker.
 - #35: Settings → General stores `general.language` (system/en/tr), `general.weekStart` (monday/sunday) and `general.captureShortcut` (default `Alt+Space`) in settings; applied at startup (`main.tsx`). The week start only affects the calendar grid for now. New Rust command `set_capture_shortcut` re-registers the global shortcut and keeps the old one if registration fails. **Needs manual testing on macOS:** recording a shortcut, shortcuts that another app owns, and that the new shortcut opens quick capture.
 - #34: Settings → Platforms. "Hidden" platforms are stored in setting `platforms.hidden` (JSON id list, no migration): hidden ones are not offered in the new-series dialog, the series platform select, the capture box or the editor's add-variant menu (existing data stays visible). Presets can only be hidden; custom platforms/content types can be deleted only when no post, series, idea or command uses them (otherwise a message is shown). Content types are edited through `core/platforms.ts checkSchema`, which round-trips through the #12 validator; field keys are generated from labels, and editing an existing field's label does not change its key. Count rules offered: plain, x.

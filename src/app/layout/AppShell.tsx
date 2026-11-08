@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../components";
 import { requestCaptureFocus } from "../../features/ideas/captureFocus";
+import { Onboarding } from "../../features/onboarding/Onboarding";
 import { platform } from "../../platform";
 import { Sidebar } from "./Sidebar";
 import { useSidebarCollapsed } from "./useSidebarCollapsed";
@@ -50,6 +51,7 @@ export function AppShell() {
           <Outlet />
         </main>
       </div>
+      {import.meta.env.VITE_SKIP_ONBOARDING ? null : <Onboarding />}
     </div>
   );
 }

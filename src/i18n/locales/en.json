@@ -322,5 +322,27 @@
       "notConnected": "Connect an AI provider in Settings first.",
       "empty": "The assistant returned nothing. Try again."
     }
+  },
+  "onboarding": {
+    "title": "Welcome to Cadence",
+    "step": "Step {{n}} of {{total}}",
+    "skip": "Skip setup",
+    "next": "Next",
+    "done": "Done",
+    "welcome": {
+      "title": "Welcome to Cadence",
+      "body": "A calm place to plan your social media content. Everything stays on this computer."
+    },
+    "ai": {
+      "title": "Writing help (optional)",
+      "body": "Connect your own AI provider to get help with drafts. You can do this later in Settings.",
+      "ollama": "Ollama runs on your computer. Set the server address in Settings → AI.",
+      "saved": "Key saved"
+    },
+    "series": {
+      "title": "Your first series (optional)",
+      "body": "A series is a recurring slot, like a weekly post. You can also create one later from the sidebar.",
+      "create": "Create a series…"
+    }
   }
 }
