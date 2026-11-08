@@ -30,7 +30,12 @@
   --accent-foreground: var(--text);
   --input: var(--border-input);
   --ring: var(--border-strong);
-  --radius: 10px;
+  /* Radius scale (build plan §7): chips/buttons 6–8, rows/inputs/cards 10, capture box 16 */
+  --radius-token-sm: 6px;
+  --radius-token-md: 8px;
+  --radius-token-lg: 10px;
+  --radius-token-xl: 16px;
+  --radius: var(--radius-token-lg);
 
   /* Motion: one duration and easing for tab/segmented transitions (issue #86) */
   --motion-duration: 180ms;
