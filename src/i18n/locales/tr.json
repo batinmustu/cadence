@@ -326,6 +326,8 @@
     "title": "Cadence'a hoş geldin",
     "step": "Adım {{n}} / {{total}}",
     "skip": "Kurulumu atla",
+    "back": "Geri",
+    "skipStep": "Bu adımı atla",
     "next": "İleri",
     "done": "Bitti",
     "welcome": {
