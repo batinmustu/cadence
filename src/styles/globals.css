@@ -51,3 +51,23 @@ body {
   font-size: 14px;
   font-family: var(--font-sans);
 }
+
+/* Shared motion utilities; durations come from tokens.css and drop to 0 for reduced motion. */
+@keyframes motion-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.motion-fade-in {
+  animation: motion-fade-in var(--motion-duration) var(--motion-ease);
+}
+
+.motion-colors {
+  transition-property: color, background-color, border-color;
+  transition-duration: var(--motion-duration);
+  transition-timing-function: var(--motion-ease);
+}

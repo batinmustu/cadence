@@ -103,6 +103,7 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
               key={v.id}
               variant={v.id === active?.id ? "primary" : "secondary"}
               aria-pressed={v.id === active?.id}
+              className="motion-colors"
               onClick={() => setActiveId(v.id)}
             >
               {typeName(v.contentTypeId)}
@@ -142,9 +143,8 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
 
         <div className="mt-6">
           {active ? (
-            <>
+            <div key={active.id} className="motion-fade-in">
               <FieldRenderer
-                key={active.id}
                 schema={activeSchema}
                 values={active.fields}
                 onChange={(key, value) => setField(active.id, key, value)}
@@ -155,7 +155,7 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
                 schema={activeSchema}
                 onUpdate={(patch) => updateVariant(active.id, patch)}
               />
-            </>
+            </div>
           ) : (
             <p className="text-text-3">{t("editor.noVariants")}</p>
           )}
