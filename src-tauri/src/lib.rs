@@ -1,3 +1,4 @@
+mod ai;
 mod secrets;
 
 use tauri::{AppHandle, Emitter, Manager};
@@ -31,7 +32,11 @@ pub fn run() {
         .plugin(tauri_plugin_sql::Builder::default().build())
         .plugin(global_shortcut)
         .plugin(tauri_plugin_notification::init())
+        .manage(ai::AiJobs::default())
         .invoke_handler(tauri::generate_handler![
+            ai::ai_complete,
+            ai::ai_cancel,
+            ai::ai_test,
             secrets::secret_set,
             secrets::secret_has,
             secrets::secret_clear
