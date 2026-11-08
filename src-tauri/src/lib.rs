@@ -1,3 +1,5 @@
+mod secrets;
+
 use tauri::{AppHandle, Emitter, Manager};
 use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut, ShortcutState};
 
@@ -29,6 +31,11 @@ pub fn run() {
         .plugin(tauri_plugin_sql::Builder::default().build())
         .plugin(global_shortcut)
         .plugin(tauri_plugin_notification::init())
+        .invoke_handler(tauri::generate_handler![
+            secrets::secret_set,
+            secrets::secret_has,
+            secrets::secret_clear
+        ])
         .setup(move |app| {
             // Another app may own the shortcut; the app must still start.
             if let Err(error) = app.global_shortcut().register(shortcut) {
