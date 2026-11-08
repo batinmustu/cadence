@@ -39,7 +39,7 @@ for (const lang of ["English", "Türkçe"]) {
     for (const path of ["/ideas", "/calendar", "/published"]) {
       await page.goto(path);
       await page.waitForTimeout(150);
-      const text = await page.locator("body").innerText();
+      const text = await page.evaluate(() => document.body.innerText);
       expect(text.split("\n").filter((l) => rawKey.test(l))).toEqual([]);
     }
     // Every settings section, the search palette and the series dialog.
@@ -49,7 +49,7 @@ for (const lang of ["English", "Türkçe"]) {
     for (const name of await dialog.getByRole("navigation").getByRole("button").allInnerTexts()) {
       await dialog.getByRole("navigation").getByRole("button", { name, exact: true }).click();
       await page.waitForTimeout(100);
-      const text = await dialog.innerText();
+      const text = await dialog.evaluate((el) => (el as HTMLElement).innerText);
       expect(text.split("\n").filter((l) => rawKey.test(l))).toEqual([]);
     }
     await closeSettings(page);
