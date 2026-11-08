@@ -38,6 +38,8 @@ export interface AppWindow {
   toggleSidebarShortcut: string;
   /** Fires when the global quick-capture shortcut is pressed. No-op in the browser. */
   onQuickCapture(listener: () => void): () => void;
+  /** Re-binds the global quick-capture shortcut. Rejects when it cannot be registered. No-op in the browser. */
+  setQuickCaptureShortcut(accelerator: string): Promise<void>;
 }
 
 export interface ScheduledNotification {

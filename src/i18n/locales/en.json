@@ -264,6 +264,18 @@
         "name": "Give the content type a name.",
         "schema": "The fields are not valid:"
       }
+    },
+    "general": {
+      "language": "Language",
+      "system": "System",
+      "weekStart": "Week starts on",
+      "monday": "Monday",
+      "sunday": "Sunday",
+      "shortcut": "Quick capture shortcut",
+      "pressKeys": "Press new keys…",
+      "reset": "Reset",
+      "shortcutNote": "Works from any app. Needs at least one modifier key.",
+      "shortcutFailed": "Could not use {{shortcut}}; another app may own it. The previous shortcut is still active."
     }
   },
   "assistant": {

@@ -17,6 +17,7 @@ import { createSeriesRepository } from "../../db/repositories/series";
 import { platform } from "../../platform";
 import { createAiDraft } from "../series/aiDraft";
 import { notifySeriesChanged } from "../series/seriesEvents";
+import { useWeekStart } from "../settings/generalConfig";
 
 interface PostRow {
   id: string;
@@ -34,7 +35,8 @@ export function useCalendar(month: MonthRef) {
   const [slots, setSlots] = useState<CalendarSlotInput[]>([]);
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const grid = useMemo(() => monthGrid(month), [month]);
+  const weekStart = useWeekStart();
+  const grid = useMemo(() => monthGrid(month, weekStart), [month, weekStart]);
   const first = grid[0]?.date ?? "";
   const last = grid[grid.length - 1]?.date ?? "";
 
@@ -158,5 +160,5 @@ export function useCalendar(month: MonthRef) {
     [load],
   );
 
-  return { grid, items, loaded, ideas, scheduleIdea, emptySlots, fillSlots };
+  return { grid, weekStart, items, loaded, ideas, scheduleIdea, emptySlots, fillSlots };
 }

@@ -46,7 +46,7 @@ function Chip({ item }: { item: CalendarItem }) {
 export function CalendarScreen() {
   const { t, i18n } = useTranslation();
   const [month, setMonth] = useState(todayRef);
-  const { grid, items, ideas, scheduleIdea, emptySlots, fillSlots } = useCalendar(month);
+  const { grid, weekStart, items, ideas, scheduleIdea, emptySlots, fillSlots } = useCalendar(month);
   const [filling, setFilling] = useState<{ skipped: string[] } | null>(null);
   const [fillState, setFillState] = useState<{ running: boolean; error: string | null }>({
     running: false,
@@ -87,7 +87,7 @@ export function CalendarScreen() {
           </Button>
         </div>
         <div className="grid grid-cols-7 gap-px text-xs text-text-3">
-          {[1, 2, 3, 4, 5, 6, 0].map((d) => (
+          {(weekStart === "monday" ? [1, 2, 3, 4, 5, 6, 0] : [0, 1, 2, 3, 4, 5, 6]).map((d) => (
             <div key={d} className="px-2 pb-1">
               {t(`weekday.${WEEKDAY_KEYS[d] ?? "mon"}`)}
             </div>

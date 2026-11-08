@@ -55,3 +55,13 @@ test("Fill with AI lists empty slots and creates nothing until confirmed", async
   await expect(again).toBeHidden();
   await expect(page.getByText("Mock AI response.").first()).toBeVisible();
 });
+
+test("general settings: week start moves Sunday to the first column", async ({ page }) => {
+  await page.goto("/settings/general");
+  await page.getByLabel("Week starts on").selectOption("sunday");
+  await page.getByRole("complementary").getByRole("link", { name: "Calendar" }).click();
+  const days = page.getByTestId("calendar-day");
+  await expect(days).toHaveCount(42);
+  const first = await days.first().getAttribute("data-date");
+  expect(new Date(`${first}T00:00:00Z`).getUTCDay()).toBe(0);
+});
