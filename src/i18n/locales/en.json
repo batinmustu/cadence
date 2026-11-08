@@ -47,6 +47,26 @@
       "none": "No series",
       "picker": "Series",
       "error": "Could not create the series."
+    },
+    "screen": {
+      "label": "Series",
+      "notFound": "This series does not exist.",
+      "planned": "Planned",
+      "empty": "Empty",
+      "assign": "Assign idea",
+      "noIdeas": "No unscheduled ideas in this series.",
+      "pickIdea": "Choose an idea",
+      "counts": "{{planned}} planned · {{published}} published",
+      "upcoming": "Upcoming slots",
+      "noSlots": "No upcoming slots. Pick weekdays in the settings.",
+      "ideas": "Ideas in this series",
+      "addIdea": "Add idea",
+      "add": "Add",
+      "published": "Published",
+      "settings": "Series settings",
+      "template": "Template",
+      "templateHint": "Used by AI drafts",
+      "remind": "Remind me before an empty slot"
     }
   },
   "ideas": {

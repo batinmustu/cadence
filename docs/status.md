@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T13:50Z · Current milestone: v0.1 Foundation
+Last updated: 2026-11-08T13:51Z · Current milestone: v0.1 Foundation
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -27,14 +27,16 @@ Last updated: 2026-11-08T13:50Z · Current milestone: v0.1 Foundation
 | #19 | feat(core): series rhythm and slot calculation | #63 | 2026-11-08 |
 | #20 | feat(db): series repository | #64 | 2026-11-08 |
 | #21 | feat(series): create series and sidebar list | #65 | 2026-11-08 |
+| #22 | feat(series): series screen and settings panel | #66 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #22 feat(series): series screen and settings panel
+- #23 feat(calendar): month view
 
 ## Notes
+- #22: `/series/<id>` shows the next 4 slots (120-day horizon, local time zone), unscheduled ideas, published ideas and a settings panel with 600 ms autosave (flushed on leave). "Assign idea" reuses the idea's draft post or creates one with the platform's first content type, then schedules it into the slot. The **AI draft** button is left out until #32. "Remind me" is stored as 24 h (`remind_before_hours`); the lead time is not configurable yet. Series description is shown but not editable.
 - #21: the "+" dialog (name, platform, days, time, frequency) creates the series and opens `/series/<id>` (still a placeholder until #22). The sidebar and the capture box's series picker refresh through a small change signal (`features/series/seriesEvents.ts`). The dialog has no focus trap yet. `Input`/`Select`/`Textarea` now accept `ref` (React 19).
 - #20: series weekdays are stored as a JSON array of 0=Sunday…6 (see #19 note), in the order given (monthly uses the first). `softDelete` detaches the series' ideas. Series posts are found through `ideas.series_id`.
 - #18: tags are case-insensitive unique ("Launch" = "launch"), stored without `#`. Capture box and editor header have a tag input (Enter or comma adds, Backspace removes last, autocomplete from existing tags). The ideas list filters by one tag via a dropdown shown once any tag exists. Tags cannot be renamed/deleted yet.

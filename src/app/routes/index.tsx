@@ -8,6 +8,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { EditorScreen } from "../../features/editor/EditorScreen";
 import { IdeasScreen } from "../../features/ideas/IdeasScreen";
+import { SeriesScreen } from "../../features/series/SeriesScreen";
 import { AppShell } from "../layout/AppShell";
 
 function Screen({ titleKey, detail }: { titleKey: string; detail?: string }) {
@@ -50,9 +51,9 @@ const ideaRoute = createRoute({
 const seriesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "series/$id",
-  component: function SeriesScreen() {
+  component: function SeriesRoute() {
     const { id } = seriesRoute.useParams();
-    return <Screen titleKey="nav.series" detail={id} />;
+    return <SeriesScreen key={id} seriesId={id} />;
   },
 });
 const calendarRoute = createRoute({
