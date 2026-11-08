@@ -1,27 +1,39 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button, Input, Segmented, Select } from "../../components";
 import { AI_PROVIDERS, type AiProviderId, PROVIDER_INFO } from "../../core/aiSettings";
+import {
+  isLastStep,
+  isOptional,
+  nextStep,
+  ONBOARDING_STEPS,
+  type OnboardingStep,
+  previousStep,
+} from "../../core/onboardingSteps";
 import { platform } from "../../platform";
 import { NewSeriesDialog } from "../series/NewSeriesDialog";
 import { loadAiConfig, saveSetting, settingKeys } from "../settings/aiConfig";
 import { generalKeys, loadGeneralConfig, saveGeneralSetting } from "../settings/generalConfig";
 import { isOnboardingDone, markOnboardingDone } from "./onboardingConfig";
 
-type Step = "welcome" | "ai" | "series";
-const STEPS: Step[] = ["welcome", "ai", "series"];
-
 /** First-launch overlay. Skipping or finishing stores a flag so it never returns. */
 export function Onboarding() {
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
-  const [step, setStep] = useState<Step>("welcome");
+  const [step, setStep] = useState<OnboardingStep>("welcome");
   const [language, setLanguage] = useState("system");
   const [provider, setProvider] = useState<AiProviderId>("anthropic");
   const [keyInput, setKeyInput] = useState("");
   const [keySaved, setKeySaved] = useState(false);
   const [creating, setCreating] = useState(false);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  // Move focus to the heading so keyboard and screen-reader users land on the new step.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: refocus whenever the step or visibility changes
+  useEffect(() => {
+    if (visible) headingRef.current?.focus();
+  }, [step, visible]);
 
   useEffect(() => {
     let alive = true;
@@ -45,10 +57,13 @@ export function Onboarding() {
     setVisible(false);
   };
   const next = () => {
-    const i = STEPS.indexOf(step);
-    const following = STEPS[i + 1];
+    const following = nextStep(step);
     if (following) setStep(following);
     else void finish();
+  };
+  const back = () => {
+    const before = previousStep(step);
+    if (before) setStep(before);
   };
   const chooseProvider = async (p: AiProviderId) => {
     setProvider(p);
@@ -73,14 +88,31 @@ export function Onboarding() {
           // Onboarding is left only through Skip or Done, never by a stray click or Escape.
           onEscapeKeyDown={(e) => e.preventDefault()}
           onInteractOutside={(e) => e.preventDefault()}
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            headingRef.current?.focus();
+          }}
+          onKeyDown={(e) => {
+            // Enter runs the primary action, except where it already means something.
+            const el = e.target as HTMLElement;
+            if (e.key === "Enter" && !el.closest("button,[role=combobox],[role=radio]")) {
+              e.preventDefault();
+              next();
+            }
+          }}
         >
           <p className="text-xs text-text-3">
-            {t("onboarding.step", { n: STEPS.indexOf(step) + 1, total: STEPS.length })}
+            {t("onboarding.step", {
+              n: ONBOARDING_STEPS.indexOf(step) + 1,
+              total: ONBOARDING_STEPS.length,
+            })}
           </p>
 
           {step === "welcome" ? (
             <>
-              <DialogTitle className="text-lg">{t("onboarding.welcome.title")}</DialogTitle>
+              <DialogTitle ref={headingRef} tabIndex={-1} className="text-lg outline-none">
+                {t("onboarding.welcome.title")}
+              </DialogTitle>
               <p className="text-[13px] text-text-2">{t("onboarding.welcome.body")}</p>
               <div className="flex flex-col gap-1 text-xs text-text-3">
                 <label htmlFor="ob-language">{t("settings.general.language")}</label>
@@ -102,7 +134,9 @@ export function Onboarding() {
 
           {step === "ai" ? (
             <>
-              <DialogTitle className="text-lg">{t("onboarding.ai.title")}</DialogTitle>
+              <DialogTitle ref={headingRef} tabIndex={-1} className="text-lg outline-none">
+                {t("onboarding.ai.title")}
+              </DialogTitle>
               <p className="text-[13px] text-text-2">{t("onboarding.ai.body")}</p>
               <Segmented
                 label={t("settings.ai.provider")}
@@ -147,7 +181,9 @@ export function Onboarding() {
 
           {step === "series" ? (
             <>
-              <DialogTitle className="text-lg">{t("onboarding.series.title")}</DialogTitle>
+              <DialogTitle ref={headingRef} tabIndex={-1} className="text-lg outline-none">
+                {t("onboarding.series.title")}
+              </DialogTitle>
               <p className="text-[13px] text-text-2">{t("onboarding.series.body")}</p>
               <div>
                 <Button variant="secondary" onClick={() => setCreating(true)}>
@@ -157,11 +193,17 @@ export function Onboarding() {
             </>
           ) : null}
 
-          <div className="mt-2 flex items-center justify-between">
-            <Button onClick={() => void finish()}>{t("onboarding.skip")}</Button>
-            <Button variant="primary" onClick={next}>
-              {step === "series" ? t("onboarding.done") : t("onboarding.next")}
+          <div className="mt-2 flex items-center justify-between gap-2">
+            <Button variant="ghost" onClick={() => void finish()}>
+              {t("onboarding.skip")}
             </Button>
+            <div className="flex items-center gap-2">
+              {previousStep(step) ? <Button onClick={back}>{t("onboarding.back")}</Button> : null}
+              {isOptional(step) ? <Button onClick={next}>{t("onboarding.skipStep")}</Button> : null}
+              <Button variant="primary" onClick={next}>
+                {isLastStep(step) ? t("onboarding.done") : t("onboarding.next")}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

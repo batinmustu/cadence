@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T21:29Z · Current milestone: UI polish (#84–#103)
+Last updated: 2026-11-08T21:37Z · Current milestone: UI polish (#84–#103)
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -57,14 +57,16 @@ Last updated: 2026-11-08T21:29Z · Current milestone: UI polish (#84–#103)
 | #93 | fix(ui): enlarge sidebar icons | #113 | 2026-11-08 |
 | #94 | fix(search): command palette for sidebar search and ⌘K | #114 | 2026-11-08 |
 | #95 | feat(settings): open settings in a dialog instead of a page | #115 | 2026-11-08 |
+| #96 | feat(onboarding): back navigation and per-step skip | #116 | 2026-11-08 |
 
 ## Blocked / needs decision
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
 
 ## Next up
-- #96–#103 in order
+- #97–#103 in order
 
 ## Notes
+- #96: step logic is `core/onboardingSteps.ts` (welcome required; ai and series optional). Footer: ghost "Skip setup" left; Back, "Skip this step" and the one primary Next/Done on the right. Enter anywhere except on buttons/selects runs the primary action; focus goes to the step heading (also on open). Entered values survive Back because state lives in the parent. No new dependency.
 - #95: settings are a `SettingsDialog` (always mounted in `AppShell`) driven by a tiny store in `features/settings/settingsDialog.ts` (`openSettings(section?)`, last section remembered, ⌘, / Ctrl+, opens it); `/settings*` routes and `SettingsScreen` are removed. Sections are General, AI, Platforms, Data — Commands are still inside AI (no separate section). e2e uses `e2e/helpers.ts`. Focus trap/return comes from Radix Dialog. No new dependency. ⌘, on macOS needs a check in the desktop app (no native menu item).
 - #93: `components/iconSize.ts` (`iconSize.nav` 18, `action` 16, `inline` 14, `tiny` 12; `ICON_STROKE` 1.7) replaces literal icon sizes everywhere; `src/iconSize.test.ts` fails on a literal `size={n}`. Sidebar add-series button is 28×28 with a 16 px icon. Hit the 8-PR limit of a run, so this PR was left as a draft for the next run to finish and merge. Branch is the session branch.
 - #92: the sidebar is always visible; `useSidebarCollapsed`, ⌃⌘S and the `toggleSidebarShortcut` adapter field are gone. Window adapter now has `isFullscreen()` / `onFullscreenChange()` (Tauri: `onResized` + `isFullscreen`; browser: Fullscreen API). The sidebar's top row is 48 px on macOS in a window and 12 px otherwise (`sidebarTopInset`), animated with the motion tokens. `trafficLightPosition.y` changed 24 → 18 so the 12 px buttons centre in the 48 px row (unverified guess). The stored `sidebar.collapsed` setting is simply ignored. **Needs manual testing on macOS:** traffic light alignment, entering/leaving full screen. Branch is the session branch.

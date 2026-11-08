@@ -326,6 +326,8 @@
     "title": "Welcome to Cadence",
     "step": "Step {{n}} of {{total}}",
     "skip": "Skip setup",
+    "back": "Back",
+    "skipStep": "Skip this step",
     "next": "Next",
     "done": "Done",
     "welcome": {
