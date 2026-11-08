@@ -276,6 +276,29 @@
       "reset": "Reset",
       "shortcutNote": "Works from any app. Needs at least one modifier key.",
       "shortcutFailed": "Could not use {{shortcut}}; another app may own it. The previous shortcut is still active."
+    },
+    "data": {
+      "exportTitle": "Export",
+      "exportHelp": "Save all your ideas, posts, series and settings as one JSON file. API keys are never included.",
+      "export": "Export all data",
+      "exported": "Export downloaded.",
+      "exportedTo": "Saved to {{path}}",
+      "exportFailed": "Could not export your data.",
+      "importTitle": "Import",
+      "importHelp": "Restore from a Cadence export. Only works while you have no ideas, series or tags yet.",
+      "import": "Import from file…",
+      "imported": "Imported. Reloading…",
+      "importError": {
+        "notJson": "That file is not valid JSON.",
+        "notCadence": "That file is not a Cadence export.",
+        "tooNew": "That export was made by a newer version of Cadence.",
+        "invalid": "The export is damaged or inconsistent. Nothing was imported.",
+        "notEmpty": "Import needs an empty Cadence. Remove your ideas, series and tags first.",
+        "failed": "Import failed. Your database was reset to its starting state."
+      },
+      "databaseTitle": "Database",
+      "databaseHelp": "Cadence keeps a daily backup copy and the last 7 are kept next to the database.",
+      "reveal": "Reveal database file"
     }
   },
   "assistant": {

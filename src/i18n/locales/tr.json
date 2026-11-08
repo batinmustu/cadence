@@ -276,6 +276,29 @@
       "reset": "Sıfırla",
       "shortcutNote": "Her uygulamadan çalışır. En az bir değiştirici tuş gerekir.",
       "shortcutFailed": "{{shortcut}} kullanılamadı; başka bir uygulama kullanıyor olabilir. Önceki kısayol hâlâ etkin."
+    },
+    "data": {
+      "exportTitle": "Dışa aktar",
+      "exportHelp": "Tüm fikirlerini, gönderilerini, serilerini ve ayarlarını tek bir JSON dosyası olarak kaydet. API anahtarları asla dahil edilmez.",
+      "export": "Tüm verileri dışa aktar",
+      "exported": "Dışa aktarma indirildi.",
+      "exportedTo": "Şuraya kaydedildi: {{path}}",
+      "exportFailed": "Verilerin dışa aktarılamadı.",
+      "importTitle": "İçe aktar",
+      "importHelp": "Bir Cadence dışa aktarımından geri yükle. Yalnızca henüz fikir, seri veya etiketin yokken çalışır.",
+      "import": "Dosyadan içe aktar…",
+      "imported": "İçe aktarıldı. Yeniden yükleniyor…",
+      "importError": {
+        "notJson": "Bu dosya geçerli bir JSON değil.",
+        "notCadence": "Bu dosya bir Cadence dışa aktarımı değil.",
+        "tooNew": "Bu dışa aktarım Cadence'in daha yeni bir sürümüyle yapılmış.",
+        "invalid": "Dışa aktarım bozuk veya tutarsız. Hiçbir şey içe aktarılmadı.",
+        "notEmpty": "İçe aktarma boş bir Cadence gerektirir. Önce fikirlerini, serilerini ve etiketlerini sil.",
+        "failed": "İçe aktarma başarısız oldu. Veritabanı başlangıç durumuna sıfırlandı."
+      },
+      "databaseTitle": "Veritabanı",
+      "databaseHelp": "Cadence günlük yedek alır; son 7 yedek veritabanının yanında saklanır.",
+      "reveal": "Veritabanı dosyasını göster"
     }
   },
   "assistant": {

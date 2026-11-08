@@ -57,6 +57,21 @@ export function createBrowserPlatform(): Platform {
       async setQuickCaptureShortcut() {},
     },
     notifications: { async schedule() {}, async cancel() {} },
+    files: {
+      async saveExport(fileName, content) {
+        const url = URL.createObjectURL(new Blob([content], { type: "application/json" }));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+        return null;
+      },
+      async revealDatabase() {},
+      async backupTarget() {
+        return null;
+      },
+    },
     clipboard: {
       async writeText(text) {
         await navigator.clipboard?.writeText(text);

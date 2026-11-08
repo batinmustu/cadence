@@ -1,4 +1,5 @@
 mod ai;
+mod files;
 mod secrets;
 
 use std::str::FromStr;
@@ -92,6 +93,9 @@ pub fn run() {
             secrets::secret_set,
             secrets::secret_has,
             secrets::secret_clear,
+            files::backup_target,
+            files::save_export,
+            files::reveal_database,
             set_capture_shortcut
         ])
         .setup(move |app| {

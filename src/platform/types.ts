@@ -58,6 +58,15 @@ export interface Clipboard {
   writeText(text: string): Promise<void>;
 }
 
+export interface Files {
+  /** Saves an export; returns where it went (a path), or null when the browser downloaded it. */
+  saveExport(fileName: string, content: string): Promise<string | null>;
+  /** Shows the database file in the OS file manager. No-op in the browser. */
+  revealDatabase(): Promise<void>;
+  /** Path for today's backup copy, or null when none is needed (already made, or no files). */
+  backupTarget(fileName: string): Promise<string | null>;
+}
+
 export interface Platform {
   database: Database;
   secrets: Secrets;
@@ -65,4 +74,5 @@ export interface Platform {
   window: AppWindow;
   notifications: Notifications;
   clipboard: Clipboard;
+  files: Files;
 }

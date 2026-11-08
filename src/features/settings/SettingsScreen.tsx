@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { AiSettings } from "./AiSettings";
+import { DataSettings } from "./DataSettings";
 import { GeneralSettings } from "./GeneralSettings";
 import { PlatformsSettings } from "./PlatformsSettings";
 
@@ -32,6 +33,8 @@ export function SettingsScreen({ section }: { section: string }) {
             <GeneralSettings />
           ) : section === "platforms" ? (
             <PlatformsSettings />
+          ) : section === "data" ? (
+            <DataSettings />
           ) : (
             <p className="text-text-3">{t("settings.comingSoon")}</p>
           )}
