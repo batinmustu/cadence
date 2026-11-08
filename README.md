@@ -21,7 +21,17 @@ Cadence does not publish for you. It plans, drafts and reminds.
 
 ## Screenshots
 
-Coming with v0.1.
+![Ideas](docs/screenshots/ideas.png)
+![Editor](docs/screenshots/editor.png)
+![Calendar](docs/screenshots/calendar.png)
+
+Regenerate them with `pnpm screenshots` (browser mode, demo data).
+
+## Install
+
+Download the latest `.dmg` from the [Releases](../../releases) page, open it and drag Cadence to Applications. Builds are macOS only for now. Until releases are signed, macOS may ask you to confirm opening the app (right-click → Open).
+
+A short [user guide](docs/guide.md) explains the main screens.
 
 ## Tech stack
 

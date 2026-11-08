@@ -13,6 +13,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "test": "vitest run",
+    "screenshots": "node scripts/screenshots.mjs",
     "test:e2e": "playwright test --trace off",
     "prepare": "lefthook install"
   },
