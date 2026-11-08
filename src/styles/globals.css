@@ -33,9 +33,14 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --font-sans: "Inter Variable", system-ui, sans-serif;
-  --radius-chip: 6px;
-  --radius-row: 10px;
-  --radius-capture: 16px;
+  --radius-sm: var(--radius-token-sm);
+  --radius-md: var(--radius-token-md);
+  --radius-lg: var(--radius-token-lg);
+  --radius-xl: var(--radius-token-xl);
+  --radius-chip: var(--radius-sm);
+  --radius-row: var(--radius-lg);
+  --radius-card: var(--radius-lg);
+  --radius-capture: var(--radius-xl);
 }
 
 html,

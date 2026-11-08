@@ -77,7 +77,7 @@ export function CaptureBox({ platforms, tags, series = [], onCapture, autoFocus 
   }
 
   return (
-    <div className="rounded-card bg-surface p-4">
+    <div className="rounded-capture bg-surface p-4">
       <textarea
         ref={ref}
         value={text}
@@ -125,7 +125,7 @@ export function CaptureBox({ platforms, tags, series = [], onCapture, autoFocus 
         {series.length > 0 ? (
           <Select
             aria-label={t("series.new.picker")}
-            className="h-7 w-36 text-xs"
+            className="h-7 w-36 rounded-md text-xs"
             value={seriesId}
             onValueChange={(v) => setSeriesId(v)}
           >
