@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge, Button, Input, Segmented, Select, Textarea, Toggle } from "../components";
+import { ICON_STROKE, iconSize } from "../components/iconSize";
 
 // Dev-only page (/__components); its labels are not user-facing, so they skip i18n.
 export function ComponentsGallery() {
@@ -24,7 +25,7 @@ export function ComponentsGallery() {
         <Button>Secondary</Button>
         <Button variant="ghost">Ghost</Button>
         <Button variant="icon" aria-label="Add">
-          <Plus size={16} strokeWidth={1.7} />
+          <Plus size={iconSize.action} strokeWidth={ICON_STROKE} />
         </Button>
       </div>
       <div className="flex gap-2">

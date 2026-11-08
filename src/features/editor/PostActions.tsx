@@ -2,6 +2,7 @@ import { Copy } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Input, Textarea } from "../../components";
+import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import type { FieldSchema } from "../../core/fieldSchema";
 import type { Post, PostPatch } from "../../core/posts";
 import { fromLocalParts, toLocalParts, variantText } from "../../core/schedule";
@@ -37,7 +38,7 @@ export function PostActions({ post, schema, onUpdate }: Props) {
     <div className="mt-6 flex flex-col gap-3 border-t border-border-input pt-4">
       <div className="flex flex-wrap items-center gap-2">
         <Button onClick={() => void copy()}>
-          <Copy size={14} strokeWidth={1.7} />
+          <Copy size={iconSize.inline} strokeWidth={ICON_STROKE} />
           {copied ? t("editor.copied") : t("editor.copy")}
         </Button>
         {post.status === "published" ? (

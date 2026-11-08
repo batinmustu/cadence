@@ -3,6 +3,7 @@ import { Lightbulb } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Badge, Segmented, Select } from "../../components";
+import { iconSize } from "../../components/iconSize";
 import {
   filterIdeasByStatus,
   groupIdeasByDate,
@@ -83,7 +84,7 @@ export function IdeasScreen() {
                   className={`flex items-center gap-3 rounded-row px-2 py-2 hover:bg-surface ${published ? "opacity-60" : ""}`}
                 >
                   <span className="flex size-[34px] shrink-0 items-center justify-center rounded-row bg-surface-2 text-text-2">
-                    <Lightbulb size={16} />
+                    <Lightbulb size={iconSize.action} />
                   </span>
                   <div className="min-w-0 flex-1">
                     <Link

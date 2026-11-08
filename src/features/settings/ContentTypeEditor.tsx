@@ -2,6 +2,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Input, Select } from "../../components";
+import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import type { FieldDef, FieldKind, FieldSchema } from "../../core/fieldSchema";
 import { COUNT_RULES, checkSchema, newField } from "../../core/platforms";
 
@@ -89,7 +90,7 @@ export function ContentTypeEditor({ initialName, initialSchema, onSave, onCancel
                 aria-label={t("settings.platforms.removeField", { n: i + 1 })}
                 onClick={() => setFields((cur) => cur.filter((_, idx) => idx !== i))}
               >
-                <Trash2 size={14} strokeWidth={1.7} />
+                <Trash2 size={iconSize.inline} strokeWidth={ICON_STROKE} />
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-2 text-xs text-text-3">
@@ -187,7 +188,7 @@ export function ContentTypeEditor({ initialName, initialSchema, onSave, onCancel
             )
           }
         >
-          <Plus size={14} strokeWidth={1.7} />
+          <Plus size={iconSize.inline} strokeWidth={ICON_STROKE} />
           {t("settings.platforms.addField")}
         </Button>
       </div>

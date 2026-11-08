@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button, Input, Select } from "../../components";
+import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import { type CalendarItem, groupByDate, type MonthRef, shiftMonth } from "../../core/calendar";
 import { fromLocalParts } from "../../core/schedule";
 import { WEEKDAY_KEYS } from "../../core/weekdays";
@@ -84,11 +85,11 @@ export function CalendarScreen() {
             {title}
           </h1>
           <Button aria-label={t("calendar.prev")} onClick={() => setMonth(shiftMonth(month, -1))}>
-            <ChevronLeft size={14} />
+            <ChevronLeft size={iconSize.inline} />
           </Button>
           <Button onClick={() => setMonth(todayRef())}>{t("calendar.today")}</Button>
           <Button aria-label={t("calendar.next")} onClick={() => setMonth(shiftMonth(month, 1))}>
-            <ChevronRight size={14} />
+            <ChevronRight size={iconSize.inline} />
           </Button>
         </div>
         <div className="grid grid-cols-7 gap-px text-xs text-text-3">
@@ -150,7 +151,7 @@ export function CalendarScreen() {
           <div className="flex flex-col gap-2 rounded-card border border-dashed border-border-strong p-3">
             <p className="text-text-2">{t("calendar.emptySlots", { count: emptySlots.length })}</p>
             <Button onClick={() => setFilling({ skipped: [] })}>
-              <Sparkles size={14} strokeWidth={1.7} />
+              <Sparkles size={iconSize.inline} strokeWidth={ICON_STROKE} />
               {t("calendar.fillWithAi")}
             </Button>
           </div>

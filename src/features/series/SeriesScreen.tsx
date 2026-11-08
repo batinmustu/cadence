@@ -3,6 +3,7 @@ import { Plus, Sparkles } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Badge, Button, Input, Select, Textarea, Toggle } from "../../components";
+import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import type { Idea } from "../../core/ideas";
 import type { Slot } from "../../core/series";
 import { type Frequency, WEEKDAY_KEYS } from "../../core/weekdays";
@@ -105,7 +106,7 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
               {t("series.screen.assign")}
             </Button>
             <Button disabled={drafting !== null} onClick={() => void draftWithAi(slot)}>
-              <Sparkles size={14} strokeWidth={1.7} />
+              <Sparkles size={iconSize.inline} strokeWidth={ICON_STROKE} />
               {drafting === slot.at ? t("series.screen.drafting") : t("series.screen.aiDraft")}
             </Button>
             {assigning === slot.at ? (
@@ -188,7 +189,7 @@ export function SeriesScreen({ seriesId }: { seriesId: string }) {
             onChange={(e) => setNewTitle(e.target.value)}
           />
           <Button type="submit" disabled={newTitle.trim() === ""}>
-            <Plus size={14} />
+            <Plus size={iconSize.inline} />
             {t("series.screen.add")}
           </Button>
         </form>

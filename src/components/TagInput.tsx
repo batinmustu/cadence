@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { normalizeTagName, suggestTags, type Tag } from "../core/tags";
+import { iconSize } from "./iconSize";
 
 type Props = {
   /** Tags already on the item. */
@@ -44,7 +45,7 @@ export function TagInput({ selected, known, onAdd, onRemove }: Props) {
             onClick={() => onRemove(tag)}
             className="flex size-4 items-center justify-center rounded-full text-text-3 hover:text-text"
           >
-            <X size={12} />
+            <X size={iconSize.tiny} />
           </button>
         </span>
       ))}

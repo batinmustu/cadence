@@ -2,6 +2,7 @@ import { ArrowUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Select, TagInput, Textarea, Toggle } from "../../components";
+import { iconSize } from "../../components/iconSize";
 import { normalizeTagName, sameTagName, type Tag } from "../../core/tags";
 import { consumeCaptureFocus, onCaptureFocusRequest } from "./captureFocus";
 import type { PlatformOption, SeriesOption } from "./useIdeas";
@@ -144,7 +145,7 @@ export function CaptureBox({ platforms, tags, series = [], onCapture, autoFocus 
           onClick={() => void submit()}
           className="flex size-8 items-center justify-center rounded-full bg-text text-bg"
         >
-          <ArrowUp size={16} />
+          <ArrowUp size={iconSize.action} />
         </button>
       </div>
     </div>
