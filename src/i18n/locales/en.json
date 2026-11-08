@@ -60,5 +60,17 @@
       "archived": "Archived"
     },
     "publishedMark": "Published ✓"
+  },
+  "editor": {
+    "back": "Back to ideas",
+    "title": "Title",
+    "saved": "Saved",
+    "saving": "Saving…",
+    "status": "Status",
+    "schedule": "Schedule",
+    "addVariant": "Add variant",
+    "noVariants": "No variants yet. Add one with +.",
+    "fieldsSoon": "Fields for this variant appear here.",
+    "notFound": "This idea does not exist."
   }
 }

@@ -60,5 +60,17 @@
       "archived": "Arşivlendi"
     },
     "publishedMark": "Yayınlandı ✓"
+  },
+  "editor": {
+    "back": "Fikirlere dön",
+    "title": "Başlık",
+    "saved": "Kaydedildi",
+    "saving": "Kaydediliyor…",
+    "status": "Durum",
+    "schedule": "Planla",
+    "addVariant": "Varyant ekle",
+    "noVariants": "Henüz varyant yok. + ile ekle.",
+    "fieldsSoon": "Bu varyantın alanları burada görünecek.",
+    "notFound": "Bu fikir bulunamadı."
   }
 }
