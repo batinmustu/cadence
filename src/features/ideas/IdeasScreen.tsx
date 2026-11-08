@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Lightbulb } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -28,7 +29,7 @@ export function IdeasScreen() {
   const fmt = new Intl.DateTimeFormat(i18n.language, { month: "short", day: "numeric" });
 
   return (
-    <section className="mx-auto max-w-3xl">
+    <section className="mx-auto w-full max-w-3xl">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">{t("nav.ideas")}</h1>
         <Segmented
@@ -64,7 +65,13 @@ export function IdeasScreen() {
                     <Lightbulb size={16} />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="truncate font-medium">{idea.title}</div>
+                    <Link
+                      to="/ideas/$id"
+                      params={{ id: idea.id }}
+                      className="block truncate font-medium text-text no-underline"
+                    >
+                      {idea.title}
+                    </Link>
                     {idea.note ? (
                       <div className="truncate text-sm text-text-3">{idea.note}</div>
                     ) : null}

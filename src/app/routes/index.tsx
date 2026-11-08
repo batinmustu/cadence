@@ -6,6 +6,7 @@ import {
   redirect,
 } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { EditorScreen } from "../../features/editor/EditorScreen";
 import { IdeasScreen } from "../../features/ideas/IdeasScreen";
 import { AppShell } from "../layout/AppShell";
 
@@ -43,7 +44,7 @@ const ideaRoute = createRoute({
   path: "$id",
   component: function IdeaScreen() {
     const { id } = ideaRoute.useParams();
-    return <Screen titleKey="nav.idea" detail={id} />;
+    return <EditorScreen key={id} ideaId={id} />;
   },
 });
 const seriesRoute = createRoute({
