@@ -421,5 +421,11 @@
       "title": "#{{name}} etiketi silinsin mi?",
       "body": "Etiket tüm fikirlerden kaldırılacak."
     }
+  },
+  "published": {
+    "empty": "Henüz yayınlanan bir şey yok. Editörde bir gönderiyi yayınlandı olarak işaretleyince burada görünür.",
+    "copy": "{{title}} içeriğini kopyala",
+    "unpublish": "{{title}} yayınlanmadı olarak işaretle",
+    "delete": "{{title}} sil"
   }
 }

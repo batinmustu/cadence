@@ -5,23 +5,13 @@ import {
   Outlet,
   redirect,
 } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
 import { parseIdeaSearch, serializeIdeaSearch } from "../../core/ideas";
 import { CalendarScreen } from "../../features/calendar/CalendarScreen";
 import { EditorScreen } from "../../features/editor/EditorScreen";
 import { IdeasScreen } from "../../features/ideas/IdeasScreen";
+import { PublishedScreen } from "../../features/published/PublishedScreen";
 import { SeriesScreen } from "../../features/series/SeriesScreen";
 import { AppShell } from "../layout/AppShell";
-
-function Screen({ titleKey, detail }: { titleKey: string; detail?: string }) {
-  const { t } = useTranslation();
-  return (
-    <section>
-      <h1 className="text-xl font-semibold">{t(titleKey)}</h1>
-      {detail ? <p className="mt-1 text-text-3">{detail}</p> : null}
-    </section>
-  );
-}
 
 const rootRoute = createRootRoute({ component: AppShell });
 
@@ -67,7 +57,7 @@ const calendarRoute = createRoute({
 const publishedRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "published",
-  component: () => <Screen titleKey="nav.published" />,
+  component: PublishedScreen,
 });
 const routeTree = rootRoute.addChildren([
   indexRoute,
