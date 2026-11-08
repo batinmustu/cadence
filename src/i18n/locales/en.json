@@ -195,6 +195,18 @@
       "model": "Model",
       "tone": "Tone of voice",
       "toneNote": "Sent with every request."
+    },
+    "commands": {
+      "title": "Commands",
+      "add": "Add",
+      "delete": "Delete {{name}}",
+      "name": "Name",
+      "prompt": "Prompt",
+      "target": "Available for",
+      "allTypes": "All content types",
+      "returnsOptions": "Returns several options",
+      "save": "Save",
+      "cancel": "Cancel"
     }
   }
 }

@@ -10,6 +10,7 @@ import {
 } from "../../core/aiSettings";
 import { platform } from "../../platform";
 import { type AiConfig, loadAiConfig, saveSetting, settingKeys } from "./aiConfig";
+import { CommandsSettings } from "./CommandsSettings";
 
 type TestState = "idle" | "testing" | "ok" | "failed";
 
@@ -173,6 +174,8 @@ export function AiSettings() {
         />
         <p className="text-xs text-text-3">{t("settings.ai.toneNote")}</p>
       </div>
+
+      <CommandsSettings />
     </div>
   );
 }
