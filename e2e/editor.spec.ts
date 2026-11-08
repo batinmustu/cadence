@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { closeSettings, openSettings } from "./helpers";
 
 test("open an idea, rename it, add a variant", async ({ page }) => {
   await page.goto("/ideas");
@@ -46,10 +47,12 @@ test("schedule a variant and mark it as published", async ({ page }) => {
 
 test("assistant panel: run a command and use the result", async ({ page }) => {
   // Connect a (mock) provider first; the key is write-only.
-  await page.goto("/settings/ai");
+  await page.goto("/ideas");
+  await openSettings(page, "AI");
   await page.getByLabel("API key").fill("sk-test");
   await page.getByRole("button", { name: "Save key" }).click();
   await expect(page.getByRole("button", { name: "Remove key" })).toBeVisible();
+  await closeSettings(page);
   await page.getByRole("complementary").getByRole("link", { name: "Ideas" }).click();
 
   const box = page.getByRole("textbox", { name: "New idea" });

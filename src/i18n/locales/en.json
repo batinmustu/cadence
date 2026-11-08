@@ -176,6 +176,7 @@
   },
   "settings": {
     "sections": "Settings sections",
+    "close": "Close settings",
     "comingSoon": "Coming soon.",
     "nav": {
       "general": "General",

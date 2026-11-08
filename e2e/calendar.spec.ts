@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { closeSettings, openSettings } from "./helpers";
 
 test("calendar shows a month grid and navigates", async ({ page }) => {
   await page.goto("/calendar");
@@ -27,10 +28,12 @@ test("schedule an idea from the calendar panel", async ({ page }) => {
 });
 
 test("Fill with AI lists empty slots and creates nothing until confirmed", async ({ page }) => {
-  await page.goto("/settings/ai");
+  await page.goto("/ideas");
+  await openSettings(page, "AI");
   await page.getByLabel("API key").fill("sk-test");
   await page.getByRole("button", { name: "Save key" }).click();
   await expect(page.getByRole("button", { name: "Remove key" })).toBeVisible();
+  await closeSettings(page);
 
   const nav = page.getByRole("complementary");
   await nav.getByRole("button", { name: "New series" }).click();
@@ -58,9 +61,11 @@ test("Fill with AI lists empty slots and creates nothing until confirmed", async
 });
 
 test("general settings: week start moves Sunday to the first column", async ({ page }) => {
-  await page.goto("/settings/general");
+  await page.goto("/ideas");
+  await openSettings(page, "General");
   await page.getByLabel("Week starts on").click();
   await page.getByRole("option", { name: "Sunday" }).click();
+  await closeSettings(page);
   await page.getByRole("complementary").getByRole("link", { name: "Calendar" }).click();
   const days = page.getByTestId("calendar-day");
   await expect(days).toHaveCount(42);

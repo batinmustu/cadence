@@ -16,6 +16,7 @@ import type { SeriesRhythmLabel } from "../../core/weekdays";
 import { CommandPalette } from "../../features/search/CommandPalette";
 import { NewSeriesDialog } from "../../features/series/NewSeriesDialog";
 import { useAiStatus } from "../../features/settings/aiConfig";
+import { openSettings } from "../../features/settings/settingsState";
 import { platform } from "../../platform";
 import { sidebarTopInset } from "./sidebarInset";
 import { useFullscreen } from "./useFullscreen";
@@ -23,7 +24,7 @@ import { useSeriesList } from "./useSeriesList";
 import { useTitleBarDrag } from "./useWindowDrag";
 
 const navItem =
-  "flex h-8 items-center gap-2.5 rounded-row px-2.5 text-[13px] text-text-2 hover:bg-surface-2";
+  "flex h-8 w-full items-center gap-2.5 rounded-row px-2.5 text-left text-[13px] text-text-2 hover:bg-surface-2";
 const activeProps = { className: `${navItem} bg-surface-2 text-text` };
 
 export function Sidebar() {
@@ -125,10 +126,10 @@ export function Sidebar() {
             t("nav.aiNotConnected")
           )}
         </div>
-        <Link to="/settings" className={navItem} activeProps={activeProps}>
+        <button type="button" className={navItem} onClick={() => openSettings()}>
           <Settings size={iconSize.nav} strokeWidth={ICON_STROKE} />
           {t("nav.settings")}
-        </Link>
+        </button>
       </div>
       <CommandPalette
         open={searching}

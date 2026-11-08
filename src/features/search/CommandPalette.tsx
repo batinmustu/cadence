@@ -7,6 +7,7 @@ import { createIdeasRepository } from "../../db/repositories/ideas";
 import { createSeriesRepository } from "../../db/repositories/series";
 import { createTagsRepository } from "../../db/repositories/tags";
 import { platform } from "../../platform";
+import { openSettings } from "../settings/settingsState";
 
 interface Entry {
   key: string;
@@ -79,13 +80,17 @@ export function CommandPalette({ open, onOpenChange, onNewSeries }: Props) {
       onOpenChange(false);
       fn();
     };
-    const go = (to: "/ideas" | "/calendar" | "/published" | "/settings") =>
-      close(() => void navigate({ to }));
+    const go = (to: "/ideas" | "/calendar" | "/published") => close(() => void navigate({ to }));
     const nav: Entry[] = [
       { key: "c-ideas", group: "commands", label: t("nav.ideas"), run: go("/ideas") },
       { key: "c-calendar", group: "commands", label: t("nav.calendar"), run: go("/calendar") },
       { key: "c-published", group: "commands", label: t("nav.published"), run: go("/published") },
-      { key: "c-settings", group: "commands", label: t("nav.settings"), run: go("/settings") },
+      {
+        key: "c-settings",
+        group: "commands",
+        label: t("nav.settings"),
+        run: close(() => openSettings()),
+      },
       {
         key: "c-new-idea",
         group: "commands",

@@ -10,7 +10,6 @@ import { CalendarScreen } from "../../features/calendar/CalendarScreen";
 import { EditorScreen } from "../../features/editor/EditorScreen";
 import { IdeasScreen } from "../../features/ideas/IdeasScreen";
 import { SeriesScreen } from "../../features/series/SeriesScreen";
-import { SettingsScreen } from "../../features/settings/SettingsScreen";
 import { AppShell } from "../layout/AppShell";
 
 function Screen({ titleKey, detail }: { titleKey: string; detail?: string }) {
@@ -68,34 +67,12 @@ const publishedRoute = createRoute({
   path: "published",
   component: () => <Screen titleKey="nav.published" />,
 });
-const settingsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "settings",
-  component: Outlet,
-});
-const settingsIndexRoute = createRoute({
-  getParentRoute: () => settingsRoute,
-  path: "/",
-  beforeLoad: () => {
-    throw redirect({ to: "/settings/$section", params: { section: "ai" } });
-  },
-});
-const settingsSectionRoute = createRoute({
-  getParentRoute: () => settingsRoute,
-  path: "$section",
-  component: function SettingsSection() {
-    const { section } = settingsSectionRoute.useParams();
-    return <SettingsScreen section={section} />;
-  },
-});
-
 const routeTree = rootRoute.addChildren([
   indexRoute,
   ideasRoute.addChildren([ideasIndexRoute, ideaRoute]),
   seriesRoute,
   calendarRoute,
   publishedRoute,
-  settingsRoute.addChildren([settingsIndexRoute, settingsSectionRoute]),
 ]);
 
 export const router = createRouter({ routeTree });
