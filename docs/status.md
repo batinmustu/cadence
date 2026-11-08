@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T23:10Z · Current milestone: UI polish (#84–#103)
+Last updated: 2026-11-08T23:40Z · Current milestone: UI polish (#84–#103)
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -52,16 +52,18 @@ Last updated: 2026-11-08T23:10Z · Current milestone: UI polish (#84–#103)
 | #88 | fix(ui): use pointer cursor on all clickable elements | #108 | 2026-11-08 |
 | #89 | feat(ui): auto-resize all textareas to fit content | #109 | 2026-11-08 |
 | #90 | fix(ui): use one standard content width in the main area | #110 | 2026-11-08 |
-| #91 | fix(ui): make the window draggable from the top area | this PR | 2026-11-08 |
+| #91 | fix(ui): make the window draggable from the top area | #111 | 2026-11-08 |
+| #92 | feat(ui): remove sidebar toggle and adapt layout to full screen | this PR | 2026-11-08 |
 
 ## Blocked / needs decision
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
 
 ## Next up
-- #92 feat(ui): remove sidebar toggle and adapt layout to full screen
-- then #93–#103 in order
+- #93 fix(ui): enlarge sidebar icons
+- then #94–#103 in order
 
 ## Notes
+- #92: the sidebar is always visible; `useSidebarCollapsed`, ⌃⌘S and the `toggleSidebarShortcut` adapter field are gone. Window adapter now has `isFullscreen()` / `onFullscreenChange()` (Tauri: `onResized` + `isFullscreen`; browser: Fullscreen API). The sidebar's top row is 48 px on macOS in a window and 12 px otherwise (`sidebarTopInset`), animated with the motion tokens. `trafficLightPosition.y` changed 24 → 18 so the 12 px buttons centre in the 48 px row (unverified guess). The stored `sidebar.collapsed` setting is simply ignored. **Needs manual testing on macOS:** traffic light alignment, entering/leaving full screen. Branch is the session branch.
 - #91: dragging goes through `platform.window.startDragging()/toggleMaximize()` (Tauri adapter uses `getCurrentWindow()`, browser is a no-op); `useTitleBarDrag` attaches a mousedown listener to the sidebar's top row and the main top strip (together they span the window; presses on child controls are ignored). `data-tauri-drag-region` was removed. Capability adds `core:window:allow-start-dragging` and `allow-toggle-maximize`. **Needs manual testing on macOS:** dragging, double-click maximise, full-screen behaviour, traffic-light area. Branch is the session branch.
 - #90: `PageContainer` (app/layout) wraps the router outlet in `AppShell` and uses token `--content-width` (64rem); there is no wide variant, so every screen (editor with assistant panel included) has the same width. Removed the per-screen `max-w-*`. `e2e/layout.spec.ts` compares Ideas, Calendar and Settings (Series/Published need data/are not built yet, but share the same shell wrapper). Inner settings forms keep their own narrow field widths. Branch is the session branch.
 - #89: `components/ui/textarea.tsx` auto-sizes in JS (layout effect after every render + ResizeObserver on width), with `minRows` (default 2) and `maxRows`. CSS `field-sizing: content` was not used because WebKit support is not guaranteed and it has no row limits. The capture box now uses the shared Textarea. Real WebKit typing/paste behaviour needs a look on macOS. Branch is the session branch.

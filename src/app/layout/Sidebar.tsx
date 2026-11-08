@@ -4,7 +4,6 @@ import {
   CheckCircle2,
   Layers,
   Lightbulb,
-  PanelLeft,
   Plus,
   Search,
   Settings,
@@ -16,6 +15,8 @@ import type { SeriesRhythmLabel } from "../../core/weekdays";
 import { NewSeriesDialog } from "../../features/series/NewSeriesDialog";
 import { useAiStatus } from "../../features/settings/aiConfig";
 import { platform } from "../../platform";
+import { sidebarTopInset } from "./sidebarInset";
+import { useFullscreen } from "./useFullscreen";
 import { useSeriesList } from "./useSeriesList";
 import { useTitleBarDrag } from "./useWindowDrag";
 
@@ -23,14 +24,14 @@ const navItem =
   "flex h-8 items-center gap-2.5 rounded-row px-2.5 text-[13px] text-text-2 hover:bg-surface-2";
 const activeProps = { className: `${navItem} bg-surface-2 text-text` };
 
-export function Sidebar({ onToggle }: { onToggle: () => void }) {
+export function Sidebar() {
   const dragRef = useTitleBarDrag<HTMLDivElement>();
   const { t } = useTranslation();
   const series = useSeriesList();
   const ai = useAiStatus();
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
-  const isMac = platform.window.platform === "macos";
+  const inset = sidebarTopInset(platform.window.platform, useFullscreen());
 
   const rhythmText = (r: SeriesRhythmLabel): string => {
     if (r.kind === "biweekly") return t("series.rhythm.biweekly");
@@ -43,17 +44,12 @@ export function Sidebar({ onToggle }: { onToggle: () => void }) {
       className="flex h-full w-60 shrink-0 flex-col bg-bg-sidebar px-3 pb-3"
       aria-label={t("nav.sidebar")}
     >
-      {/* Row 1 doubles as the drag region; on macOS the traffic lights sit in the left gap. */}
-      <div ref={dragRef} className={`flex h-12 items-center justify-end ${isMac ? "pl-16" : ""}`}>
-        <Button
-          variant="icon"
-          aria-label={t("nav.hideSidebar")}
-          onClick={onToggle}
-          title={`${t("nav.hideSidebar")} (${platform.window.toggleSidebarShortcut})`}
-        >
-          <PanelLeft size={16} strokeWidth={1.7} />
-        </Button>
-      </div>
+      {/* Drag row; on macOS the traffic lights sit here in a window and the row shrinks in full screen. */}
+      <div
+        ref={dragRef}
+        style={{ height: inset }}
+        className="shrink-0 transition-[height] duration-[var(--motion-duration)] ease-[var(--motion-ease)]"
+      />
       <Button variant="secondary" className="mb-3 w-full justify-start text-text-3">
         <Search size={15} strokeWidth={1.7} />
         <span className="flex-1 text-left">{t("nav.search")}</span>

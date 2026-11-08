@@ -52,7 +52,14 @@ export function createBrowserPlatform(): Platform {
     },
     window: {
       platform: "web",
-      toggleSidebarShortcut: "Ctrl+B",
+      async isFullscreen() {
+        return document.fullscreenElement !== null;
+      },
+      onFullscreenChange(listener) {
+        const handler = () => listener(document.fullscreenElement !== null);
+        document.addEventListener("fullscreenchange", handler);
+        return () => document.removeEventListener("fullscreenchange", handler);
+      },
       onQuickCapture: () => () => {},
       async setQuickCaptureShortcut() {},
       async startDragging() {},

@@ -12,16 +12,6 @@ test("app shell renders sidebar and routes", async ({ page }) => {
   await page.screenshot({ path: "test-results/shell.png" });
 });
 
-test("sidebar collapses and toggles with the shortcut", async ({ page }) => {
-  await page.goto("/ideas");
-  await page.getByRole("button", { name: "Hide sidebar" }).click();
-  await expect(page.getByRole("navigation", { name: "Main" })).toHaveCount(0);
-  await page.getByRole("button", { name: "Show sidebar" }).click();
-  await expect(page.getByRole("navigation", { name: "Main" })).toBeVisible();
-  await page.keyboard.press("Control+b");
-  await expect(page.getByRole("navigation", { name: "Main" })).toHaveCount(0);
-});
-
 test("settings: add a platform with a content type and use it in the editor", async ({ page }) => {
   await page.goto("/settings/platforms");
   await page.getByLabel("New platform").fill("Blog");

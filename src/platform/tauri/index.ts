@@ -27,7 +27,24 @@ export function createTauriPlatform(): Platform {
     },
     window: {
       platform: "macos",
-      toggleSidebarShortcut: "Ctrl+Cmd+S",
+      isFullscreen: () => getCurrentWindow().isFullscreen(),
+      onFullscreenChange(listener) {
+        // Entering/leaving full screen resizes the window; re-read the state on every resize.
+        let off: (() => void) | null = null;
+        let closed = false;
+        void getCurrentWindow()
+          .onResized(() => {
+            void getCurrentWindow().isFullscreen().then(listener);
+          })
+          .then((fn) => {
+            if (closed) fn();
+            else off = fn;
+          });
+        return () => {
+          closed = true;
+          off?.();
+        };
+      },
       async setQuickCaptureShortcut(accelerator) {
         await invoke("set_capture_shortcut", { accelerator });
       },
