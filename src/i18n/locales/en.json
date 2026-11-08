@@ -80,6 +80,19 @@
     "timestamp": "Timestamp {{n}}",
     "outlineRow": "{{label}} row {{n}}",
     "removeRow": "Remove row {{n}}",
-    "addRow": "Row"
+    "addRow": "Row",
+    "copy": "Copy",
+    "copied": "Copied",
+    "reschedule": "Reschedule",
+    "markPublished": "Mark as published",
+    "publishedOn": "Published {{date}}",
+    "plannedFor": "Planned for {{date}}",
+    "date": "Date",
+    "time": "Time",
+    "save": "Save",
+    "cancel": "Cancel",
+    "unschedule": "Unschedule",
+    "publishedUrl": "Post URL",
+    "afterNote": "Note after publishing"
   }
 }
