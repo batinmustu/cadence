@@ -1,3 +1,35 @@
 {
-  "app": { "name": "Cadence", "platform": "Platform: {{name}}" }
+  "app": {
+    "name": "Cadence",
+    "platform": "Platform: {{name}}"
+  },
+  "nav": {
+    "sidebar": "Sidebar",
+    "main": "Main",
+    "hideSidebar": "Hide sidebar",
+    "search": "Search",
+    "ideas": "Ideas",
+    "idea": "Idea",
+    "calendar": "Calendar",
+    "published": "Published",
+    "series": "Series",
+    "newSeries": "New series",
+    "aiNotConnected": "AI not connected",
+    "settings": "Settings"
+  },
+  "weekday": {
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  },
+  "series": {
+    "rhythm": {
+      "biweekly": "2w",
+      "monthly": "1m"
+    }
+  }
 }

@@ -45,11 +45,11 @@ export function createIdeasRepository(
     const ids: SqlValue[] = rows.map((r) => r.id);
     const [platforms, tags] = await Promise.all([
       db.select<{ idea_id: string; platform_id: string }>(
-        `SELECT idea_id, platform_id FROM idea_platforms WHERE idea_id IN (${marks}) ORDER BY created_at, id`,
+        `SELECT idea_id, platform_id FROM idea_platforms WHERE idea_id IN (${marks}) ORDER BY rowid`,
         ids,
       ),
       db.select<{ idea_id: string; tag_id: string }>(
-        `SELECT idea_id, tag_id FROM idea_tags WHERE idea_id IN (${marks}) ORDER BY created_at, id`,
+        `SELECT idea_id, tag_id FROM idea_tags WHERE idea_id IN (${marks}) ORDER BY rowid`,
         ids,
       ),
     ]);

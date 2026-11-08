@@ -1,3 +1,35 @@
 {
-  "app": { "name": "Cadence", "platform": "Platform: {{name}}" }
+  "app": {
+    "name": "Cadence",
+    "platform": "Platform: {{name}}"
+  },
+  "nav": {
+    "sidebar": "Kenar çubuğu",
+    "main": "Ana menü",
+    "hideSidebar": "Kenar çubuğunu gizle",
+    "search": "Ara",
+    "ideas": "Fikirler",
+    "idea": "Fikir",
+    "calendar": "Takvim",
+    "published": "Yayınlananlar",
+    "series": "Seriler",
+    "newSeries": "Yeni seri",
+    "aiNotConnected": "Yapay zekâ bağlı değil",
+    "settings": "Ayarlar"
+  },
+  "weekday": {
+    "sun": "Paz",
+    "mon": "Pzt",
+    "tue": "Sal",
+    "wed": "Çar",
+    "thu": "Per",
+    "fri": "Cum",
+    "sat": "Cmt"
+  },
+  "series": {
+    "rhythm": {
+      "biweekly": "2h",
+      "monthly": "1a"
+    }
+  }
 }
