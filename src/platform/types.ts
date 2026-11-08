@@ -22,11 +22,13 @@ export interface AIRequest {
   model: string;
   system: string;
   prompt: string;
+  /** Overrides the provider's default endpoint. */
+  baseUrl?: string;
 }
 
 export interface AI {
   complete(request: AIRequest): AsyncIterable<string>;
-  testConnection(provider: ProviderId): Promise<boolean>;
+  testConnection(provider: ProviderId, baseUrl?: string): Promise<boolean>;
 }
 
 export type WindowPlatform = "macos" | "windows" | "linux" | "web";

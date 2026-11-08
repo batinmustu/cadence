@@ -1,6 +1,7 @@
 import { listen } from "@tauri-apps/api/event";
 import { createBrowserPlatform } from "../browser";
 import type { Platform } from "../types";
+import { createTauriAI } from "./ai";
 import { createTauriDatabase } from "./database";
 import { createTauriNotifications } from "./notifications";
 import { createTauriSecrets } from "./secrets";
@@ -14,6 +15,7 @@ export function createTauriPlatform(): Platform {
     database: createTauriDatabase(),
     notifications: createTauriNotifications(),
     secrets: createTauriSecrets(),
+    ai: createTauriAI(),
     window: {
       platform: "macos",
       toggleSidebarShortcut: "Ctrl+Cmd+S",
