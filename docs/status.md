@@ -17,14 +17,16 @@ Last updated: 2026-11-08T12:00Z · Current milestone: v0.1 Foundation
 | #9 | feat(ideas): Ideas screen with quick capture | #53 | 2026-11-08 |
 | #10 | feat(ui): collapsible sidebar | #54 | 2026-11-08 |
 | #11 | feat: global shortcut to open quick capture | #55 | 2026-11-08 |
+| #12 | feat(core): content field schema and validation | #56 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #12 feat(core): content field schema and validation
+- #13 feat(core): platform character counting
 
 ## Notes
+- #12: value shapes — text/longtext `string`, parts `string[]`, outline `{text, timestamp?}[]`, checklist `{item: done}`. Lengths are counted in code points until #13 adds count rules. Closing keywords do not auto-close issues here, so runs close them explicitly.
 - #11: adds `tauri-plugin-global-shortcut` (Rust) and `@tauri-apps/api` (event listener in the Tauri adapter). ⌥Space is registered in Rust and emits `quick-capture`; macOS behaviour (shortcut, focus) needs manual testing. If another app owns ⌥Space, registration failure is logged and the app still starts. Not configurable yet.
 - #10: collapsed state is stored in `settings` (`sidebar.collapsed`); the browser DB is in-memory so restore-on-launch is covered by repository tests and needs manual testing in the desktop app, as does the ⌃⌘S shortcut on macOS. The collapsed-strip search button is inert until search exists.
 - #9: capture platform toggles are remembered in localStorage; series picker and tag button are not built yet (series/tags issues). Archived ideas are hidden under "All". Row icon is a generic lightbulb until posts/content types exist.
