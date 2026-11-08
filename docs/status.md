@@ -24,15 +24,17 @@ Last updated: 2026-11-08T13:05Z · Current milestone: v0.1 Foundation
 | #16 | feat(editor): schema-driven field renderer | #60 | 2026-11-08 |
 | #17 | feat(editor): schedule, publish and copy | #61 | 2026-11-08 |
 | #18 | feat: tags | #62 | 2026-11-08 |
+| #19 | feat(core): series rhythm and slot calculation | #63 | 2026-11-08 |
 
 ## Blocked / needs decision
 - none
 
 ## Next up
-- #19 feat(core): series rhythm and slot calculation
+- #20 feat(db): series repository
 
 ## Notes
 - #18: tags are case-insensitive unique ("Launch" = "launch"), stored without `#`. Capture box and editor header have a tag input (Enter or comma adds, Backspace removes last, autocomplete from existing tags). The ideas list filters by one tag via a dropdown shown once any tag exists. Tags cannot be renamed/deleted yet.
+- #19: `upcomingSlots` uses weekdays 0=Sunday…6 (7 also Sunday) to match `weekdays.ts`; build plan Section 6 says 1–7 Mon=1 — the repository (#20) must store/convert accordingly (decision needed from owner if they prefer Mon=1). Monthly = first occurrence in the month of the first listed weekday. Slots before `anchor_date` are not generated. Pure `Intl`, no new dependencies.
 - #17: the header Schedule button moved into a per-variant action bar under the fields (Copy, Schedule/Reschedule, Mark as published). Copy copies the whole variant (text-like fields, checklists skipped); each part also has its own copy button. Clipboard goes through the adapter; real clipboard needs manual testing in the desktop app. Times use the local time zone, stored as UTC ISO.
 - #16: adds dev deps `jsdom`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/user-event` for component tests (opt in per file with `// @vitest-environment jsdom`). Field edits autosave after 600 ms (flushed on leave). Splitting a part is enabled only when it is over the limit; `splitIntoParts` lives in `core/parts.ts`. Field labels use i18n if the key exists, else plain text. "Add media" and "Copy" buttons from the design are left to #17.
 - #15: route `ideas/$id` with title autosave (600 ms debounce, flushed on leave), variant tabs and a platform → content type picker. The status menu only toggles Archived (other statuses are derived from posts). Schedule is disabled until #17; variant bodies are placeholders until #16.
