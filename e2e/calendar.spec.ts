@@ -11,3 +11,16 @@ test("calendar shows a month grid and navigates", async ({ page }) => {
   await expect(heading).toHaveText(before ?? "");
   await page.screenshot({ path: "test-results/calendar.png" });
 });
+
+test("schedule an idea from the calendar panel", async ({ page }) => {
+  await page.goto("/ideas");
+  const box = page.getByRole("textbox", { name: "New idea" });
+  await box.fill("Calendar idea");
+  await box.press("Enter");
+  await page.getByRole("link", { name: "Calendar", exact: true }).click();
+  await page.getByLabel("Choose an idea").selectOption({ label: "Calendar idea" });
+  await page.getByRole("button", { name: "Choose date…" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Schedule" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Calendar idea" })).toBeVisible();
+});

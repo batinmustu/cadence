@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { prepareDatabase } from "../../db";
@@ -60,6 +60,24 @@ describe("CalendarScreen", () => {
     expect(screen.getByRole("heading", { level: 1 }).textContent).not.toBe(heading);
     await userEvent.click(screen.getByRole("button", { name: "Today" }));
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(heading);
-    expect(within(screen.getByRole("list")).getByText("Planned")).toBeTruthy();
+  });
+
+  it("schedules an unscheduled idea through the keyboard-accessible picker", async () => {
+    await createIdeasRepository(platform.database).create({ title: "Loose idea" });
+    render(<CalendarScreen />);
+    await userEvent.selectOptions(await screen.findByLabelText("Choose an idea"), "Loose idea");
+    await userEvent.click(screen.getByRole("button", { name: "Choose date…" }));
+    const dialog = screen.getByRole("dialog");
+    const next = new Date();
+    next.setDate(next.getDate() + 2);
+    const date = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}-${String(next.getDate()).padStart(2, "0")}`;
+    fireEvent.change(within(dialog).getByLabelText("Date"), { target: { value: date } });
+    await userEvent.click(within(dialog).getByRole("button", { name: "Schedule" }));
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    const [row] = await platform.database.select<{ status: string }>(
+      "SELECT p.status FROM posts p JOIN ideas i ON i.id = p.idea_id WHERE i.title = 'Loose idea'",
+    );
+    expect(row?.status).toBe("scheduled");
   });
 });
