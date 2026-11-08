@@ -1,64 +1,87 @@
-import { Link } from "@tanstack/react-router";
-import { Lightbulb, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { ChevronDown, ChevronRight, Lightbulb, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Badge, Button, ConfirmDialog, Segmented, Select } from "../../components";
+import { Badge, Button, ConfirmDialog, Input, Segmented, Select } from "../../components";
 import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import {
-  filterIdeasByStatus,
-  groupIdeasByDate,
+  countByFilter,
+  DEFAULT_IDEA_QUERY,
+  hasActiveFilters,
   type IdeaFilterKey,
+  type IdeaGroupBy,
+  type IdeaQuery,
+  type IdeaSort,
   type IdeaStatus,
-  statusesForFilter,
+  queryIdeas,
+  sectionIdeas,
 } from "../../core/ideas";
 import { CaptureBox } from "./CaptureBox";
+import { type IdeasSearch, queryToSearch, searchToQuery } from "./ideasSearch";
 import { useIdeas } from "./useIdeas";
 
 const FILTERS: IdeaFilterKey[] = ["all", "draft", "planned", "published"];
+const SORTS: IdeaSort[] = ["newest", "oldest", "planned"];
+const GROUPS: IdeaGroupBy[] = ["date", "series", "status"];
+/** Rows rendered at once; "Show more" adds another page, so 2,000+ ideas stay smooth. */
+const PAGE_SIZE = 100;
 
 export function IdeasScreen() {
   const { t, i18n } = useTranslation();
   const { ideas, platforms, tags, series, plannedAt, ready, capture, remove } = useIdeas();
   const [deleting, setDeleting] = useState<{ id: string; title: string } | null>(null);
-  const [filter, setFilter] = useState<IdeaFilterKey>("all");
-  const [tagId, setTagId] = useState("");
+  const navigate = useNavigate();
+  const search = useSearch({ strict: false }) as IdeasSearch;
+  const query = searchToQuery(search);
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const [limit, setLimit] = useState(PAGE_SIZE);
 
-  // Archived ideas stay out of the default view.
-  const byTag = tagId ? ideas.filter((i) => i.tagIds.includes(tagId)) : ideas;
-  const visible = filterIdeasByStatus(
-    filter === "all" ? byTag.filter((i) => i.status !== "archived") : byTag,
-    statusesForFilter(filter),
+  const setQuery = (patch: Partial<IdeaQuery>) => {
+    setLimit(PAGE_SIZE);
+    void navigate({ to: "/ideas", search: queryToSearch({ ...query, ...patch }), replace: true });
+  };
+  const toggleGroup = (key: string) =>
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (!next.delete(key)) next.add(key);
+      return next;
+    });
+
+  const visible = useMemo(() => queryIdeas(ideas, query, plannedAt), [ideas, query, plannedAt]);
+  const counts = useMemo(() => countByFilter(ideas, query), [ideas, query]);
+  const sections = useMemo(() => sectionIdeas(visible, query.groupBy), [visible, query.groupBy]);
+  // Only the first `limit` ideas of expanded sections are rendered; collapsed ones render none.
+  let budget = limit;
+  const groups = sections.map((sec) => {
+    const shown = collapsed.has(sec.key) ? [] : sec.ideas.slice(0, Math.max(budget, 0));
+    budget -= shown.length;
+    return { ...sec, shown, total: sec.ideas.length };
+  });
+  const renderedCount = groups.reduce((n, g) => n + g.shown.length, 0);
+  const expandedTotal = sections.reduce(
+    (n, x) => n + (collapsed.has(x.key) ? 0 : x.ideas.length),
+    0,
   );
-  const groups = groupIdeasByDate(visible);
+  const groupLabel = (key: string): string => {
+    if (query.groupBy === "date") return t(`ideas.group.${key}`);
+    if (query.groupBy === "status") return statusLabel(key as IdeaStatus, t);
+    return series.find((x) => x.id === key)?.name ?? t("ideas.noSeriesGroup");
+  };
   const fmt = new Intl.DateTimeFormat(i18n.language, { month: "short", day: "numeric" });
 
   return (
     <section>
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">{t("nav.ideas")}</h1>
-        <div className="flex items-center gap-3">
-          {tags.length > 0 ? (
-            <Select
-              aria-label={t("tags.filter")}
-              className="h-8 w-40"
-              value={tagId}
-              onValueChange={(v) => setTagId(v)}
-            >
-              <option value="">{t("tags.allTags")}</option>
-              {tags.map((tag) => (
-                <option key={tag.id} value={tag.id}>
-                  #{tag.name}
-                </option>
-              ))}
-            </Select>
-          ) : null}
-          <Segmented
-            label={t("ideas.filter.label")}
-            value={filter}
-            onChange={setFilter}
-            options={FILTERS.map((f) => ({ value: f, label: t(`ideas.filter.${f}`) }))}
-          />
-        </div>
+        <Segmented
+          label={t("ideas.filter.label")}
+          value={query.status}
+          onChange={(v) => setQuery({ status: v })}
+          options={FILTERS.map((f) => ({
+            value: f,
+            label: `${t(`ideas.filter.${f}`)} ${counts[f]}`,
+          }))}
+        />
       </div>
       <div className="mt-6">
         <CaptureBox
@@ -69,14 +92,128 @@ export function IdeasScreen() {
           autoFocus={ready && ideas.length === 0}
         />
       </div>
+      {ideas.length > 0 ? (
+        <div className="mt-6 flex flex-wrap items-center gap-2" data-testid="ideas-filters">
+          <Input
+            type="search"
+            aria-label={t("ideas.filters.search")}
+            placeholder={t("ideas.filters.searchPlaceholder")}
+            className="h-8 w-48"
+            value={query.text}
+            onChange={(e) => setQuery({ text: e.target.value })}
+          />
+          <Select
+            aria-label={t("ideas.filters.platform")}
+            className="h-8 w-40"
+            value={query.platformId}
+            onValueChange={(v) => setQuery({ platformId: v })}
+          >
+            <option value="">{t("ideas.filters.allPlatforms")}</option>
+            {platforms.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </Select>
+          {series.length > 0 ? (
+            <Select
+              aria-label={t("ideas.filters.series")}
+              className="h-8 w-40"
+              value={query.seriesId}
+              onValueChange={(v) => setQuery({ seriesId: v })}
+            >
+              <option value="">{t("ideas.filters.allSeries")}</option>
+              {series.map((x) => (
+                <option key={x.id} value={x.id}>
+                  {x.name}
+                </option>
+              ))}
+            </Select>
+          ) : null}
+          {tags.length > 0 ? (
+            <Select
+              aria-label={t("tags.filter")}
+              className="h-8 w-40"
+              value={query.tagId}
+              onValueChange={(v) => setQuery({ tagId: v })}
+            >
+              <option value="">{t("tags.allTags")}</option>
+              {tags.map((tag) => (
+                <option key={tag.id} value={tag.id}>
+                  #{tag.name}
+                </option>
+              ))}
+            </Select>
+          ) : null}
+          <Select
+            aria-label={t("ideas.sort.label")}
+            className="h-8 w-40"
+            value={query.sort}
+            onValueChange={(v) => setQuery({ sort: v as IdeaSort })}
+          >
+            {SORTS.map((x) => (
+              <option key={x} value={x}>
+                {t(`ideas.sort.${x}`)}
+              </option>
+            ))}
+          </Select>
+          <Select
+            aria-label={t("ideas.groupBy.label")}
+            className="h-8 w-36"
+            value={query.groupBy}
+            onValueChange={(v) => setQuery({ groupBy: v as IdeaGroupBy })}
+          >
+            {GROUPS.map((x) => (
+              <option key={x} value={x}>
+                {t("ideas.groupBy.label")}: {t(`ideas.groupBy.${x}`)}
+              </option>
+            ))}
+          </Select>
+          {hasActiveFilters(query) ? (
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setLimit(PAGE_SIZE);
+                void navigate({
+                  to: "/ideas",
+                  search: queryToSearch({
+                    ...DEFAULT_IDEA_QUERY,
+                    sort: query.sort,
+                    groupBy: query.groupBy,
+                  }),
+                  replace: true,
+                });
+              }}
+            >
+              {t("ideas.filters.clear")}
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
+      {ideas.length > 0 && visible.length === 0 ? (
+        <p className="mt-8 text-text-3">{t("ideas.noMatches")}</p>
+      ) : null}
       {ready && ideas.length === 0 ? <p className="mt-8 text-text-3">{t("ideas.empty")}</p> : null}
       {groups.map((g) => (
-        <div key={g.group} className="mt-8" data-testid={`group-${g.group}`}>
+        <div key={g.key} className="mt-8" data-testid={`group-${g.key || "none"}`}>
           <h2 className="mb-2 text-xs font-medium uppercase text-text-3">
-            {t(`ideas.group.${g.group}`)}
+            <button
+              type="button"
+              className="flex items-center gap-1 uppercase"
+              aria-expanded={!collapsed.has(g.key)}
+              aria-label={`${collapsed.has(g.key) ? t("ideas.expand") : t("ideas.collapse")}: ${groupLabel(g.key)}`}
+              onClick={() => toggleGroup(g.key)}
+            >
+              {collapsed.has(g.key) ? (
+                <ChevronRight size={iconSize.tiny} />
+              ) : (
+                <ChevronDown size={iconSize.tiny} />
+              )}
+              {groupLabel(g.key)} · {g.total}
+            </button>
           </h2>
           <ul className="m-0 list-none p-0">
-            {g.ideas.map((idea) => {
+            {g.shown.map((idea) => {
               const planned = plannedAt[idea.id];
               const published = idea.status === "published";
               return (
@@ -137,6 +274,14 @@ export function IdeasScreen() {
           </ul>
         </div>
       ))}
+      {renderedCount < expandedTotal ? (
+        <div className="mt-6 flex items-center justify-center gap-3 text-sm text-text-3">
+          {t("ideas.showing", { shown: renderedCount, total: expandedTotal })}
+          <Button variant="ghost" onClick={() => setLimit((n) => n + PAGE_SIZE)}>
+            {t("ideas.loadMore")}
+          </Button>
+        </div>
+      ) : null}
       <ConfirmDialog
         open={deleting !== null}
         onOpenChange={(o) => !o && setDeleting(null)}

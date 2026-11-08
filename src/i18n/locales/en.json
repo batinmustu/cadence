@@ -97,7 +97,35 @@
       "published": "Published",
       "archived": "Archived"
     },
-    "publishedMark": "Published ✓"
+    "publishedMark": "Published ✓",
+    "filters": {
+      "platform": "Platform",
+      "allPlatforms": "All platforms",
+      "series": "Series",
+      "allSeries": "All series",
+      "noSeries": "No series",
+      "search": "Search ideas",
+      "searchPlaceholder": "Search ideas…",
+      "clear": "Clear filters"
+    },
+    "sort": {
+      "label": "Sort",
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "planned": "Planned date"
+    },
+    "groupBy": {
+      "label": "Group by",
+      "date": "Date",
+      "series": "Series",
+      "status": "Status"
+    },
+    "noSeriesGroup": "No series",
+    "noMatches": "No ideas match these filters.",
+    "showing": "Showing {{shown}} of {{total}}",
+    "loadMore": "Show more",
+    "collapse": "Collapse group",
+    "expand": "Expand group"
   },
   "editor": {
     "back": "Back to ideas",

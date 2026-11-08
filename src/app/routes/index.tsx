@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { CalendarScreen } from "../../features/calendar/CalendarScreen";
 import { EditorScreen } from "../../features/editor/EditorScreen";
 import { IdeasScreen } from "../../features/ideas/IdeasScreen";
+import { parseIdeasSearch } from "../../features/ideas/ideasSearch";
 import { SeriesScreen } from "../../features/series/SeriesScreen";
 import { AppShell } from "../layout/AppShell";
 
@@ -39,6 +40,7 @@ const ideasRoute = createRoute({
 const ideasIndexRoute = createRoute({
   getParentRoute: () => ideasRoute,
   path: "/",
+  validateSearch: parseIdeasSearch,
   component: IdeasScreen,
 });
 const ideaRoute = createRoute({

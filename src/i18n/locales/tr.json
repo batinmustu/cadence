@@ -97,7 +97,35 @@
       "published": "Yayınlandı",
       "archived": "Arşivlendi"
     },
-    "publishedMark": "Yayınlandı ✓"
+    "publishedMark": "Yayınlandı ✓",
+    "filters": {
+      "platform": "Platform",
+      "allPlatforms": "Tüm platformlar",
+      "series": "Seri",
+      "allSeries": "Tüm seriler",
+      "noSeries": "Serisiz",
+      "search": "Fikirlerde ara",
+      "searchPlaceholder": "Fikirlerde ara…",
+      "clear": "Filtreleri temizle"
+    },
+    "sort": {
+      "label": "Sırala",
+      "newest": "En yeni önce",
+      "oldest": "En eski önce",
+      "planned": "Planlanan tarih"
+    },
+    "groupBy": {
+      "label": "Grupla",
+      "date": "Tarih",
+      "series": "Seri",
+      "status": "Durum"
+    },
+    "noSeriesGroup": "Serisiz",
+    "noMatches": "Bu filtrelere uyan fikir yok.",
+    "showing": "{{total}} fikirden {{shown}} gösteriliyor",
+    "loadMore": "Daha fazla göster",
+    "collapse": "Grubu daralt",
+    "expand": "Grubu genişlet"
   },
   "editor": {
     "back": "Fikirlere dön",

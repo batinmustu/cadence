@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T21:52Z · Current milestone: UI polish (#84–#103)
+Last updated: 2026-11-08T22:05Z · Current milestone: UI polish (#84–#103)
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -61,14 +61,16 @@ Last updated: 2026-11-08T21:52Z · Current milestone: UI polish (#84–#103)
 | #97 | feat(ai): hide AI features until a provider is configured | #117 | 2026-11-08 |
 | #98 | feat: delete ideas, series and other records | #118 | 2026-11-08 |
 | #99 | fix(ideas): layout shift in quick capture platform selector | #119 | 2026-11-08 |
+| #100 | feat(ideas): keep the Ideas screen usable with many ideas | #121 | 2026-11-08 |
 
 ## Blocked / needs decision
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
 
 ## Next up
-- #100–#103 in order
+- #101–#103 in order
 
 ## Notes
+- #100: filtering/sorting/grouping/counts live in `core/ideas.ts` (`queryIdeas`, `countByFilter`, `sectionIdeas`); filter state is in URL search params (`features/ideas/ideasSearch.ts`, defaults omitted). Status segments show counts that respect the other filters. Groups (date/series/status) are collapsible. Scaling: no new dependency — the screen renders 100 rows at a time with "Show more" instead of virtualising; a unit test runs filter+sort+counts over 2,000 ideas (<500 ms asserted, typically a few ms). **Not done:** repository `LIMIT/OFFSET` (the list is still loaded whole; filtering is client-side) and a browser-measured scroll test with 2,000 seeded ideas.
 - #99: capture footer is one wrapping row: platform toggles (no-shrink, nowrap) on the left, series select (fixed 9rem) + submit grouped right with `ml-auto`. Toggle border width never changed (only colour), so the shift came from the stretching `flex-1` group. `e2e/ideas.spec.ts` compares bounding boxes before/after toggling and focusing. No new dependency.
 - #98: shared `components/ConfirmDialog` (AlertDialog, Cancel first). Ideas: trash button on the row (hover/focus), Delete / ⌘⌫ on the focused row link, and a button in the editor header. Variants: trash button next to the variant tabs. Series: "Delete series" in the settings panel with an "also delete N ideas" checkbox (default: keep, unlinked). Tags: new Settings → Tags section. `ideas.softDelete` now also soft-deletes the idea's posts (so calendar/reminders/slots never show orphans); `series.softDelete(id, {deleteIdeas})`; `tags.remove` hard-deletes (tags table has no `deleted_at`; no migration). **Not done:** "Undo" toast (no toast component exists yet) and the sidebar context menu for series (no context-menu dependency; delete is on the series screen). Export deliberately still includes soft-deleted rows so a backup restores everything. No new dependency.
 - #97: `isAiAvailable(status)` in `core/aiSettings.ts` (= `aiStatus` is connected: key stored, or Ollama verified) and hook `useAiAvailable()` in `settings/aiConfig.ts`. Hidden when unavailable: editor assistant panel, series "AI draft", calendar "Fill with AI" card (incl. its empty-slot count). The command palette has no AI commands today. The sidebar "AI not connected / connected" row is now a button that opens Settings → AI. Updates live through the existing settings-changed event. No new dependency.

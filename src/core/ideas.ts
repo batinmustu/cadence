@@ -133,3 +133,124 @@ export function statusesForFilter(filter: IdeaFilterKey): IdeaStatus[] {
       return [];
   }
 }
+
+export type IdeaSort = "newest" | "oldest" | "planned";
+export type IdeaGroupBy = "date" | "series" | "status";
+
+export interface IdeaQuery {
+  status: IdeaFilterKey;
+  platformId: string;
+  seriesId: string;
+  tagId: string;
+  text: string;
+  sort: IdeaSort;
+  groupBy: IdeaGroupBy;
+}
+
+export const DEFAULT_IDEA_QUERY: IdeaQuery = {
+  status: "all",
+  platformId: "",
+  seriesId: "",
+  tagId: "",
+  text: "",
+  sort: "newest",
+  groupBy: "date",
+};
+
+/** True when any filter (not sort/grouping) narrows the list. */
+export function hasActiveFilters(q: IdeaQuery): boolean {
+  return q.status !== "all" || !!q.platformId || !!q.seriesId || !!q.tagId || q.text.trim() !== "";
+}
+
+function matchesText(idea: Idea, text: string): boolean {
+  const needle = text.trim().toLowerCase();
+  if (!needle) return true;
+  return idea.title.toLowerCase().includes(needle) || idea.note.toLowerCase().includes(needle);
+}
+
+/** Everything except the status filter, so status counts reflect the other filters. */
+function matchesOthers(idea: Idea, q: IdeaQuery): boolean {
+  if (q.platformId && !idea.platformIds.includes(q.platformId)) return false;
+  if (q.seriesId && idea.seriesId !== q.seriesId) return false;
+  if (q.tagId && !idea.tagIds.includes(q.tagId)) return false;
+  return matchesText(idea, q.text);
+}
+
+function matchesStatus(idea: Idea, filter: IdeaFilterKey): boolean {
+  // Archived ideas stay out of the default view.
+  if (filter === "all") return idea.status !== "archived";
+  return statusesForFilter(filter).includes(idea.status);
+}
+
+/** Counts per status filter given the other active filters. */
+export function countByFilter(ideas: Idea[], q: IdeaQuery): Record<IdeaFilterKey, number> {
+  const counts: Record<IdeaFilterKey, number> = { all: 0, draft: 0, planned: 0, published: 0 };
+  for (const idea of ideas) {
+    if (!matchesOthers(idea, q)) continue;
+    for (const key of Object.keys(counts) as IdeaFilterKey[]) {
+      if (matchesStatus(idea, key)) counts[key] += 1;
+    }
+  }
+  return counts;
+}
+
+/**
+ * Filters and sorts. "planned" sorts by the earliest scheduled date, soonest
+ * first; ideas without a date go last (newest first among themselves).
+ */
+export function queryIdeas(
+  ideas: Idea[],
+  q: IdeaQuery,
+  plannedAt: Record<string, string> = {},
+): Idea[] {
+  const out = ideas.filter((i) => matchesStatus(i, q.status) && matchesOthers(i, q));
+  const byNewest = (a: Idea, b: Idea) => b.createdAt.localeCompare(a.createdAt);
+  if (q.sort === "oldest") return out.sort((a, b) => -byNewest(a, b));
+  if (q.sort === "planned") {
+    return out.sort((a, b) => {
+      const pa = plannedAt[a.id];
+      const pb = plannedAt[b.id];
+      if (pa && pb) return pa.localeCompare(pb) || byNewest(a, b);
+      if (pa) return -1;
+      if (pb) return 1;
+      return byNewest(a, b);
+    });
+  }
+  return out.sort(byNewest);
+}
+
+export interface IdeaSection {
+  /** Stable key: date group, series id ("" = none) or status. */
+  key: string;
+  ideas: Idea[];
+}
+
+/** Splits an already-sorted list into sections, keeping the list order inside each. */
+export function sectionIdeas(
+  sorted: Idea[],
+  by: IdeaGroupBy,
+  now: Date = new Date(),
+): IdeaSection[] {
+  const keyOf = (i: Idea): string =>
+    by === "date" ? dateGroupOf(i.createdAt, now) : by === "series" ? (i.seriesId ?? "") : i.status;
+  const map = new Map<string, Idea[]>();
+  for (const idea of sorted) {
+    const k = keyOf(idea);
+    const bucket = map.get(k);
+    if (bucket) bucket.push(idea);
+    else map.set(k, [idea]);
+  }
+  let keys = [...map.keys()];
+  if (by === "date") {
+    const order: string[] = ["today", "thisWeek", "earlier"];
+    keys = keys.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+  } else if (by === "status") {
+    keys = keys.sort(
+      (a, b) => IDEA_STATUSES.indexOf(a as IdeaStatus) - IDEA_STATUSES.indexOf(b as IdeaStatus),
+    );
+  } else {
+    // Ideas without a series go last.
+    keys = keys.sort((a, b) => (a === "" ? 1 : b === "" ? -1 : 0));
+  }
+  return keys.map((key) => ({ key, ideas: map.get(key) ?? [] }));
+}

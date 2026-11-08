@@ -35,3 +35,25 @@ test("capture footer keeps its layout when a platform is toggled", async ({ page
   await page.getByRole("textbox", { name: "New idea" }).focus();
   expect(await measure()).toEqual(before);
 });
+
+test("text filter, URL params, clear, collapse and show more", async ({ page }) => {
+  await page.goto("/ideas");
+  const box = page.getByRole("textbox", { name: "New idea" });
+  for (const title of ["Alpha idea", "Beta idea"]) {
+    await box.fill(title);
+    await box.press("Enter");
+    await expect(page.getByText(title)).toBeVisible();
+  }
+  await page.getByRole("searchbox", { name: "Search ideas" }).fill("alpha");
+  await expect(page.getByText("Beta idea")).toHaveCount(0);
+  await expect(page).toHaveURL(/text=alpha/);
+
+  await page.getByRole("button", { name: "Clear filters" }).click();
+  await expect(page.getByText("Beta idea")).toBeVisible();
+  await expect(page).not.toHaveURL(/text=/);
+
+  await page.getByRole("button", { name: /Collapse group: Today/ }).click();
+  await expect(page.getByText("Beta idea")).toHaveCount(0);
+  await page.getByRole("button", { name: /Expand group: Today/ }).click();
+  await expect(page.getByText("Beta idea")).toBeVisible();
+});
