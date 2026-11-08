@@ -1,15 +1,26 @@
-import type { Platform, ProviderId, SqlValue } from "../types";
+import sqlWasmUrl from "sql.js/dist/sql-wasm.wasm?url";
+import type { Database, Platform, ProviderId, SqlValue } from "../types";
+import { createSqlJsDatabase } from "./sqljs";
 
 // In-memory / no-op implementation used by `pnpm dev` and tests.
 export function createBrowserPlatform(): Platform {
   const keys = new Set<ProviderId>();
+  // Lazy: the wasm module loads on first query, so tests that never touch the
+  // database stay fast.
+  let real: Promise<Database> | undefined;
+  const open = () => {
+    real ??= createSqlJsDatabase(() => sqlWasmUrl);
+    return real;
+  };
   const database: Platform["database"] = {
-    async select<T>(_sql: string, _params?: SqlValue[]) {
-      return [] as T[];
+    async select<T>(sql: string, params?: SqlValue[]) {
+      return (await open()).select<T>(sql, params);
     },
-    async execute() {},
+    async execute(sql, params) {
+      await (await open()).execute(sql, params);
+    },
     async transaction(fn) {
-      return fn(database);
+      return (await open()).transaction(fn);
     },
   };
   return {
