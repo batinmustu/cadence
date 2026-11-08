@@ -342,5 +342,19 @@
       "body": "A series is a recurring slot, like a weekly post. You can also create one later from the sidebar.",
       "create": "Create a series…"
     }
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search ideas, series, tags or commands…",
+    "hint": "Type to search, arrow keys to move, Enter to open, Escape to close.",
+    "results": "Search results",
+    "newIdea": "New idea",
+    "noResults": "Nothing found for “{{query}}”.",
+    "group": {
+      "commands": "Go to",
+      "ideas": "Ideas",
+      "series": "Series",
+      "tags": "Tags"
+    }
   }
 }

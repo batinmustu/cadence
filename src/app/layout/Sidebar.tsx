@@ -8,11 +8,12 @@ import {
   Search,
   Settings,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../components";
 import { ICON_STROKE, iconSize } from "../../components/iconSize";
 import type { SeriesRhythmLabel } from "../../core/weekdays";
+import { CommandPalette } from "../../features/search/CommandPalette";
 import { NewSeriesDialog } from "../../features/series/NewSeriesDialog";
 import { useAiStatus } from "../../features/settings/aiConfig";
 import { platform } from "../../platform";
@@ -32,6 +33,17 @@ export function Sidebar() {
   const ai = useAiStatus();
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
+  const [searching, setSearching] = useState(false);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearching((open) => !open);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
   const inset = sidebarTopInset(platform.window.platform, useFullscreen());
 
   const rhythmText = (r: SeriesRhythmLabel): string => {
@@ -51,7 +63,11 @@ export function Sidebar() {
         style={{ height: inset }}
         className="shrink-0 transition-[height] duration-[var(--motion-duration)] ease-[var(--motion-ease)]"
       />
-      <Button variant="secondary" className="mb-3 w-full justify-start text-text-3">
+      <Button
+        variant="secondary"
+        className="mb-3 w-full justify-start text-text-3"
+        onClick={() => setSearching(true)}
+      >
         <Search size={iconSize.nav} strokeWidth={ICON_STROKE} />
         <span className="flex-1 text-left">{t("nav.search")}</span>
         <kbd className="text-[11px] text-text-4">⌘K</kbd>
@@ -114,6 +130,11 @@ export function Sidebar() {
           {t("nav.settings")}
         </Link>
       </div>
+      <CommandPalette
+        open={searching}
+        onOpenChange={setSearching}
+        onNewSeries={() => setCreating(true)}
+      />
       {creating ? (
         <NewSeriesDialog
           onClose={() => setCreating(false)}

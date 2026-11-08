@@ -342,5 +342,19 @@
       "body": "Seri, haftalık paylaşım gibi tekrar eden bir zaman dilimidir. Sonra kenar çubuğundan da oluşturabilirsin.",
       "create": "Seri oluştur…"
     }
+  },
+  "search": {
+    "title": "Ara",
+    "placeholder": "Fikir, seri, etiket veya komut ara…",
+    "hint": "Aramak için yazın, ok tuşlarıyla gezinin, açmak için Enter'a, kapatmak için Esc'e basın.",
+    "results": "Arama sonuçları",
+    "newIdea": "Yeni fikir",
+    "noResults": "“{{query}}” için sonuç yok.",
+    "group": {
+      "commands": "Git",
+      "ideas": "Fikirler",
+      "series": "Seriler",
+      "tags": "Etiketler"
+    }
   }
 }
