@@ -17,7 +17,7 @@ const FILTERS: IdeaFilterKey[] = ["all", "draft", "planned", "published"];
 
 export function IdeasScreen() {
   const { t, i18n } = useTranslation();
-  const { ideas, platforms, tags, plannedAt, ready, capture } = useIdeas();
+  const { ideas, platforms, tags, series, plannedAt, ready, capture } = useIdeas();
   const [filter, setFilter] = useState<IdeaFilterKey>("all");
   const [tagId, setTagId] = useState("");
 
@@ -62,6 +62,7 @@ export function IdeasScreen() {
         <CaptureBox
           platforms={platforms}
           tags={tags}
+          series={series}
           onCapture={capture}
           autoFocus={ready && ideas.length === 0}
         />

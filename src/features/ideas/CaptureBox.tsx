@@ -1,10 +1,10 @@
 import { ArrowUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TagInput, ToggleChip } from "../../components";
+import { Select, TagInput, ToggleChip } from "../../components";
 import { normalizeTagName, sameTagName, type Tag } from "../../core/tags";
 import { consumeCaptureFocus, onCaptureFocusRequest } from "./captureFocus";
-import type { PlatformOption } from "./useIdeas";
+import type { PlatformOption, SeriesOption } from "./useIdeas";
 
 const PLATFORM_KEY = "cadence.capture.platforms";
 
@@ -21,15 +21,22 @@ function loadSaved(): string[] {
 type Props = {
   platforms: PlatformOption[];
   tags: Tag[];
-  onCapture: (title: string, platformIds: string[], tagNames: string[]) => Promise<void>;
+  series?: SeriesOption[];
+  onCapture: (
+    title: string,
+    platformIds: string[],
+    tagNames: string[],
+    seriesId: string | null,
+  ) => Promise<void>;
   autoFocus?: boolean;
 };
 
-export function CaptureBox({ platforms, tags, onCapture, autoFocus = false }: Props) {
+export function CaptureBox({ platforms, tags, series = [], onCapture, autoFocus = false }: Props) {
   const { t } = useTranslation();
   const [text, setText] = useState("");
   const [selected, setSelected] = useState<string[]>(loadSaved);
   const [pendingTags, setPendingTags] = useState<string[]>([]);
+  const [seriesId, setSeriesId] = useState("");
   const ref = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -60,10 +67,12 @@ export function CaptureBox({ platforms, tags, onCapture, autoFocus = false }: Pr
     const tagNames = pendingTags;
     setText("");
     setPendingTags([]);
+    const chosenSeries = series.some((s) => s.id === seriesId) ? seriesId : null;
     await onCapture(
       title,
       platforms.map((p) => p.id).filter((id) => selected.includes(id)),
       tagNames,
+      chosenSeries,
     );
   }
 
@@ -113,6 +122,21 @@ export function CaptureBox({ platforms, tags, onCapture, autoFocus = false }: Pr
             </ToggleChip>
           ))}
         </div>
+        {series.length > 0 ? (
+          <Select
+            aria-label={t("series.new.picker")}
+            className="h-7 w-36 text-xs"
+            value={seriesId}
+            onChange={(e) => setSeriesId(e.target.value)}
+          >
+            <option value="">{t("series.new.none")}</option>
+            {series.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </Select>
+        ) : null}
         <button
           type="button"
           aria-label={t("ideas.capture.save")}

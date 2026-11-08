@@ -4,8 +4,14 @@ import type { Tag } from "../../core/tags";
 import { createIdeasRepository } from "../../db/repositories/ideas";
 import { createTagsRepository } from "../../db/repositories/tags";
 import { platform } from "../../platform";
+import { onSeriesChanged } from "../series/seriesEvents";
 
 export interface PlatformOption {
+  id: string;
+  name: string;
+}
+
+export interface SeriesOption {
   id: string;
   name: string;
 }
@@ -14,10 +20,16 @@ export interface IdeasData {
   ideas: Idea[];
   platforms: PlatformOption[];
   tags: Tag[];
+  series: SeriesOption[];
   /** Earliest scheduled date per idea id, ISO string. */
   plannedAt: Record<string, string>;
   ready: boolean;
-  capture(title: string, platformIds: string[], tagNames: string[]): Promise<void>;
+  capture(
+    title: string,
+    platformIds: string[],
+    tagNames: string[],
+    seriesId?: string | null,
+  ): Promise<void>;
 }
 
 export function useIdeas(): IdeasData {
@@ -25,12 +37,13 @@ export function useIdeas(): IdeasData {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const tagsRepo = useMemo(() => createTagsRepository(platform.database), []);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [series, setSeries] = useState<SeriesOption[]>([]);
   const [platforms, setPlatforms] = useState<PlatformOption[]>([]);
   const [plannedAt, setPlannedAt] = useState<Record<string, string>>({});
   const [ready, setReady] = useState(false);
 
   const reload = useCallback(async () => {
-    const [list, plats, dates, allTags] = await Promise.all([
+    const [list, plats, dates, allTags, allSeries] = await Promise.all([
       repo.list(),
       platform.database.select<PlatformOption>(
         "SELECT id, name FROM platforms ORDER BY sort_order, name",
@@ -39,7 +52,11 @@ export function useIdeas(): IdeasData {
         "SELECT idea_id, MIN(scheduled_at) AS at FROM posts WHERE deleted_at IS NULL AND scheduled_at IS NOT NULL GROUP BY idea_id",
       ),
       tagsRepo.list(),
+      platform.database.select<SeriesOption>(
+        "SELECT id, name FROM series WHERE deleted_at IS NULL ORDER BY created_at",
+      ),
     ]);
+    setSeries(allSeries);
     setIdeas(list);
     setTags(allTags);
     setPlatforms(plats);
@@ -47,19 +64,26 @@ export function useIdeas(): IdeasData {
     setReady(true);
   }, [repo, tagsRepo]);
 
+  useEffect(() => onSeriesChanged(() => void reload().catch(() => undefined)), [reload]);
+
   useEffect(() => {
     reload().catch(() => setReady(true));
   }, [reload]);
 
   const capture = useCallback(
-    async (title: string, platformIds: string[], tagNames: string[]) => {
+    async (
+      title: string,
+      platformIds: string[],
+      tagNames: string[],
+      seriesId: string | null = null,
+    ) => {
       const created = await Promise.all(tagNames.map((n) => tagsRepo.findOrCreate(n)));
       const tagIds = created.flatMap((t) => (t ? [t.id] : []));
-      await repo.create({ title, platformIds, tagIds });
+      await repo.create({ title, platformIds, tagIds, seriesId });
       await reload();
     },
     [repo, tagsRepo, reload],
   );
 
-  return { ideas, platforms, tags, plannedAt, ready, capture };
+  return { ideas, platforms, tags, series, plannedAt, ready, capture };
 }
