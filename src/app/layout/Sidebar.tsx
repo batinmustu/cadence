@@ -19,7 +19,7 @@ const navItem =
   "flex h-8 items-center gap-2.5 rounded-row px-2.5 text-[13px] text-text-2 hover:bg-surface-2";
 const activeProps = { className: `${navItem} bg-surface-2 text-text` };
 
-export function Sidebar() {
+export function Sidebar({ onToggle }: { onToggle: () => void }) {
   const { t } = useTranslation();
   const series = useSeriesList();
   const isMac = platform.window.platform === "macos";
@@ -43,6 +43,7 @@ export function Sidebar() {
         <Button
           variant="icon"
           aria-label={t("nav.hideSidebar")}
+          onClick={onToggle}
           title={`${t("nav.hideSidebar")} (${platform.window.toggleSidebarShortcut})`}
         >
           <PanelLeft size={16} strokeWidth={1.7} />
