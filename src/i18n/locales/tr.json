@@ -322,5 +322,27 @@
       "notConnected": "Önce Ayarlar'dan bir yapay zekâ sağlayıcısı bağlayın.",
       "empty": "Asistan boş yanıt verdi. Tekrar deneyin."
     }
+  },
+  "onboarding": {
+    "title": "Cadence'a hoş geldin",
+    "step": "Adım {{n}} / {{total}}",
+    "skip": "Kurulumu atla",
+    "next": "İleri",
+    "done": "Bitti",
+    "welcome": {
+      "title": "Cadence'a hoş geldin",
+      "body": "Sosyal medya içeriklerini sakin bir şekilde planlayabileceğin bir yer. Her şey bu bilgisayarda kalır."
+    },
+    "ai": {
+      "title": "Yazım yardımı (isteğe bağlı)",
+      "body": "Taslaklarda yardım almak için kendi yapay zekâ sağlayıcını bağla. Bunu sonra Ayarlar'dan da yapabilirsin.",
+      "ollama": "Ollama bilgisayarında çalışır. Sunucu adresini Ayarlar → Yapay zekâ bölümünden gir.",
+      "saved": "Anahtar kaydedildi"
+    },
+    "series": {
+      "title": "İlk serin (isteğe bağlı)",
+      "body": "Seri, haftalık paylaşım gibi tekrar eden bir zaman dilimidir. Sonra kenar çubuğundan da oluşturabilirsin.",
+      "create": "Seri oluştur…"
+    }
   }
 }
