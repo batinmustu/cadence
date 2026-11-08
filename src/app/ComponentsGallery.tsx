@@ -1,6 +1,16 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { Button, Chip, Input, Segmented, Select, Textarea, ToggleChip } from "../components";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Badge, Button, Input, Segmented, Select, Textarea, Toggle } from "../components";
 
 // Dev-only page (/__components); its labels are not user-facing, so they skip i18n.
 export function ComponentsGallery() {
@@ -18,8 +28,8 @@ export function ComponentsGallery() {
         </Button>
       </div>
       <div className="flex gap-2">
-        <Chip>Draft</Chip>
-        <Chip outlined>Nov 12</Chip>
+        <Badge>Draft</Badge>
+        <Badge variant="outline">Nov 12</Badge>
       </div>
       <Segmented
         label="Filter"
@@ -35,9 +45,32 @@ export function ComponentsGallery() {
       <Select defaultValue="a">
         <option value="a">Select</option>
       </Select>
-      <ToggleChip pressed={on} onChange={setOn}>
+      <Toggle pressed={on} onPressedChange={setOn}>
         Toggle chip
-      </ToggleChip>
+      </Toggle>
+      <div className="flex gap-2">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>Open dialog</Button>
+          </DialogTrigger>
+          <DialogContent aria-describedby={undefined}>
+            <DialogTitle>Dialog</DialogTitle>
+          </DialogContent>
+        </Dialog>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button>Open alert dialog</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+            <div className="mt-4 flex justify-end gap-2">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction>Confirm</AlertDialogAction>
+            </div>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </main>
   );
 }

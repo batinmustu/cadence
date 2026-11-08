@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Lightbulb } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Chip, Segmented, Select } from "../../components";
+import { Badge, Segmented, Select } from "../../components";
 import {
   filterIdeasByStatus,
   groupIdeasByDate,
@@ -106,9 +106,9 @@ export function IdeasScreen() {
                     ) : null}
                   </div>
                   {idea.status === "planned" && planned ? (
-                    <Chip outlined>{fmt.format(new Date(planned))}</Chip>
+                    <Badge variant="outline">{fmt.format(new Date(planned))}</Badge>
                   ) : null}
-                  <Chip>{statusLabel(idea.status, t)}</Chip>
+                  <Badge>{statusLabel(idea.status, t)}</Badge>
                 </li>
               );
             })}

@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T20:30Z · Current milestone: v0.1 Foundation
+Last updated: 2026-11-08T21:00Z · Current milestone: UI polish (#84–#103)
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -45,14 +45,17 @@ Last updated: 2026-11-08T20:30Z · Current milestone: v0.1 Foundation
 | #37 | feat: onboarding | #81 | 2026-11-08 |
 | #38 | ci: release workflow | #82 | 2026-11-08 |
 | #41 | docs: screenshots and user guide | #83 | 2026-11-08 |
+| #84 | chore(ui): adopt shadcn/ui and migrate base components | this PR | 2026-11-08 |
 
 ## Blocked / needs decision
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
 
 ## Next up
-- Backlog complete — only owner tasks and #40 (needs-decision) remain
+- #85 feat(ui): replace native selects with shadcn Select
+- then #86–#103 in order
 
 ## Notes
+- #84: shadcn/ui hand-added (no CLI, offline): `components.json`, `src/lib/utils.ts` (`cn`), `src/components/ui/{button,badge,input,textarea,select,toggle,toggle-group,dialog,alert-dialog}.tsx`, `@` alias (tsconfig, vite, vitest). shadcn CSS variables live in `tokens.css` and point at the existing tokens (ADR 0005). Chip→Badge, ToggleChip→Toggle (`onPressedChange`), Segmented wraps ToggleGroup (options are now `role="radio"`). New series, onboarding and both calendar dialogs use `Dialog`. `Select` is still native until #85. No confirm prompts exist yet (AlertDialog is in the gallery for #98). Before/after screenshots were not attached; `pnpm screenshots` can regenerate them.
 - Backlog complete — only owner tasks remain, plus #40 which waits for the owner's updater key.
 - #41: `pnpm screenshots` (scripts/screenshots.mjs) starts its own dev server on port 1421 and writes `docs/screenshots/*.png` (ideas, editor, calendar) from browser mode with demo ideas typed into the capture box; no new dependencies. Screenshots are dark theme at 2x. The Install section describes the .dmg from Releases and does not exist until the first release.
 - #38: `.github/workflows/release.yml` runs release-please on every push to main (release PR with CHANGELOG + version bumps in package.json, Cargo.toml, tauri.conf.json); when its PR is merged the same workflow builds a universal macOS app with tauri-action and attaches it to the release (a release created with GITHUB_TOKEN cannot trigger a separate tag workflow). Apple secrets are passed through and ignored when empty; see `docs/releasing.md`. **Owner:** enable "Allow GitHub Actions to create and approve pull requests" in repo Actions settings (I may not change repo settings). The workflow cannot be tested before a release PR is merged; the first run needs a look.

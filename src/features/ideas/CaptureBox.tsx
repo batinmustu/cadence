@@ -1,7 +1,7 @@
 import { ArrowUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Select, TagInput, ToggleChip } from "../../components";
+import { Select, TagInput, Toggle } from "../../components";
 import { normalizeTagName, sameTagName, type Tag } from "../../core/tags";
 import { consumeCaptureFocus, onCaptureFocusRequest } from "./captureFocus";
 import type { PlatformOption, SeriesOption } from "./useIdeas";
@@ -113,13 +113,13 @@ export function CaptureBox({ platforms, tags, series = [], onCapture, autoFocus 
       <div className="mt-2 flex items-center gap-2">
         <div className="flex flex-1 flex-wrap gap-2">
           {platforms.map((p) => (
-            <ToggleChip
+            <Toggle
               key={p.id}
               pressed={selected.includes(p.id)}
-              onChange={(on) => toggle(p.id, on)}
+              onPressedChange={(on) => toggle(p.id, on)}
             >
               {p.name}
-            </ToggleChip>
+            </Toggle>
           ))}
         </div>
         {series.length > 0 ? (

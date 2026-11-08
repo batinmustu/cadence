@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Input, Segmented, Select, ToggleChip } from "../../components";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button, Input, Segmented, Select, Toggle } from "../../components";
 import type { Series } from "../../core/series";
 import { type Frequency, WEEKDAY_KEYS } from "../../core/weekdays";
 import { createPlatformsRepository } from "../../db/repositories/platforms";
@@ -72,73 +73,81 @@ export function NewSeriesDialog({ onClose, onCreated }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-      <form
-        role="dialog"
-        aria-modal="true"
-        aria-label={t("series.new.title")}
-        className="flex w-96 flex-col gap-3 rounded-card bg-bg p-5 shadow-lg"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void submit();
-        }}
-      >
-        <h2 className="text-base font-semibold">{t("series.new.title")}</h2>
-        <div className="flex flex-col gap-1 text-xs text-text-3">
-          <label htmlFor="sd-name">{t("series.new.name")}</label>
-          <Input
-            id="sd-name"
-            ref={nameRef}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-col gap-1 text-xs text-text-3">
-          <label htmlFor="sd-platform">{t("series.new.platform")}</label>
-          <Select
-            id="sd-platform"
-            value={platformId}
-            onChange={(e) => setPlatformId(e.target.value)}
-          >
-            {platforms.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <fieldset className="m-0 flex flex-col gap-1 border-0 p-0">
-          <legend className="mb-1 text-xs text-text-3">{t("series.new.weekdays")}</legend>
-          <div className="flex flex-wrap gap-1.5">
-            {WEEKDAY_KEYS.map((key, d) => (
-              <ToggleChip key={key} pressed={days.includes(d)} onChange={(on) => toggleDay(d, on)}>
-                {t(`weekday.${key}`)}
-              </ToggleChip>
-            ))}
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent aria-describedby={undefined}>
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void submit();
+          }}
+        >
+          <DialogTitle>{t("series.new.title")}</DialogTitle>
+          <div className="flex flex-col gap-1 text-xs text-text-3">
+            <label htmlFor="sd-name">{t("series.new.name")}</label>
+            <Input
+              id="sd-name"
+              ref={nameRef}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </div>
-        </fieldset>
-        <div className="flex flex-col gap-1 text-xs text-text-3">
-          <label htmlFor="sd-time">{t("series.new.time")}</label>
-          <Input id="sd-time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
-        </div>
-        <Segmented
-          label={t("series.new.frequency")}
-          value={frequency}
-          onChange={setFrequency}
-          options={FREQUENCIES.map((f) => ({ value: f, label: t(`series.new.${f}`) }))}
-        />
-        {failed ? (
-          <p role="alert" className="text-xs text-text-3">
-            {t("series.new.error")}
-          </p>
-        ) : null}
-        <div className="mt-1 flex justify-end gap-2">
-          <Button onClick={onClose}>{t("series.new.cancel")}</Button>
-          <Button type="submit" variant="primary" disabled={!canCreate}>
-            {t("series.new.create")}
-          </Button>
-        </div>
-      </form>
-    </div>
+          <div className="flex flex-col gap-1 text-xs text-text-3">
+            <label htmlFor="sd-platform">{t("series.new.platform")}</label>
+            <Select
+              id="sd-platform"
+              value={platformId}
+              onChange={(e) => setPlatformId(e.target.value)}
+            >
+              {platforms.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <fieldset className="m-0 flex flex-col gap-1 border-0 p-0">
+            <legend className="mb-1 text-xs text-text-3">{t("series.new.weekdays")}</legend>
+            <div className="flex flex-wrap gap-1.5">
+              {WEEKDAY_KEYS.map((key, d) => (
+                <Toggle
+                  key={key}
+                  pressed={days.includes(d)}
+                  onPressedChange={(on) => toggleDay(d, on)}
+                >
+                  {t(`weekday.${key}`)}
+                </Toggle>
+              ))}
+            </div>
+          </fieldset>
+          <div className="flex flex-col gap-1 text-xs text-text-3">
+            <label htmlFor="sd-time">{t("series.new.time")}</label>
+            <Input
+              id="sd-time"
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            />
+          </div>
+          <Segmented
+            label={t("series.new.frequency")}
+            value={frequency}
+            onChange={setFrequency}
+            options={FREQUENCIES.map((f) => ({ value: f, label: t(`series.new.${f}`) }))}
+          />
+          {failed ? (
+            <p role="alert" className="text-xs text-text-3">
+              {t("series.new.error")}
+            </p>
+          ) : null}
+          <div className="mt-1 flex justify-end gap-2">
+            <Button onClick={onClose}>{t("series.new.cancel")}</Button>
+            <Button type="submit" variant="primary" disabled={!canCreate}>
+              {t("series.new.create")}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

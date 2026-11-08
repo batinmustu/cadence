@@ -12,4 +12,23 @@
   --text-2: #b4b4ba;
   --text-3: #8b8b92;
   --text-4: #6e6e75;
+
+  /* shadcn/ui variables, mapped onto the tokens above (ADR 0005) */
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--text);
+  --primary-foreground: var(--bg);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--text-2);
+  --muted: var(--surface-3);
+  --muted-foreground: var(--text-3);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--text);
+  --input: var(--border-input);
+  --ring: var(--border-strong);
+  --radius: 10px;
 }
