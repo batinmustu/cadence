@@ -17,6 +17,13 @@ export function createTauriPlatform(): Platform {
     notifications: createTauriNotifications(),
     secrets: createTauriSecrets(),
     ai: createTauriAI(),
+    files: {
+      saveExport: (fileName, content) => invoke<string>("save_export", { fileName, content }),
+      async revealDatabase() {
+        await invoke("reveal_database");
+      },
+      backupTarget: (fileName) => invoke<string | null>("backup_target", { fileName }),
+    },
     window: {
       platform: "macos",
       toggleSidebarShortcut: "Ctrl+Cmd+S",
