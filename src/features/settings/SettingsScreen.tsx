@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { AiSettings } from "./AiSettings";
+import { PlatformsSettings } from "./PlatformsSettings";
 
 const SECTIONS = ["general", "platforms", "ai", "data"] as const;
 
@@ -26,6 +27,8 @@ export function SettingsScreen({ section }: { section: string }) {
         <div className="min-w-0 flex-1">
           {section === "ai" ? (
             <AiSettings />
+          ) : section === "platforms" ? (
+            <PlatformsSettings />
           ) : (
             <p className="text-text-3">{t("settings.comingSoon")}</p>
           )}

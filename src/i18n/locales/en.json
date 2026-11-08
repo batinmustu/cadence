@@ -218,6 +218,52 @@
       "returnsOptions": "Returns several options",
       "save": "Save",
       "cancel": "Cancel"
+    },
+    "platforms": {
+      "name": "Platform name: {{name}}",
+      "types": "Content types",
+      "typesOf": "Content types of {{name}}",
+      "moveUp": "Move {{name}} up",
+      "moveDown": "Move {{name}} down",
+      "hide": "Hide {{name}}",
+      "show": "Show {{name}}",
+      "delete": "Delete {{name}}",
+      "deleteType": "Delete {{name}}",
+      "newName": "New platform",
+      "preset": "Built-in items can be hidden, not deleted.",
+      "inUse": "This is still used by posts, series, ideas or commands, so it cannot be deleted.",
+      "edit": "Edit",
+      "addType": "Add content type",
+      "typeName": "Name",
+      "fieldLabel": "Field {{n}} label",
+      "removeField": "Remove field {{n}}",
+      "max": "Limit",
+      "maxOf": "Limit of field {{n}}",
+      "maxPerPart": "Per part",
+      "maxPerPartOf": "Per-part limit of field {{n}}",
+      "maxParts": "Parts",
+      "maxPartsOf": "Part count of field {{n}}",
+      "countRule": "Counting",
+      "countRuleOf": "Counting rule of field {{n}}",
+      "items": "Items (comma separated)",
+      "itemsOf": "Items of field {{n}}",
+      "newFieldKind": "Kind of new field",
+      "addField": "Add field",
+      "kinds": {
+        "text": "Short text",
+        "longtext": "Long text",
+        "parts": "Parts",
+        "outline": "Outline",
+        "checklist": "Checklist"
+      },
+      "rules": {
+        "plain": "Plain characters",
+        "x": "X-style (links count as 23)"
+      },
+      "errors": {
+        "name": "Give the content type a name.",
+        "schema": "The fields are not valid:"
+      }
     }
   },
   "assistant": {

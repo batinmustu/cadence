@@ -18,6 +18,7 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
     removeTag,
     variants,
     contentTypes,
+    hiddenPlatformIds,
     loaded,
     saveState,
     setTitle,
@@ -119,21 +120,23 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
 
         {picking ? (
           <div className="mt-2 flex flex-col gap-1 rounded-card bg-surface p-2" role="menu">
-            {contentTypes.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                role="menuitem"
-                className="rounded-row px-3 py-1.5 text-left text-[13px] hover:bg-surface-2"
-                onClick={async () => {
-                  const post = await addVariant(c.id);
-                  setActiveId(post.id);
-                  setPicking(false);
-                }}
-              >
-                {c.platformName} · {c.name}
-              </button>
-            ))}
+            {contentTypes
+              .filter((c) => !hiddenPlatformIds.includes(c.platformId))
+              .map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  role="menuitem"
+                  className="rounded-row px-3 py-1.5 text-left text-[13px] hover:bg-surface-2"
+                  onClick={async () => {
+                    const post = await addVariant(c.id);
+                    setActiveId(post.id);
+                    setPicking(false);
+                  }}
+                >
+                  {c.platformName} · {c.name}
+                </button>
+              ))}
           </div>
         ) : null}
 

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Idea } from "../../core/ideas";
 import type { Tag } from "../../core/tags";
 import { createIdeasRepository } from "../../db/repositories/ideas";
+import { createPlatformsRepository } from "../../db/repositories/platforms";
 import { createTagsRepository } from "../../db/repositories/tags";
 import { platform } from "../../platform";
 import { onSeriesChanged } from "../series/seriesEvents";
@@ -45,9 +46,7 @@ export function useIdeas(): IdeasData {
   const reload = useCallback(async () => {
     const [list, plats, dates, allTags, allSeries] = await Promise.all([
       repo.list(),
-      platform.database.select<PlatformOption>(
-        "SELECT id, name FROM platforms ORDER BY sort_order, name",
-      ),
+      createPlatformsRepository(platform.database).listVisible(),
       platform.database.select<{ idea_id: string; at: string }>(
         "SELECT idea_id, MIN(scheduled_at) AS at FROM posts WHERE deleted_at IS NULL AND scheduled_at IS NOT NULL GROUP BY idea_id",
       ),
