@@ -37,6 +37,9 @@
   --radius-token-xl: 16px;
   --radius: var(--radius-token-lg);
 
+  /* Layout: single content width for all screens (issue #90) */
+  --content-width: 64rem;
+
   /* Motion: one duration and easing for tab/segmented transitions (issue #86) */
   --motion-duration: 180ms;
   --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);

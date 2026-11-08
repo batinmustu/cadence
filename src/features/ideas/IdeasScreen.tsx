@@ -31,7 +31,7 @@ export function IdeasScreen() {
   const fmt = new Intl.DateTimeFormat(i18n.language, { month: "short", day: "numeric" });
 
   return (
-    <section className="mx-auto w-full max-w-3xl">
+    <section>
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">{t("nav.ideas")}</h1>
         <div className="flex items-center gap-3">
