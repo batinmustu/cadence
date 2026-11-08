@@ -17,12 +17,14 @@ import { NewSeriesDialog } from "../../features/series/NewSeriesDialog";
 import { useAiStatus } from "../../features/settings/aiConfig";
 import { platform } from "../../platform";
 import { useSeriesList } from "./useSeriesList";
+import { useTitleBarDrag } from "./useWindowDrag";
 
 const navItem =
   "flex h-8 items-center gap-2.5 rounded-row px-2.5 text-[13px] text-text-2 hover:bg-surface-2";
 const activeProps = { className: `${navItem} bg-surface-2 text-text` };
 
 export function Sidebar({ onToggle }: { onToggle: () => void }) {
+  const dragRef = useTitleBarDrag<HTMLDivElement>();
   const { t } = useTranslation();
   const series = useSeriesList();
   const ai = useAiStatus();
@@ -42,10 +44,7 @@ export function Sidebar({ onToggle }: { onToggle: () => void }) {
       aria-label={t("nav.sidebar")}
     >
       {/* Row 1 doubles as the drag region; on macOS the traffic lights sit in the left gap. */}
-      <div
-        data-tauri-drag-region
-        className={`flex h-12 items-center justify-end ${isMac ? "pl-16" : ""}`}
-      >
+      <div ref={dragRef} className={`flex h-12 items-center justify-end ${isMac ? "pl-16" : ""}`}>
         <Button
           variant="icon"
           aria-label={t("nav.hideSidebar")}

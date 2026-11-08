@@ -9,8 +9,10 @@ import { platform } from "../../platform";
 import { PageContainer } from "./PageContainer";
 import { Sidebar } from "./Sidebar";
 import { useSidebarCollapsed } from "./useSidebarCollapsed";
+import { useTitleBarDrag } from "./useWindowDrag";
 
 export function AppShell() {
+  const dragRef = useTitleBarDrag<HTMLDivElement>();
   const { t } = useTranslation();
   const [collapsed, toggle] = useSidebarCollapsed();
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ export function AppShell() {
       <div className="flex min-w-0 flex-1 flex-col">
         {/* 36px drag strip above the content (window chrome spec). */}
         <div
-          data-tauri-drag-region
+          ref={dragRef}
           className={`flex h-9 shrink-0 items-center gap-1 ${collapsed ? (isMac ? "pl-20" : "pl-4") : ""}`}
         >
           {collapsed ? (

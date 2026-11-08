@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { createBrowserPlatform } from "../browser";
 import type { Platform } from "../types";
 import { createTauriAI } from "./ai";
@@ -29,6 +30,12 @@ export function createTauriPlatform(): Platform {
       toggleSidebarShortcut: "Ctrl+Cmd+S",
       async setQuickCaptureShortcut(accelerator) {
         await invoke("set_capture_shortcut", { accelerator });
+      },
+      async startDragging() {
+        await getCurrentWindow().startDragging();
+      },
+      async toggleMaximize() {
+        await getCurrentWindow().toggleMaximize();
       },
       onQuickCapture(listener) {
         // listen() resolves asynchronously; unsubscribe once it does if we were already torn down.
