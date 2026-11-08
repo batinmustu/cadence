@@ -1,3 +1,4 @@
+import { listen } from "@tauri-apps/api/event";
 import { createBrowserPlatform } from "../browser";
 import type { Platform } from "../types";
 import { createTauriDatabase } from "./database";
@@ -9,6 +10,22 @@ export function createTauriPlatform(): Platform {
   return {
     ...createBrowserPlatform(),
     database: createTauriDatabase(),
-    window: { platform: "macos", toggleSidebarShortcut: "Ctrl+Cmd+S" },
+    window: {
+      platform: "macos",
+      toggleSidebarShortcut: "Ctrl+Cmd+S",
+      onQuickCapture(listener) {
+        // listen() resolves asynchronously; unsubscribe once it does if we were already torn down.
+        let off: (() => void) | null = null;
+        let closed = false;
+        void listen("quick-capture", listener).then((fn) => {
+          if (closed) fn();
+          else off = fn;
+        });
+        return () => {
+          closed = true;
+          off?.();
+        };
+      },
+    },
   };
 }

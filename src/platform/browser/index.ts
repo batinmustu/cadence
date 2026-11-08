@@ -44,7 +44,11 @@ export function createBrowserPlatform(): Platform {
         return true;
       },
     },
-    window: { platform: "web", toggleSidebarShortcut: "Ctrl+B" },
+    window: {
+      platform: "web",
+      toggleSidebarShortcut: "Ctrl+B",
+      onQuickCapture: () => () => {},
+    },
     notifications: { async schedule() {}, async cancel() {} },
     clipboard: {
       async writeText(text) {

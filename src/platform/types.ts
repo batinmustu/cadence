@@ -34,6 +34,8 @@ export type WindowPlatform = "macos" | "windows" | "linux" | "web";
 export interface AppWindow {
   platform: WindowPlatform;
   toggleSidebarShortcut: string;
+  /** Fires when the global quick-capture shortcut is pressed. No-op in the browser. */
+  onQuickCapture(listener: () => void): () => void;
 }
 
 export interface ScheduledNotification {
