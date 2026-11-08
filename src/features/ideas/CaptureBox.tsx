@@ -1,7 +1,8 @@
 import { ArrowUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ToggleChip } from "../../components";
+import { TagInput, ToggleChip } from "../../components";
+import { normalizeTagName, sameTagName, type Tag } from "../../core/tags";
 import { consumeCaptureFocus, onCaptureFocusRequest } from "./captureFocus";
 import type { PlatformOption } from "./useIdeas";
 
@@ -19,14 +20,16 @@ function loadSaved(): string[] {
 
 type Props = {
   platforms: PlatformOption[];
-  onCapture: (title: string, platformIds: string[]) => Promise<void>;
+  tags: Tag[];
+  onCapture: (title: string, platformIds: string[], tagNames: string[]) => Promise<void>;
   autoFocus?: boolean;
 };
 
-export function CaptureBox({ platforms, onCapture, autoFocus = false }: Props) {
+export function CaptureBox({ platforms, tags, onCapture, autoFocus = false }: Props) {
   const { t } = useTranslation();
   const [text, setText] = useState("");
   const [selected, setSelected] = useState<string[]>(loadSaved);
+  const [pendingTags, setPendingTags] = useState<string[]>([]);
   const ref = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -54,10 +57,13 @@ export function CaptureBox({ platforms, onCapture, autoFocus = false }: Props) {
   async function submit() {
     const title = text.trim();
     if (!title) return;
+    const tagNames = pendingTags;
     setText("");
+    setPendingTags([]);
     await onCapture(
       title,
       platforms.map((p) => p.id).filter((id) => selected.includes(id)),
+      tagNames,
     );
   }
 
@@ -78,6 +84,23 @@ export function CaptureBox({ platforms, onCapture, autoFocus = false }: Props) {
         }}
         className="w-full resize-none bg-transparent text-text placeholder:text-text-4 focus:outline-none"
       />
+      <div className="mt-2">
+        <TagInput
+          selected={pendingTags.map((name) => ({
+            id: tags.find((x) => sameTagName(x.name, name))?.id ?? `new:${name}`,
+            name,
+          }))}
+          known={tags}
+          onAdd={(name) =>
+            setPendingTags((prev) =>
+              prev.some((n) => sameTagName(n, name)) ? prev : [...prev, normalizeTagName(name)],
+            )
+          }
+          onRemove={(tag) =>
+            setPendingTags((prev) => prev.filter((n) => !sameTagName(n, tag.name)))
+          }
+        />
+      </div>
       <div className="mt-2 flex items-center gap-2">
         <div className="flex flex-1 flex-wrap gap-2">
           {platforms.map((p) => (

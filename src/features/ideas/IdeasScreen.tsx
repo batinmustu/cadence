@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Lightbulb } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Chip, Segmented } from "../../components";
+import { Chip, Segmented, Select } from "../../components";
 import {
   filterIdeasByStatus,
   groupIdeasByDate,
@@ -17,12 +17,14 @@ const FILTERS: IdeaFilterKey[] = ["all", "draft", "planned", "published"];
 
 export function IdeasScreen() {
   const { t, i18n } = useTranslation();
-  const { ideas, platforms, plannedAt, ready, capture } = useIdeas();
+  const { ideas, platforms, tags, plannedAt, ready, capture } = useIdeas();
   const [filter, setFilter] = useState<IdeaFilterKey>("all");
+  const [tagId, setTagId] = useState("");
 
   // Archived ideas stay out of the default view.
+  const byTag = tagId ? ideas.filter((i) => i.tagIds.includes(tagId)) : ideas;
   const visible = filterIdeasByStatus(
-    filter === "all" ? ideas.filter((i) => i.status !== "archived") : ideas,
+    filter === "all" ? byTag.filter((i) => i.status !== "archived") : byTag,
     statusesForFilter(filter),
   );
   const groups = groupIdeasByDate(visible);
@@ -32,16 +34,34 @@ export function IdeasScreen() {
     <section className="mx-auto w-full max-w-3xl">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">{t("nav.ideas")}</h1>
-        <Segmented
-          label={t("ideas.filter.label")}
-          value={filter}
-          onChange={setFilter}
-          options={FILTERS.map((f) => ({ value: f, label: t(`ideas.filter.${f}`) }))}
-        />
+        <div className="flex items-center gap-3">
+          {tags.length > 0 ? (
+            <Select
+              aria-label={t("tags.filter")}
+              className="h-8 w-40"
+              value={tagId}
+              onChange={(e) => setTagId(e.target.value)}
+            >
+              <option value="">{t("tags.allTags")}</option>
+              {tags.map((tag) => (
+                <option key={tag.id} value={tag.id}>
+                  #{tag.name}
+                </option>
+              ))}
+            </Select>
+          ) : null}
+          <Segmented
+            label={t("ideas.filter.label")}
+            value={filter}
+            onChange={setFilter}
+            options={FILTERS.map((f) => ({ value: f, label: t(`ideas.filter.${f}`) }))}
+          />
+        </div>
       </div>
       <div className="mt-6">
         <CaptureBox
           platforms={platforms}
+          tags={tags}
           onCapture={capture}
           autoFocus={ready && ideas.length === 0}
         />
@@ -72,6 +92,14 @@ export function IdeasScreen() {
                     >
                       {idea.title}
                     </Link>
+                    {idea.tagIds.length > 0 ? (
+                      <div className="truncate text-xs text-text-3">
+                        {idea.tagIds
+                          .map((id) => tags.find((x) => x.id === id))
+                          .flatMap((x) => (x ? [`#${x.name}`] : []))
+                          .join(" ")}
+                      </div>
+                    ) : null}
                     {idea.note ? (
                       <div className="truncate text-sm text-text-3">{idea.note}</div>
                     ) : null}

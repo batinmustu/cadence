@@ -2,8 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type FieldSchema, parseFieldSchema } from "../../core/fieldSchema";
 import { deriveIdeaStatus, type Idea } from "../../core/ideas";
 import type { Post, PostPatch } from "../../core/posts";
+import type { Tag } from "../../core/tags";
 import { createIdeasRepository } from "../../db/repositories/ideas";
 import { createPostsRepository } from "../../db/repositories/posts";
+import { createTagsRepository } from "../../db/repositories/tags";
 import { platform } from "../../platform";
 
 export interface ContentTypeOption {
@@ -27,6 +29,8 @@ function toSchema(json: string): FieldSchema {
 export function useEditor(ideaId: string) {
   const ideas = useMemo(() => createIdeasRepository(platform.database), []);
   const posts = useMemo(() => createPostsRepository(platform.database), []);
+  const tagsRepo = useMemo(() => createTagsRepository(platform.database), []);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [idea, setIdea] = useState<Idea | null>(null);
   const [variants, setVariants] = useState<Post[]>([]);
   const [contentTypes, setContentTypes] = useState<ContentTypeOption[]>([]);
@@ -39,7 +43,7 @@ export function useEditor(ideaId: string) {
   const fieldTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const reload = useCallback(async () => {
-    const [i, p, ct] = await Promise.all([
+    const [i, p, ct, allTags] = await Promise.all([
       ideas.get(ideaId),
       posts.listByIdea(ideaId),
       platform.database.select<{
@@ -51,7 +55,9 @@ export function useEditor(ideaId: string) {
       }>(
         "SELECT c.id, c.platform_id, p.name AS platform_name, c.name, c.field_schema FROM content_types c JOIN platforms p ON p.id = c.platform_id ORDER BY p.sort_order, c.sort_order",
       ),
+      tagsRepo.list(),
     ]);
+    setTags(allTags);
     setIdea(i && !i.deletedAt ? i : null);
     setVariants(p);
     for (const v of p) latestFields.current.set(v.id, v.fields);
@@ -65,7 +71,7 @@ export function useEditor(ideaId: string) {
       })),
     );
     setLoaded(true);
-  }, [ideas, posts, ideaId]);
+  }, [ideas, posts, tagsRepo, ideaId]);
 
   useEffect(() => {
     reload().catch(() => setLoaded(true));
@@ -147,6 +153,25 @@ export function useEditor(ideaId: string) {
     [posts, flushFields, reload],
   );
 
+  const addTag = useCallback(
+    async (name: string) => {
+      const tag = await tagsRepo.findOrCreate(name);
+      if (!tag || !idea || idea.tagIds.includes(tag.id)) return;
+      await ideas.update(ideaId, { tagIds: [...idea.tagIds, tag.id] });
+      await reload();
+    },
+    [tagsRepo, ideas, ideaId, idea, reload],
+  );
+
+  const removeTag = useCallback(
+    async (tagId: string) => {
+      if (!idea) return;
+      await ideas.update(ideaId, { tagIds: idea.tagIds.filter((id) => id !== tagId) });
+      await reload();
+    },
+    [ideas, ideaId, idea, reload],
+  );
+
   const addVariant = useCallback(
     async (contentTypeId: string) => {
       const post = await posts.create({ ideaId, contentTypeId });
@@ -158,6 +183,9 @@ export function useEditor(ideaId: string) {
 
   return {
     idea,
+    tags,
+    addTag,
+    removeTag,
     variants,
     contentTypes,
     loaded,

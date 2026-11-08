@@ -95,5 +95,12 @@
     "publishedUrl": "Post URL",
     "afterNote": "Note after publishing",
     "copyPart": "Copy part {{n}}"
+  },
+  "tags": {
+    "add": "Add tag",
+    "placeholder": "Add tag…",
+    "remove": "Remove tag {{name}}",
+    "filter": "Filter by tag",
+    "allTags": "All tags"
   }
 }

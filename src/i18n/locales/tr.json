@@ -95,5 +95,12 @@
     "publishedUrl": "Gönderi bağlantısı",
     "afterNote": "Yayın sonrası not",
     "copyPart": "{{n}}. bölümü kopyala"
+  },
+  "tags": {
+    "add": "Etiket ekle",
+    "placeholder": "Etiket ekle…",
+    "remove": "{{name}} etiketini kaldır",
+    "filter": "Etikete göre filtrele",
+    "allTags": "Tüm etiketler"
   }
 }

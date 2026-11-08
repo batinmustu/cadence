@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Select } from "../../components";
+import { Button, Select, TagInput } from "../../components";
 import { FieldRenderer } from "./FieldRenderer";
 import { PostActions } from "./PostActions";
 import { useEditor } from "./useEditor";
@@ -11,6 +11,9 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
   const { t } = useTranslation();
   const {
     idea,
+    tags,
+    addTag,
+    removeTag,
     variants,
     contentTypes,
     loaded,
@@ -78,6 +81,15 @@ export function EditorScreen({ ideaId }: { ideaId: string }) {
           </Select>
         </div>
       </header>
+
+      <div className="mt-3 pl-11">
+        <TagInput
+          selected={idea.tagIds.flatMap((id) => tags.find((x) => x.id === id) ?? [])}
+          known={tags}
+          onAdd={(name) => void addTag(name)}
+          onRemove={(tag) => void removeTag(tag.id)}
+        />
+      </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-2">
         {variants.map((v) => (
