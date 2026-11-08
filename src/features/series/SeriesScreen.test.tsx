@@ -8,6 +8,7 @@ import { createSeriesRepository } from "../../db/repositories/series";
 import "../../i18n";
 import { createSqlJsDatabase } from "../../platform/browser/sqljs";
 import type { AI, Database, Secrets } from "../../platform/types";
+import { chooseOption } from "../../test/select";
 import { SeriesScreen } from "./SeriesScreen";
 
 // The browser adapter fetches the sql.js wasm over HTTP, which jsdom cannot do;
@@ -61,7 +62,7 @@ describe("SeriesScreen", () => {
     await waitFor(() => expect(screen.getAllByTestId("slot-empty").length).toBeGreaterThan(0));
 
     await userEvent.click(screen.getAllByRole("button", { name: "Assign idea" })[0] as HTMLElement);
-    await userEvent.selectOptions(screen.getByLabelText("Choose an idea"), "Tip about focus");
+    await chooseOption("Choose an idea", "Tip about focus");
 
     await waitFor(() => expect(screen.getAllByTestId("slot-filled").length).toBe(1));
     expect(screen.getAllByText("Tip about focus").length).toBeGreaterThan(0);

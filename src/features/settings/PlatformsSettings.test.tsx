@@ -7,6 +7,7 @@ import { createPlatformsRepository } from "../../db/repositories/platforms";
 import "../../i18n";
 import { createSqlJsDatabase } from "../../platform/browser/sqljs";
 import type { Database } from "../../platform/types";
+import { chooseOption } from "../../test/select";
 import { PlatformsSettings } from "./PlatformsSettings";
 
 const mock = vi.hoisted(() => ({ platform: {} as { database: Database } }));
@@ -27,7 +28,7 @@ describe("PlatformsSettings", () => {
 
     await userEvent.click(await screen.findByRole("button", { name: "Add content type" }));
     await userEvent.type(screen.getByLabelText("Name"), "Article");
-    await userEvent.selectOptions(screen.getByLabelText("Kind of new field"), "longtext");
+    await chooseOption("Kind of new field", "Long text");
     await userEvent.click(screen.getByRole("button", { name: "Add field" }));
 
     // An invalid limit is caught by the schema validator before anything is saved.

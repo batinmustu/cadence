@@ -9,6 +9,7 @@ import { createSeriesRepository } from "../../db/repositories/series";
 import "../../i18n";
 import { createSqlJsDatabase } from "../../platform/browser/sqljs";
 import type { AI, Database, Secrets } from "../../platform/types";
+import { chooseOption } from "../../test/select";
 import { CalendarScreen } from "./CalendarScreen";
 
 const mock = vi.hoisted(() => ({
@@ -78,7 +79,7 @@ describe("CalendarScreen", () => {
   it("schedules an unscheduled idea through the keyboard-accessible picker", async () => {
     await createIdeasRepository(platform.database).create({ title: "Loose idea" });
     render(<CalendarScreen />);
-    await userEvent.selectOptions(await screen.findByLabelText("Choose an idea"), "Loose idea");
+    await chooseOption("Choose an idea", "Loose idea");
     await userEvent.click(screen.getByRole("button", { name: "Choose date…" }));
     const dialog = screen.getByRole("dialog");
     const next = new Date();

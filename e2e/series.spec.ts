@@ -13,7 +13,8 @@ test("create a series, see it in the sidebar, assign a captured idea", async ({ 
 
   // The browser database is in memory, so navigate inside the app instead of reloading.
   await nav.getByRole("link", { name: "Ideas" }).click();
-  await page.getByLabel("Series", { exact: true }).selectOption({ label: "Sunday tips" });
+  await page.getByLabel("Series", { exact: true }).click();
+  await page.getByRole("option", { name: "Sunday tips" }).click();
   const box = page.getByRole("textbox", { name: "New idea" });
   await box.fill("Plan the Sunday post");
   await box.press("Enter");

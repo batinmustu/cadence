@@ -44,7 +44,7 @@ export function GeneralSettings() {
         <Select
           id="gs-language"
           value={config.language}
-          onChange={(e) => void change(generalKeys.language, e.target.value)}
+          onValueChange={(v) => void change(generalKeys.language, v)}
         >
           <option value="system">{t("settings.general.system")}</option>
           <option value="en">English</option>
@@ -57,7 +57,7 @@ export function GeneralSettings() {
         <Select
           id="gs-week"
           value={config.weekStart}
-          onChange={(e) => void change(generalKeys.weekStart, e.target.value)}
+          onValueChange={(v) => void change(generalKeys.weekStart, v)}
         >
           <option value="monday">{t("settings.general.monday")}</option>
           <option value="sunday">{t("settings.general.sunday")}</option>

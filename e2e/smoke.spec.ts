@@ -28,7 +28,8 @@ test("settings: add a platform with a content type and use it in the editor", as
   await page.getByLabel("New platform").press("Enter");
   await page.getByRole("button", { name: "Add content type" }).click();
   await page.getByLabel("Name", { exact: true }).fill("Article");
-  await page.getByLabel("Kind of new field").selectOption("longtext");
+  await page.getByLabel("Kind of new field").click();
+  await page.getByRole("option", { name: "Long text" }).click();
   await page.getByRole("button", { name: "Add field" }).click();
   await page.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.getByText("Article", { exact: true })).toBeVisible();

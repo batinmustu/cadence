@@ -1,5 +1,5 @@
 # Cadence — agent status
-Last updated: 2026-11-08T21:00Z · Current milestone: UI polish (#84–#103)
+Last updated: 2026-11-08T20:45Z · Current milestone: UI polish (#84–#103)
 
 ## Done
 | Issue | Title | PR | Merged |
@@ -45,16 +45,18 @@ Last updated: 2026-11-08T21:00Z · Current milestone: UI polish (#84–#103)
 | #37 | feat: onboarding | #81 | 2026-11-08 |
 | #38 | ci: release workflow | #82 | 2026-11-08 |
 | #41 | docs: screenshots and user guide | #83 | 2026-11-08 |
-| #84 | chore(ui): adopt shadcn/ui and migrate base components | this PR | 2026-11-08 |
+| #84 | chore(ui): adopt shadcn/ui and migrate base components | #104 | 2026-11-08 |
+| #85 | feat(ui): replace native selects with shadcn Select | this PR | 2026-11-08 |
 
 ## Blocked / needs decision
 - #40 feat: auto-update — needs an updater signing keypair (pubkey in tauri.conf.json, private key as secret); see the issue comment
 
 ## Next up
-- #85 feat(ui): replace native selects with shadcn Select
-- then #86–#103 in order
+- #86 feat(ui): animated tab and segmented control transitions
+- then #87–#103 in order
 
 ## Notes
+- #85: adds `@radix-ui/react-select`. `components/ui/select.tsx` keeps the `<option>` children API but renders a Radix Select (use `onValueChange`, not `onChange`; `""` is mapped to a sentinel). `src/noNativeSelect.test.ts` fails if a `<select>` is reintroduced. Test helper `src/test/select.ts` (`chooseOption`) polyfills jsdom pointer APIs. No screenshots attached; `pnpm screenshots` can regenerate them. Branch is the session branch `claude/serene-dijkstra-r524t9` rather than `feat/85-…`.
 - #84: shadcn/ui hand-added (no CLI, offline): `components.json`, `src/lib/utils.ts` (`cn`), `src/components/ui/{button,badge,input,textarea,select,toggle,toggle-group,dialog,alert-dialog}.tsx`, `@` alias (tsconfig, vite, vitest). shadcn CSS variables live in `tokens.css` and point at the existing tokens (ADR 0005). Chip→Badge, ToggleChip→Toggle (`onPressedChange`), Segmented wraps ToggleGroup (options are now `role="radio"`). New series, onboarding and both calendar dialogs use `Dialog`. `Select` is still native until #85. No confirm prompts exist yet (AlertDialog is in the gallery for #98). Before/after screenshots were not attached; `pnpm screenshots` can regenerate them.
 - Backlog complete — only owner tasks remain, plus #40 which waits for the owner's updater key.
 - #41: `pnpm screenshots` (scripts/screenshots.mjs) starts its own dev server on port 1421 and writes `docs/screenshots/*.png` (ideas, editor, calendar) from browser mode with demo ideas typed into the capture box; no new dependencies. Screenshots are dark theme at 2x. The Install section describes the .dmg from Releases and does not exist until the first release.

@@ -6,6 +6,7 @@ import { prepareDatabase } from "../../db";
 import i18n from "../../i18n";
 import { createSqlJsDatabase } from "../../platform/browser/sqljs";
 import type { Database } from "../../platform/types";
+import { chooseOption } from "../../test/select";
 import { GeneralSettings } from "./GeneralSettings";
 import { loadGeneralConfig } from "./generalConfig";
 
@@ -33,9 +34,9 @@ beforeAll(async () => {
 describe("GeneralSettings", () => {
   it("switches language and week start and stores them", async () => {
     render(<GeneralSettings />);
-    await userEvent.selectOptions(await screen.findByLabelText("Language"), "tr");
+    await chooseOption("Language", "Türkçe");
     await waitFor(() => expect(i18n.language).toBe("tr"));
-    await userEvent.selectOptions(await screen.findByLabelText("Hafta şu günle başlar"), "sunday");
+    await chooseOption("Hafta şu günle başlar", "Pazar");
     await waitFor(async () => {
       const c = await loadGeneralConfig();
       expect(c.language).toBe("tr");

@@ -87,9 +87,9 @@ export function Onboarding() {
                 <Select
                   id="ob-language"
                   value={language}
-                  onChange={(e) => {
-                    setLanguage(e.target.value);
-                    void saveGeneralSetting(generalKeys.language, e.target.value);
+                  onValueChange={(v) => {
+                    setLanguage(v);
+                    void saveGeneralSetting(generalKeys.language, v);
                   }}
                 >
                   <option value="system">{t("settings.general.system")}</option>
