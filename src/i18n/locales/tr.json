@@ -97,7 +97,26 @@
       "published": "Yayınlandı",
       "archived": "Arşivlendi"
     },
-    "publishedMark": "Yayınlandı ✓"
+    "publishedMark": "Yayınlandı ✓",
+    "search": {
+      "label": "Fikirlerde ara",
+      "placeholder": "Fikirlerde ara…"
+    },
+    "filterBy": {
+      "platform": "Platforma göre filtrele",
+      "allPlatforms": "Tüm platformlar",
+      "series": "Seriye göre filtrele",
+      "allSeries": "Tüm seriler"
+    },
+    "sort": {
+      "label": "Sırala",
+      "newest": "En yeni",
+      "oldest": "En eski",
+      "planned": "Planlanan tarih"
+    },
+    "clearFilters": "Filtreleri temizle",
+    "noMatches": "Bu filtrelere uyan fikir yok.",
+    "showMore": "Daha fazla göster ({{shown}} / {{total}})"
   },
   "editor": {
     "back": "Fikirlere dön",

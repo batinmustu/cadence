@@ -6,6 +6,7 @@ import {
   redirect,
 } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { parseIdeaSearch, serializeIdeaSearch } from "../../core/ideas";
 import { CalendarScreen } from "../../features/calendar/CalendarScreen";
 import { EditorScreen } from "../../features/editor/EditorScreen";
 import { IdeasScreen } from "../../features/ideas/IdeasScreen";
@@ -39,6 +40,7 @@ const ideasRoute = createRoute({
 const ideasIndexRoute = createRoute({
   getParentRoute: () => ideasRoute,
   path: "/",
+  validateSearch: (raw: Record<string, unknown>) => serializeIdeaSearch(parseIdeaSearch(raw)),
   component: IdeasScreen,
 });
 const ideaRoute = createRoute({
